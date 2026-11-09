@@ -1,0 +1,61 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: ${{ matrix.configuration }} (Win32)
+    # v142 ツールセットと Windows SDK が入っているイメージ
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Release]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      # ランナーには DirectX SDK (June 2010) が入っていないので、ヘッダーと x86 ライブラリだけを取得する。
+      # インストーラー本体は約600MBあるため、展開結果をキャッシュする。
+      - name: Restore DirectX SDK cache
+        id: dxsdk-cache
+        uses: actions/cache@v6
+        with:
+          path: C:\DXSDK_Jun10
+          key: dxsdk-jun10-include-libx86-v1
+
+      - name: Download DirectX SDK
+        if: steps.dxsdk-cache.outputs.cache-hit != 'true'
+        shell: pwsh
+        run: |
+          $installer = Join-Path $env:RUNNER_TEMP 'DXSDK_Jun10.exe'
+          $extractDir = Join-Path $env:RUNNER_TEMP 'dxsdk'
+          curl.exe -fsSL --retry 3 -o $installer 'https://download.microsoft.com/download/a/e/7/ae743f1f-632b-4809-87a9-aa1bb3458e31/DXSDK_Jun10.exe'
+          if ($LASTEXITCODE -ne 0) { throw 'DirectX SDK のダウンロードに失敗しました' }
+          7z x $installer 'DXSDK/Include' 'DXSDK/Lib/x86' "-o$extractDir" -y | Out-Null
+          if ($LASTEXITCODE -ne 0) { throw 'DirectX SDK の展開に失敗しました' }
+          Move-Item (Join-Path $extractDir 'DXSDK') 'C:\DXSDK_Jun10'
+
+      # vcxproj が固定パスで参照している場所に見せる
+      - name: Link DirectX SDK to the path used by the project
+        shell: pwsh
+        run: |
+          New-Item -ItemType Junction -Path 'C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)' -Target 'C:\DXSDK_Jun10' | Out-Null
+
+      - name: Build
+        shell: pwsh
+        env:
+          # ソースは Shift-JIS。ランナーは日本語ロケールではないので、文字コードを明示する。
+          CL: /source-charset:.932 /execution-charset:.932
+        run: |
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $msbuild = & $vswhere -latest -requires Microsoft.Component.MSBuild -find 'MSBuild\**\Bin\MSBuild.exe' | Select-Object -First 1
+          & $msbuild C++31GBM.vcxproj -t:Build "-p:Configuration=${{ matrix.configuration }}" -p:Platform=Win32 -m -v:m -nologo
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

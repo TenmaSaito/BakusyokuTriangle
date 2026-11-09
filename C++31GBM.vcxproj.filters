@@ -1,0 +1,591 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000001}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\core">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000002}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\debug">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000003}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\effect">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000004}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\game">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000005}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\game\item">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000006}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\game\player">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000007}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\game\stage">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000008}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\input">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000009}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\math">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-00000000000a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\network">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-00000000000b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\object">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-00000000000c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\object\2d">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-00000000000d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\object\3d">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-00000000000e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\object\base">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-00000000000f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\render">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000010}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\scene">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000011}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\scene\transition">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000012}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\sound">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000013}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\ui">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000014}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\util">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000015}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000016}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\core">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000017}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\debug">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000018}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\effect">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000019}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-00000000001a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\item">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-00000000001b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\player">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-00000000001c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\game\stage">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-00000000001d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\input">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-00000000001e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\math">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-00000000001f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\network">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000020}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\object">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000021}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\object\2d">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000022}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\object\3d">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000023}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\object\base">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000024}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\render">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000025}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\scene">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000026}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\scene\transition">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000027}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\sound">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000028}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ui">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000029}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\util">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-00000000002a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\core\Coroutine.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\directX.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\main.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\manager.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\pch.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\debug\debugproc.cpp">
+      <Filter>src\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\debug\Log.cpp">
+      <Filter>src\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\debug\memdbg.cpp">
+      <Filter>src\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\effect\itemBiteEffect.cpp">
+      <Filter>src\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="src\effect\modelParticle.cpp">
+      <Filter>src\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="src\effect\particle.cpp">
+      <Filter>src\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="src\effect\screenEffect.cpp">
+      <Filter>src\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\item\item.cpp">
+      <Filter>src\game\item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\item\itemGenerator.cpp">
+      <Filter>src\game\item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\player\player.cpp">
+      <Filter>src\game\player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\player\playerCamera.cpp">
+      <Filter>src\game\player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\stage\field.cpp">
+      <Filter>src\game\stage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\stage\foodBackground.cpp">
+      <Filter>src\game\stage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\stage\mapScriptLoader.cpp">
+      <Filter>src\game\stage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\stage\stage.cpp">
+      <Filter>src\game\stage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\stage\wall.cpp">
+      <Filter>src\game\stage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\input.cpp">
+      <Filter>src\input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\inputAction.cpp">
+      <Filter>src\input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\inputActionMap.cpp">
+      <Filter>src\input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\inputBinding.cpp">
+      <Filter>src\input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\inputKeytable.cpp">
+      <Filter>src\input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\inputSystem.cpp">
+      <Filter>src\input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\joypad.cpp">
+      <Filter>src\input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\color.cpp">
+      <Filter>src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\matrix.cpp">
+      <Filter>src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\rand.cpp">
+      <Filter>src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\ray.cpp">
+      <Filter>src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\vec2math.cpp">
+      <Filter>src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\vec3math.cpp">
+      <Filter>src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\network\rankingClient.cpp">
+      <Filter>src\network</Filter>
+    </ClCompile>
+    <ClCompile Include="src\network\tcp_client.cpp">
+      <Filter>src\network</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\2d\number.cpp">
+      <Filter>src\object\2d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\2d\object2D.cpp">
+      <Filter>src\object\2d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\2d\polygon2D.cpp">
+      <Filter>src\object\2d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\3d\number3D.cpp">
+      <Filter>src\object\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\3d\number3DBillboard.cpp">
+      <Filter>src\object\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\3d\object3D.cpp">
+      <Filter>src\object\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\3d\objectBillboard3D.cpp">
+      <Filter>src\object\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\3d\objectBillboard3DScaling.cpp">
+      <Filter>src\object\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\3d\objectLine.cpp">
+      <Filter>src\object\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\3d\objectX.cpp">
+      <Filter>src\object\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\3d\objectXAfterImage.cpp">
+      <Filter>src\object\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\3d\shadow.cpp">
+      <Filter>src\object\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\base\object.cpp">
+      <Filter>src\object\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\camera.cpp">
+      <Filter>src\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\light.cpp">
+      <Filter>src\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\model.cpp">
+      <Filter>src\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\renderer.cpp">
+      <Filter>src\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\texture.cpp">
+      <Filter>src\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\xfile.cpp">
+      <Filter>src\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\game.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\ranking.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\scene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\templateScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\title.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\transition\fadeTransition.cpp">
+      <Filter>src\scene\transition</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\transition\mouthTransition.cpp">
+      <Filter>src\scene\transition</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\transition\sceneTransition.cpp">
+      <Filter>src\scene\transition</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sound\sound.cpp">
+      <Filter>src\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\bitePause.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\nextInfo.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\pause.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\score.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\timer.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\filestream.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\util.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\core\Coroutine.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\core\Delegate.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\core\directX.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\core\main.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\core\manager.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\core\pch.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\core\singleton.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\debug\debugproc.h">
+      <Filter>include\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="include\debug\Log.h">
+      <Filter>include\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="include\debug\memdbg.h">
+      <Filter>include\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="include\effect\itemBiteEffect.h">
+      <Filter>include\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="include\effect\modelParticle.h">
+      <Filter>include\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="include\effect\particle.h">
+      <Filter>include\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="include\effect\screenEffect.h">
+      <Filter>include\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\item\item.h">
+      <Filter>include\game\item</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\item\itemGenerator.h">
+      <Filter>include\game\item</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\player\player.h">
+      <Filter>include\game\player</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\player\playerCamera.h">
+      <Filter>include\game\player</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\stage\field.h">
+      <Filter>include\game\stage</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\stage\foodBackground.h">
+      <Filter>include\game\stage</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\stage\mapScriptLoader.h">
+      <Filter>include\game\stage</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\stage\stage.h">
+      <Filter>include\game\stage</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\stage\wall.h">
+      <Filter>include\game\stage</Filter>
+    </ClInclude>
+    <ClInclude Include="include\input\input.h">
+      <Filter>include\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\input\inputAction.h">
+      <Filter>include\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\input\inputActionMap.h">
+      <Filter>include\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\input\inputBinding.h">
+      <Filter>include\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\input\inputControl.h">
+      <Filter>include\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\input\inputKeytable.h">
+      <Filter>include\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\input\inputProcessor.h">
+      <Filter>include\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\input\inputSystem.h">
+      <Filter>include\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\input\joypad.h">
+      <Filter>include\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\math\constVector.h">
+      <Filter>include\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\math\color.h">
+      <Filter>include\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\math\matrix.h">
+      <Filter>include\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\math\rand.h">
+      <Filter>include\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\math\ray.h">
+      <Filter>include\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\math\vec2math.h">
+      <Filter>include\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\math\vec3math.h">
+      <Filter>include\math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\network\protocol_ranking.h">
+      <Filter>include\network</Filter>
+    </ClInclude>
+    <ClInclude Include="include\network\rankingClient.h">
+      <Filter>include\network</Filter>
+    </ClInclude>
+    <ClInclude Include="include\network\tcp_client.h">
+      <Filter>include\network</Filter>
+    </ClInclude>
+    <ClInclude Include="include\object\2d\number.h">
+      <Filter>include\object\2d</Filter>
+    </ClInclude>
+    <ClInclude Include="include\object\2d\object2D.h">
+      <Filter>include\object\2d</Filter>
+    </ClInclude>
+    <ClInclude Include="include\object\2d\polygon2D.h">
+      <Filter>include\object\2d</Filter>
+    </ClInclude>
+    <ClInclude Include="include\object\3d\number3D.h">
+      <Filter>include\object\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="include\object\3d\number3DBillboard.h">
+      <Filter>include\object\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="include\object\3d\object3D.h">
+      <Filter>include\object\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="include\object\3d\objectBillboard3D.h">
+      <Filter>include\object\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="include\object\3d\objectBillboard3DScaling.h">
+      <Filter>include\object\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="include\object\3d\objectLine.h">
+      <Filter>include\object\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="include\object\3d\objectX.h">
+      <Filter>include\object\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="include\object\3d\objectXAfterImage.h">
+      <Filter>include\object\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="include\object\3d\shadow.h">
+      <Filter>include\object\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="include\object\3d\shadows.h">
+      <Filter>include\object\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="include\object\base\object.h">
+      <Filter>include\object\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\object\base\parentable.h">
+      <Filter>include\object\base</Filter>
+    </ClInclude>
+    <ClInclude Include="include\render\camera.h">
+      <Filter>include\render</Filter>
+    </ClInclude>
+    <ClInclude Include="include\render\light.h">
+      <Filter>include\render</Filter>
+    </ClInclude>
+    <ClInclude Include="include\render\model.h">
+      <Filter>include\render</Filter>
+    </ClInclude>
+    <ClInclude Include="include\render\renderer.h">
+      <Filter>include\render</Filter>
+    </ClInclude>
+    <ClInclude Include="include\render\texture.h">
+      <Filter>include\render</Filter>
+    </ClInclude>
+    <ClInclude Include="include\render\vtxManager.h">
+      <Filter>include\render</Filter>
+    </ClInclude>
+    <ClInclude Include="include\render\xfile.h">
+      <Filter>include\render</Filter>
+    </ClInclude>
+    <ClInclude Include="include\scene\game.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="include\scene\ranking.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="include\scene\scene.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="include\scene\templateScene.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="include\scene\title.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="include\scene\transition\fadeTransition.h">
+      <Filter>include\scene\transition</Filter>
+    </ClInclude>
+    <ClInclude Include="include\scene\transition\mouthTransition.h">
+      <Filter>include\scene\transition</Filter>
+    </ClInclude>
+    <ClInclude Include="include\scene\transition\sceneTransition.h">
+      <Filter>include\scene\transition</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sound\sound.h">
+      <Filter>include\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ui\bitePause.h">
+      <Filter>include\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ui\nextInfo.h">
+      <Filter>include\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ui\pause.h">
+      <Filter>include\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ui\score.h">
+      <Filter>include\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ui\timer.h">
+      <Filter>include\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\util\enumUtil.h">
+      <Filter>include\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\util\filestream.h">
+      <Filter>include\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\util\util.h">
+      <Filter>include\util</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
