@@ -17,11 +17,7 @@
 //**********************************************************************************
 // *** 定数宣言 ***
 //**********************************************************************************
-constexpr int MAX_JOYPAD = 2;			// ジョイパッドの最大数
 constexpr int JOYTHUMB_REPEAT_NUM = 2;	// ジョイパッドでリピート対応しているスティックの数
-constexpr int JOYPAD_DEFAULT_WAIT_PRESS = 2;		// リピートの連続入力までの待機時間
-constexpr int JOYPAD_DEFAULT_INTERVAL = 2;			// リピートの連続入力の間隔
-constexpr float STICK_DEADZONE = 0.05f;				// 動いたと感知するデッドゾーン
 constexpr float JOYPAD_DEFAULT_STICK_RANGE = 0.05f;	// スティックを倒したと判定する範囲
 
 //**********************************************************************************
@@ -138,7 +134,15 @@ public:
 		const int nTime,
 		const int nPadID = 0);
 
+	// ジョイパッド番号が有効かどうかの判定
+	static constexpr bool IsValidPadID(const int nPadID) noexcept;
+
 private:
+	static constexpr int MAX_JOYPAD = 2;			// ジョイパッドの最大数
+
+	static constexpr int JOYPAD_DEFAULT_WAIT_PRESS = 2;		// リピートの連続入力までの待機時間
+	static constexpr int JOYPAD_DEFAULT_INTERVAL = 2;			// リピートの連続入力の間隔
+
 	//******************************************************************************
 	// *** ジョイパッドの情報構造体 ***
 	//******************************************************************************
@@ -155,4 +159,13 @@ private:
 
 	XINPUT_INFO m_aJoypad[MAX_JOYPAD] = {};			// ジョイパッドの情報
 };
+
+//==================================================================================
+// --- ジョイパッド番号の有効判定 ---
+//==================================================================================
+constexpr bool CJoypad::IsValidPadID(const int nPadID) noexcept
+{
+	return nPadID >= 0 && nPadID < MAX_JOYPAD;
+}
+
 #endif

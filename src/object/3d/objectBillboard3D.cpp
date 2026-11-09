@@ -16,6 +16,14 @@
 #include "math/vec3math.h"
 #include "render/camera.h"
 
+//**********************************************************************************
+// *** 定数宣言 ***
+//**********************************************************************************
+namespace
+{
+	constexpr ConstColor INVALID_COLOR = ConstColor(-1.0f, -1.0f, -1.0f, -1.0f);	// 色の無効値
+}
+
 //==================================================================================
 // --- 生成処理 ---
 //==================================================================================
@@ -44,22 +52,7 @@ CObjectBillboard3D *CObjectBillboard3D::Create(const Vector3 &pos,
 // --- コンストラクタ ---
 //==================================================================================
 CObjectBillboard3D::CObjectBillboard3D(const int nPriority) : CObject(nPriority)
-{ // メンバ変数をクリア
-	m_pVtxBuff = nullptr;
-	m_nIdxTexture = INVALID_TEX_ID;
-	m_pos = VECTOR3_NULL;
-	m_rot = VECTOR3_NULL;
-	m_move = VECTOR3_NULL;
-	m_size = VECTOR2_NULL;
-	m_col = COLOR_NULL;
-	m_fLength = 0.0f;
-	m_fAngle = 0.0f;
-	m_pMtxParent = nullptr;
-	m_bDisp = true;
-	m_bAlpha = true;
-	m_nLife = 0;
-
-	// タイプを指定
+{ // タイプを指定
 	SetType(TYPE::OBJ_BILLBOARD_3D);
 }
 

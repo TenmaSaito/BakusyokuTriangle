@@ -15,13 +15,6 @@
 #include "util/enumUtil.h"
 
 //**********************************************************************************
-// *** 定数宣言 ***
-//**********************************************************************************
-constexpr int NUM_KEY_MAX = 256;				// キーボードのキー数
-constexpr int INPUT_DEFAULT_WAIT_PRESS = 60;	// リピートの連続入力までの待機時間
-constexpr int INPUT_DEFAULT_INTERVAL = 30;		// リピートの連続入力の間隔
-
-//**********************************************************************************
 // *** 入力クラス ***
 //**********************************************************************************
 class CInput
@@ -59,6 +52,10 @@ public:
 		const int nInterval = INPUT_DEFAULT_INTERVAL);
 
 private:
+	static constexpr int NUM_KEY_MAX = 256;				// キーボードのキー数
+	static constexpr int INPUT_DEFAULT_WAIT_PRESS = 60;	// リピートの連続入力までの待機時間
+	static constexpr int INPUT_DEFAULT_INTERVAL = 30;		// リピートの連続入力の間隔
+
 	BYTE m_aKeyState[NUM_KEY_MAX] = {};				// キーボードのプレス情報
 	BYTE m_aKeyStateTrigger[NUM_KEY_MAX] = {};		// キーボードのトリガー情報
 	BYTE m_aKeyStateRelease[NUM_KEY_MAX] = {};		// キーボードのリリース情報

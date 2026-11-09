@@ -84,11 +84,11 @@ void CItemGenerator::Uninit(void)
 //==================================================================================
 void CItemGenerator::Update(void)
 { 
-	CPlayer *pPlayer = FindAnyObjectByType<CPlayer>(PLAYER_PRIORITY);
+	CPlayer *pPlayer = CPlayer::Find();
 
 	if (m_pField == nullptr)
 	{ // 床を取得していなかったら取得
-		m_pField = FindAnyObjectByType<CField>(FIELD_PRIORITY);
+		m_pField = CField::Find();
 	}
 	
 	if (m_bWillSetNext == true)
@@ -97,7 +97,7 @@ void CItemGenerator::Update(void)
 		info.texturePath = FOOD_TEXPATHS[static_cast<UINT>(m_nextType)];
 
 		// 次に食べる食べ物のテクスチャを設定
-		FindAnyObjectByType<CNextInfo>(NEXTINFO_PRIORITY)->SetNext(CObject2D::Create(info));
+		CNextInfo::Find()->SetNext(CObject2D::Create(info));
 		m_bWillSetNext = false;		// フラグを下ろす
 	}
 
@@ -217,14 +217,14 @@ void CItemGenerator::Notified(CObject *pObject, std::string_view message, const 
 		// スコアを加算
 		if (m_pScore == nullptr)
 		{ // 未取得なら、取得する
-			m_pScore = FindAnyObjectByType<CScore>(SCORE_PRIORITY);
+			m_pScore = CScore::Find();
 		}
 		m_pScore->AddScore(COMBO_BASE_SCORE * (COMBO_SCORE_RATE * (m_nCombo + 1)));
 
 		// スクリーンエフェクト起動
 		if (m_pScreenEffect == nullptr)
 		{ // 未取得なら、取得する
-			m_pScreenEffect = FindAnyObjectByType<CScreenEffect>(SCREEN_EFFECT_PRIORITY);
+			m_pScreenEffect = CScreenEffect::Find();
 		}
 		m_pScreenEffect->SetColor(Color(1.0f, 1.0f, 0.0f, 0.0f));
 		m_pScreenEffect->Flash(0.5f);
@@ -261,7 +261,7 @@ void CItemGenerator::Notified(CObject *pObject, std::string_view message, const 
 	// スクリーンエフェクト起動
 	if (m_pScreenEffect == nullptr)
 	{ // 未取得なら、取得する
-		m_pScreenEffect = FindAnyObjectByType<CScreenEffect>(SCREEN_EFFECT_PRIORITY);
+		m_pScreenEffect = CScreenEffect::Find();
 	}
 	m_pScreenEffect->SetColor(Color(1.0f, 0.0f, 0.0f, 0.0f));
 	m_pScreenEffect->Flash(0.5f);
@@ -285,7 +285,7 @@ void CItemGenerator::Notified(CObject *pObject, std::string_view message, const 
 	m_vpItem.clear();
 
 	// 怒らせる
-	FindAnyObjectByType<CNextInfo>(NEXTINFO_PRIORITY)->Angry();
+	CNextInfo::Find()->Angry();
 	CManager::GetInstance()->GetSound()->Play(CSound::LABEL::SE_FAIL);
 	m_bWillSetNext = true;		// 次の食べ物の表示を行うフラグを立てる
 }

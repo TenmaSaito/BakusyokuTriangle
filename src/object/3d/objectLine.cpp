@@ -47,17 +47,7 @@ CObjectLine *CObjectLine::Create(const Vector3 &origin, const Vector3 &vec, cons
 // --- コンストラクタ ---
 //==================================================================================
 CObjectLine::CObjectLine(const int nPriority) : CObject(nPriority)
-{ // メンバ変数のクリア
-	m_pVtxBuff = nullptr;
-	m_start = VECTOR3_NULL;
-	m_end = VECTOR3_NULL;
-	m_vec = VECTOR3_NULL;
-	m_fLength = 0.0f;
-	m_color = Colors::GetColor(Colors::COLOR::WHITE);
-	m_nLife = 0;
-	m_bDisp = true;
-
-	// タイプを設定
+{ // タイプを設定
 	SetType(TYPE::OBJ_LINE);
 }
 

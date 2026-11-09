@@ -54,6 +54,7 @@ namespace
 	constexpr float AFTERIMAGE_START_ALPHA = 0.5f;		// 残像の開始α値
 	constexpr float EAT_SCALE_RATE = 1.01f;			// アイテムを食べた時の拡大率
 	constexpr float EAT_ROT_SPEED_RATE = 0.99f;		// アイテムを食べた時の回転速度の倍率
+	constexpr float STICK_DEADZONE = 0.05f;				// 動いたと感知するデッドゾーン
 
 	// デバッグ用ステータス変更
 	constexpr int DEBUG_REPEAT_WAIT = 5;			// リピート入力の待機時間
@@ -76,6 +77,14 @@ CPlayer *CPlayer::Create(const std::string_view pFilename,
 	}
 
 	return pPlayer;
+}
+
+//==================================================================================
+// --- 検索処理 ---
+//==================================================================================
+CPlayer *CPlayer::Find(void)
+{
+	return FindAnyObjectByType<CPlayer>(PLAYER_PRIORITY);
 }
 
 //==================================================================================
@@ -130,7 +139,7 @@ void CPlayer::Update(void)
 {
 	if (m_pStage == nullptr)
 	{ // ステージを取得していなかったら取得
-		m_pStage = FindAnyObjectByType<CStage>(STAGE_PRIORITY);
+		m_pStage = CStage::Find();
 
 		// ステージの取得に失敗した場合はスキップ
 		if (m_pStage == nullptr) return;
@@ -305,7 +314,7 @@ void CPlayer::Draw(void)
 	// 影を描画
 	CObjectX::DrawShadow(mtxShadow);
 #if FALSE
-	std::vector vpWall = FindObjectsByType<CWall>(WALL_PRIORITY);
+	std::vector vpWall = CWall::FindAll();
 	for (auto &pWall : vpWall)
 	{
 		Vector3 nor = VECTOR3_NULL;

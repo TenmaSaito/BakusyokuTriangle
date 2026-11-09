@@ -18,11 +18,6 @@
 class CObject2D;
 
 //**********************************************************************************
-// *** 定数宣言 ***
-//**********************************************************************************
-constexpr int NEXTINFO_PRIORITY = DEFAULT_UI_PRIORITY;		// アイテムUI表示の優先順位
-
-//**********************************************************************************
 // *** 画面下に表示されるUIクラス ***
 //**********************************************************************************
 class CNextInfo : public CObject
@@ -39,7 +34,11 @@ public:
 	void SetNext(CObject2D *pNext);
 	void Angry(const int nAngryFrame = ANGRY_FRAME);
 
+	static CNextInfo *Find(void);	// シーン上のインスタンスを検索
+
 private:
+	static constexpr int NEXTINFO_PRIORITY = DEFAULT_UI_PRIORITY;		// アイテムUI表示の優先順位
+
 	static constexpr int ANGRY_FRAME = 90;		// 怒るフレーム数
 	CObject2D *m_pBase = nullptr;		// 一番下に表示されるコメント
 	CObject2D *m_pNext = nullptr;		// 次に取得すべきアイテム

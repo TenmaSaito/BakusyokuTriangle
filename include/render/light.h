@@ -14,11 +14,6 @@
 #include "core/main.h"
 
 //**********************************************************************************
-// *** 定数宣言 ***
-//**********************************************************************************
-constexpr int DEFAULT_LIGHT_NUM = 3;	// ライトの基本数
-
-//**********************************************************************************
 // *** ライトクラス ***
 //**********************************************************************************
 class CLight
@@ -33,6 +28,8 @@ public:
 	const D3DLIGHT9 *GetLight(const int nIdx) const { return &m_aLight[nIdx]; }
 
 private:
+	static constexpr int DEFAULT_LIGHT_NUM = 3;	// ライトの基本数
+
 	D3DLIGHT9 m_aLight[DEFAULT_LIGHT_NUM] = {};		// ライトの情報
 	Vector3 m_rot = VECTOR3_NULL;	// 角度
 	int m_nIdxLight = -1;			// 現在操作しているライト

@@ -63,7 +63,7 @@ private:
 
 	std::array<std::unique_ptr<CPolygon2D>, EnumUtil::ToIndex(TYPE::MAX)> m_apMenu;		// 選択肢ポリゴンへのポインタ
 	std::unique_ptr<CPolygon2D> m_pBack;		// 背景ポリゴン
-	TYPE m_type;		// 現在のタイプ
-	bool m_bDisp;		// 描画フラグ
+	TYPE m_type = TYPE::CONTINUE;		// 現在のタイプ
+	bool m_bDisp = false;		// 描画フラグ
 };
 #endif

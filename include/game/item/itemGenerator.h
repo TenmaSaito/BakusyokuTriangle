@@ -21,11 +21,6 @@ class CScore;
 class CScreenEffect;
 
 //**********************************************************************************
-// *** 定数宣言 ***
-//**********************************************************************************
-constexpr int ITEM_GENERATOR_PRIORITY = DEFAULT_OBJ_PRIORITY;		// アイテム生成クラスの優先順位
-
-//**********************************************************************************
 // *** アイテム生成クラス ***
 //**********************************************************************************
 class CItemGenerator : public CObject
@@ -41,6 +36,8 @@ public:
 	void Notified(CObject *pObject, std::string_view message, const std::any &args) override;
 
 private:
+	static constexpr int ITEM_GENERATOR_PRIORITY = DEFAULT_OBJ_PRIORITY;		// アイテム生成クラスの優先順位
+
 	CField *m_pField = nullptr;			// 床
 	CScore *m_pScore = nullptr;			// スコア表示
 	CScreenEffect *m_pScreenEffect = nullptr;			// スクリーンエフェクト

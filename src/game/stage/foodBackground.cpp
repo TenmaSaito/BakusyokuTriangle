@@ -30,13 +30,13 @@ namespace
 	constexpr float ROTATION_SPEED = 0.006f;			// 回転速度 (ラジアン / フレーム)
 
 	// 既存Xファイルの頂点範囲から求めた中心の高さ
-	constexpr float MODEL_CENTER_Y[FOOD_BACKGROUND_MODEL_COUNT] = { 71.9156f, 40.5718f, 44.9440f };
+	constexpr float MODEL_CENTER_Y[] = { 71.9156f, 40.5718f, 44.9440f };
 
 	// 既存Xファイルの頂点範囲から求めた最大幅
-	constexpr float MODEL_SIZE[FOOD_BACKGROUND_MODEL_COUNT] = { 177.90f, 224.8955f, 177.90f };
+	constexpr float MODEL_SIZE[] = { 177.90f, 224.8955f, 177.90f };
 
 	// 食べ物モデルのファイルパス
-	constexpr std::string_view MODEL_PATHS[FOOD_BACKGROUND_MODEL_COUNT] =
+	constexpr std::string_view MODEL_PATHS[] =
 	{
 		"data/MODEL/rice.x",
 		"data/MODEL/humbarg.x",
@@ -79,6 +79,11 @@ CFoodBackground::~CFoodBackground()
 //==================================================================================
 HRESULT CFoodBackground::Init(void)
 {
+	// 定数配列の要素数はモデルの種類数と一致させる
+	static_assert(std::size(MODEL_CENTER_Y) == FOOD_BACKGROUND_MODEL_COUNT);
+	static_assert(std::size(MODEL_SIZE) == FOOD_BACKGROUND_MODEL_COUNT);
+	static_assert(std::size(MODEL_PATHS) == FOOD_BACKGROUND_MODEL_COUNT);
+
 	if (m_bReady || m_bEnded) return E_FAIL;		// 初期化済み
 
 	CXFile *pXFile = CXFile::GetInstance();		// モデル管理

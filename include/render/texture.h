@@ -46,7 +46,7 @@ public:
 	// テクスチャデータ構造体
 	struct BUFFER
 	{
-		LPDIRECT3DTEXTURE9 pTexture;	// テクスチャポインタ
+		LPDIRECT3DTEXTURE9 pTexture = nullptr;	// テクスチャポインタ
 		std::string sFilename;			// ファイル名
 	};
 

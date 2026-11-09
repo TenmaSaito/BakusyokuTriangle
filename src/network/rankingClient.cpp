@@ -61,7 +61,7 @@ int CRankingClient::Send(const int nScore)
 
 	// サーバーと接続
 	int nResult = pClient->Init(m_sIPAddress.data(), m_nPortID);
-	if(CLIENT_TCP_FAILED(nResult)) return UNRANKING;	// サーバーとの接続に失敗
+	if(CTcpClient::IsFailed(nResult)) return UNRANKING;	// サーバーとの接続に失敗
 
 	char aStr[sizeof(char) + sizeof(int)] = {};			// サーバーに送信する文字列
 	int nScoreEndian = htonl(nScore);		// エンディアン変換後のスコア
@@ -78,7 +78,7 @@ int CRankingClient::Send(const int nScore)
 	char cRank;		// 順位
 	nResult = pClient->RecvAll(&nByte, 1);
 	nResult = pClient->RecvAll(&cRank, 1);
-	if (CLIENT_TCP_FAILED(nResult))
+	if (CTcpClient::IsFailed(nResult))
 	{ // インスタンス破棄
 		SafeUniqueUninit(pClient);
 		return UNRANKING;	// 順位の受信に失敗
@@ -102,7 +102,7 @@ std::array<int, MAX_RANKING> CRankingClient::Get(void)
 
 	// サーバーと接続
 	int nResult = pClient->Init(m_sIPAddress.data(), m_nPortID);
-	if (CLIENT_TCP_FAILED(nResult)) return aScore;	// サーバーとの接続に失敗
+	if (CTcpClient::IsFailed(nResult)) return aScore;	// サーバーとの接続に失敗
 
 	// メッセージを送信
 	char cCommand = static_cast<char>(COMMAND_TYPE::GET_RANKING);	// ランキングの取得を指定
@@ -111,7 +111,7 @@ std::array<int, MAX_RANKING> CRankingClient::Get(void)
 	// サイズを受信
 	int nByte = 0;				// 受信予定サイズ
 	nResult = pClient->RecvAll(&nByte, 1);
-	if (CLIENT_TCP_FAILED(nResult))
+	if (CTcpClient::IsFailed(nResult))
 	{ // サイズの受信に失敗
 		// インスタンス破棄
 		SafeUniqueUninit(pClient);
@@ -121,7 +121,7 @@ std::array<int, MAX_RANKING> CRankingClient::Get(void)
 	// データを受信
 	std::unique_ptr pByte = std::make_unique<char[]>(nByte);		// 受け取ったバイトデータ
 	nResult = pClient->RecvAll(pByte.get(), nByte);
-	if (CLIENT_TCP_FAILED(nResult))
+	if (CTcpClient::IsFailed(nResult))
 	{ // 順位の受信に失敗
 		// インスタンス破棄
 		SafeUniqueUninit(pClient);

@@ -17,6 +17,14 @@
 #include "math/ray.h"
 
 //**********************************************************************************
+// *** 定数宣言 ***
+//**********************************************************************************
+namespace
+{
+	constexpr float DEFAULT_FOVY = 45.0f;		// 視野角
+}
+
+//**********************************************************************************
 // *** マクロ定義 ***
 //**********************************************************************************
 constexpr float DEFAULT_ZN = 1.0f;		// 最短距離
@@ -52,22 +60,7 @@ CCamera *CCamera::Create(const Vector3 &posV, const Vector3 &posR)
 // --- コンストラクタ ---
 //==================================================================================
 CCamera::CCamera(const TYPE type)
-{ // メンバ変数をクリア
-	m_posV = VECTOR3_NULL;
-	m_posR = VECTOR3_NULL;
-	m_vecU = VECTOR3_NULL;
-	m_rot = VECTOR3_NULL;
-	m_colFog = COLOR_NULL;
-	m_fStart = 0.0f;
-	m_fEnd = 0.0f;
-	m_fFovy = 0.0f;
-	m_fNear = 0.0f;
-	m_fFar = 0.0f;
-	m_vp = {};
-	m_bEnableOrtho = false;
-	m_bEnableFog = false;
-
-	// タイプを保存
+{ // タイプを保存
 	m_type = type;
 
 	// カメラを登録

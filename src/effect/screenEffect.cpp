@@ -26,6 +26,14 @@ CScreenEffect *CScreenEffect::Create(const Color &color,
 }
 
 //==================================================================================
+// --- 検索処理 ---
+//==================================================================================
+CScreenEffect *CScreenEffect::Find(void)
+{
+	return FindAnyObjectByType<CScreenEffect>(SCREEN_EFFECT_PRIORITY);
+}
+
+//==================================================================================
 // --- コンストラクタ ---
 //==================================================================================
 CScreenEffect::CScreenEffect(const int nPriority) : CObject2D(nPriority)

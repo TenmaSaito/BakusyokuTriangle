@@ -62,8 +62,6 @@ public:
     static void DispatchPending();
     static std::vector<LogEntry> History(); // 履歴のコピーを取得
     static void ClearHistory();             // 履歴を消去
-
-    static constexpr std::size_t MAX_HISTORY = 2000; // 履歴に残す最大件数
 };
 
 } // namespace dxs

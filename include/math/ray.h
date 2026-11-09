@@ -15,11 +15,6 @@
 #include <compare>
 
 //**********************************************************************************
-// *** 定数宣言 ***
-//**********************************************************************************
-constexpr int DEFAULT_RAY_DRAWFRAME = 1;	// デフォルトのレイの描画回数
-
-//**********************************************************************************
 // *** 光線クラス ***
 //**********************************************************************************
 class CRay
@@ -47,6 +42,8 @@ public:
 	bool operator==(const CRay &ray) const { return GetLength() == ray.GetLength(); }
 
 private:
+	static constexpr int DEFAULT_RAY_DRAWFRAME = 1;	// デフォルトのレイの描画回数
+
 	Vector3 m_start = VECTOR3_NULL;		// 始点
 	Vector3 m_end = VECTOR3_NULL;		// 終点
 	Vector3 m_vec = VECTOR3_NULL;		// 始点と方向ベクトル

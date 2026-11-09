@@ -20,12 +20,6 @@
 class CNumber;		// 数値表示クラス
 
 //**********************************************************************************
-// *** マクロ定義 ***
-//**********************************************************************************
-constexpr int MAX_SCORENUM = 8;							// スコアの最大桁数
-constexpr int SCORE_PRIORITY = DEFAULT_UI_PRIORITY;		// スコアの基本優先順位
-
-//**********************************************************************************
 // *** スコアクラス ***
 //**********************************************************************************
 class CScore : public CObject
@@ -46,10 +40,16 @@ public:
 	void AddScore(const int nValue);
 	int GetScore(void) const;
 
+	static CScore *Find(void);	// シーン上のインスタンスを検索
+
 private:
-	CNumber *m_apNumber[MAX_SCORENUM];			// 数値表示オブジェクトへのポインタ
-	int m_nNumScore;	// スコアの桁数
-	int m_nScore;		// 現在のスコア
+	static constexpr int SCORE_PRIORITY = DEFAULT_UI_PRIORITY;		// スコアの基本優先順位
+
+	static constexpr int MAX_SCORENUM = 8;							// スコアの最大桁数
+
+	CNumber *m_apNumber[MAX_SCORENUM] = {};			// 数値表示オブジェクトへのポインタ
+	int m_nNumScore = 0;	// スコアの桁数
+	int m_nScore = 0;		// 現在のスコア
 	int m_nAdditionalScore = 0;		// 追加予定のスコア
 };
 

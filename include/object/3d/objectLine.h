@@ -52,12 +52,12 @@ private:
 	HRESULT CreateVertex(void);
 	void UpdateVertex(void);
 
-	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;		// 頂点バッファ
-	Vector3 m_start, m_end;			// 始点、終点
-	Vector3 m_vec;			// 始点と方向ベクトル
-	float m_fLength;		// ベクトルの長さ
-	Color m_color;			// 色
-	int m_nLife;			// 寿命
-	bool m_bDisp;			// 描画するか
+	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff = nullptr;		// 頂点バッファ
+	Vector3 m_start = VECTOR3_NULL, m_end = VECTOR3_NULL;			// 始点、終点
+	Vector3 m_vec = VECTOR3_NULL;			// 始点と方向ベクトル
+	float m_fLength = 0.0f;		// ベクトルの長さ
+	Color m_color = ConstColor(1.0f, 1.0f, 1.0f, 1.0f);			// 色
+	int m_nLife = 0;			// 寿命
+	bool m_bDisp = true;			// 描画するか
 };
 #endif

@@ -15,12 +15,6 @@
 #include "util/enumUtil.h"
 
 //**********************************************************************************
-// *** 定数宣言 ***
-//**********************************************************************************
-constexpr float DEFAULT_FOVY = 45.0f;		// 視野角
-inline constexpr D3DVIEWPORT9 DEFAULT_VP = D3DVIEWPORT9{ 0,0,SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 1.0f };		// デフォルトのビューポート
-
-//**********************************************************************************
 // *** カメラクラス ***
 //**********************************************************************************
 class CCamera
@@ -85,23 +79,25 @@ protected:
 	void Release(void);
 
 private:
+	static constexpr D3DVIEWPORT9 DEFAULT_VP = D3DVIEWPORT9{ 0,0,SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 1.0f };		// デフォルトのビューポート
+
 	inline static CCamera *m_apCamera[EnumUtil::ToIndex(TYPE::MAX)] = {};			// 現在登録されているカメラへのポインタ
 	inline static D3DVIEWPORT9 m_vpDef = DEFAULT_VP;			// デフォルトのビューポート
 	inline static TYPE m_currentType = CCamera::TYPE::FREE;		// 現在設置されているカメラのタイプ
 	inline static TYPE m_focusType = CCamera::TYPE::MAX;			// フルスクリーンにフォーカスしているカメラのタイプ
 	Matrix m_mtxProjection;		// プロジェクションマトリックス
 	Matrix m_mtxView;		// ビューマトリックス
-	Vector3 m_posV;			// 視点	
-	Vector3 m_posR;			// 注視点
-	Vector3 m_vecU;			// 上方向ベクトル
-	Vector3 m_rot;			// 向き
-	D3DVIEWPORT9 m_vp;		// ビューポート設定
-	Color m_colFog;			// ピクセルフォグの色
-	float m_fStart, m_fEnd;	// フォグの開始・終了位置
-	float m_fFovy;			// 視野角
-	float m_fNear, m_fFar;	// カメラの描画最小・最長距離
+	Vector3 m_posV = VECTOR3_NULL;			// 視点	
+	Vector3 m_posR = VECTOR3_NULL;			// 注視点
+	Vector3 m_vecU = VECTOR3_NULL;			// 上方向ベクトル
+	Vector3 m_rot = VECTOR3_NULL;			// 向き
+	D3DVIEWPORT9 m_vp = {};		// ビューポート設定
+	Color m_colFog = COLOR_NULL;			// ピクセルフォグの色
+	float m_fStart = 0.0f, m_fEnd = 0.0f;	// フォグの開始・終了位置
+	float m_fFovy = 0.0f;			// 視野角
+	float m_fNear = 0.0f, m_fFar = 0.0f;	// カメラの描画最小・最長距離
 	TYPE m_type;			// カメラの種類
-	bool m_bEnableOrtho;	// 正射影投影の有効化
-	bool m_bEnableFog;		// フォグの有効化
+	bool m_bEnableOrtho = false;	// 正射影投影の有効化
+	bool m_bEnableFog = false;		// フォグの有効化
 };
 #endif

@@ -13,11 +13,6 @@
 #include "object/3d/object3D.h"
 
 //**********************************************************************************
-// *** 定数宣言 ***
-//**********************************************************************************
-constexpr int WALL_PRIORITY = DEFAULT_OBJ3D_PRIORITY;		// 壁の優先順位
-
-//**********************************************************************************
 // *** 壁クラス ***
 //**********************************************************************************
 class CWall : public CObject3D
@@ -37,6 +32,9 @@ public:
 	void Update(void) override;
 	void Draw(void) override;
 
+	static std::vector<CWall*> FindAll(void);	// シーン上のインスタンスをすべて検索
+
 private:
+	static constexpr int WALL_PRIORITY = DEFAULT_OBJ3D_PRIORITY;		// 壁の優先順位
 };
 #endif

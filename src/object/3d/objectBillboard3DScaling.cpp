@@ -31,11 +31,7 @@ CObjectBillboard3DScaling *CObjectBillboard3DScaling::Create(const Vector3 &pos,
 // --- コンストラクタ ---
 //==================================================================================
 CObjectBillboard3DScaling::CObjectBillboard3DScaling(const int nPriority) : CObjectBillboard3D(nPriority)
-{ // メンバ変数をクリア
-	m_defSize = VECTOR2_NULL;
-	m_fScalingVal = 0.0f;
-	m_nDefLife = 0;
-	m_nCounterFrame = 0;
+{
 }
 
 //==================================================================================

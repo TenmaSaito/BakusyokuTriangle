@@ -18,11 +18,6 @@
 class CPlayer;
 
 //**********************************************************************************
-// *** 定数宣言 ***
-//**********************************************************************************
-constexpr int STAGE_PRIORITY = FIELD_PRIORITY;		// ステージの優先順位
-
-//**********************************************************************************
 // *** ステージクラス ***
 //**********************************************************************************
 class CStage : public CField
@@ -44,7 +39,11 @@ public:
 	void Notified(CObject *pObject, std::string_view message, const std::any &args) override;
 	bool IsLeanInput(void) const { return m_bLeanInput; }
 
+	static CStage *Find(void);	// シーン上のインスタンスを検索
+
 private:
+	static constexpr int STAGE_PRIORITY = FIELD_PRIORITY;		// ステージの優先順位
+
 	bool LeanInput(Vector3 *pRot);
 
 	CPlayer *m_pPlayer = nullptr;		// プレイヤーへのポインタ

@@ -77,7 +77,7 @@ protected:
 	void SetModeNext(CScene::MODE modeNext) { m_modeNext = modeNext; }
 
 private:
-	CScene::MODE m_modeNext;		// 次のモード
-	STATE m_state;					// 現在の状態
+	CScene::MODE m_modeNext = CScene::MODE::NONE;		// 次のモード
+	STATE m_state = STATE::STAY;					// 現在の状態
 };
 #endif

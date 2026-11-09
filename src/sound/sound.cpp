@@ -30,22 +30,34 @@ public:
 	HRESULT GetError(void) const;
 
 private:
-	bool m_bPlay;			// 再生状態
-	HRESULT m_error;		// 最後に起きたエラー
+	bool m_bPlay = false;			// 再生状態
+	HRESULT m_error = S_OK;		// 最後に起きたエラー
 };
 
 //**********************************************************************************
-// *** 静的メンバ変数 ***
+// *** 定数宣言 ***
 //**********************************************************************************
-CSound::INFO const CSound::m_aInfo[EnumUtil::ToIndex(CSound::LABEL::MAX)] =		// サウンド情報
+namespace
 {
-	{"data/SOUND/BGM/fancy_pop_title.wav", -1},	// タイトル画面のBGM
-	{"data/SOUND/BGM/bright_pop_80.wav", -1},	// ゲーム画面のBGM
-	{"data/SOUND/BGM/enjoy_meal_result.wav", -1},	// リザルト画面のBGM
-	{"data/SOUND/SE/bite.wav", 0},				// 咀嚼音
-	{"data/SOUND/SE/correct_175.wav", 0},		// 成功音
-	{"data/SOUND/SE/incorrect_175.wav", 0},		// 失敗音
-};
+	constexpr float SOUND_VOLUME = 0.2f;	// 音量
+
+	// サウンド情報
+	struct SoundInfo
+	{
+		std::string_view sFilename;	// ファイル名
+		int nCntLoop;				// ループカウント
+	};
+
+	constexpr SoundInfo SOUND_INFO[EnumUtil::ToIndex(CSound::LABEL::MAX)] =		// サウンド情報
+	{
+		{"data/SOUND/BGM/fancy_pop_title.wav", -1},	// タイトル画面のBGM
+		{"data/SOUND/BGM/bright_pop_80.wav", -1},	// ゲーム画面のBGM
+		{"data/SOUND/BGM/enjoy_meal_result.wav", -1},	// リザルト画面のBGM
+		{"data/SOUND/SE/bite.wav", 0},				// 咀嚼音
+		{"data/SOUND/SE/correct_175.wav", 0},		// 成功音
+		{"data/SOUND/SE/incorrect_175.wav", 0},		// 失敗音
+	};
+}
 
 //**********************************************************************************
 // *** サウンドクラス ***
@@ -54,13 +66,7 @@ CSound::INFO const CSound::m_aInfo[EnumUtil::ToIndex(CSound::LABEL::MAX)] =		// 
 // --- コンストラクタ ---
 //==================================================================================
 CSound::CSound()
-{ // メンバ変数のクリア
-	m_pXAudio2 = nullptr;
-	m_pMasteringVoice = nullptr;
-	ZeroMemory(&m_apSourceVoice[0], sizeof(m_apSourceVoice));
-	ZeroMemory(&m_apCallback[0], sizeof(m_apCallback));
-	ZeroMemory(&m_apDataAudio[0], sizeof(m_apDataAudio));
-	ZeroMemory(&m_aSizeAudio[0], sizeof(m_aSizeAudio));
+{
 }
 
 //==================================================================================
@@ -133,7 +139,7 @@ HRESULT CSound::Init(const HWND hWnd)
 		memset(&buffer, 0, sizeof(XAUDIO2_BUFFER));
 
 		// サウンドデータファイルの生成
-		hFile = CreateFile(m_aInfo[nCntSound].pFilename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+		hFile = CreateFile(SOUND_INFO[nCntSound].sFilename.data(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
 		if (hFile == INVALID_HANDLE_VALUE)
 		{
 			MessageBox(hWnd, "サウンドデータファイルの生成に失敗！(1)", "警告！", MB_ICONWARNING);
@@ -241,7 +247,7 @@ HRESULT CSound::Init(const HWND hWnd)
 		buffer.AudioBytes = m_aSizeAudio[nCntSound];
 		buffer.pAudioData = m_apDataAudio[nCntSound];
 		buffer.Flags = XAUDIO2_END_OF_STREAM;
-		buffer.LoopCount = m_aInfo[nCntSound].nCntLoop;
+		buffer.LoopCount = SOUND_INFO[nCntSound].nCntLoop;
 
 		// オーディオバッファの登録
 		m_apSourceVoice[nCntSound]->SubmitSourceBuffer(&buffer);
@@ -318,7 +324,7 @@ void CSound::Play(const LABEL label)
 	buffer.AudioBytes = m_aSizeAudio[EnumUtil::ToIndex(label)];
 	buffer.pAudioData = m_apDataAudio[EnumUtil::ToIndex(label)];
 	buffer.Flags = XAUDIO2_END_OF_STREAM;
-	buffer.LoopCount = m_aInfo[EnumUtil::ToIndex(label)].nCntLoop;
+	buffer.LoopCount = SOUND_INFO[EnumUtil::ToIndex(label)].nCntLoop;
 
 	// 状態取得
 	m_apSourceVoice[EnumUtil::ToIndex(label)]->GetState(&xa2state);
@@ -558,9 +564,6 @@ HRESULT CSound::ReadChunkData(const HANDLE hFile, void *pBuffer, const DWORD dwB
 //==================================================================================
 CSoundCallbacker::CSoundCallbacker()
 {
-	// メンバ変数をクリア
-	m_bPlay = false;
-	m_error = S_OK;
 }
 
 //==================================================================================

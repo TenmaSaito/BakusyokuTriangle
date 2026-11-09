@@ -23,11 +23,6 @@ class CObjectBillboard3D;
 class CScore;
 
 //**********************************************************************************
-// *** 定数宣言 ***
-//**********************************************************************************
-constexpr int ITEM_PRIORITY = DEFAULT_OBJ_PRIORITY;		// アイテムの優先順位
-
-//**********************************************************************************
 // *** アイテムクラス ***
 //**********************************************************************************
 class CItem : public CObjectX
@@ -67,6 +62,8 @@ public:
 	bool IsEqualType(const TYPE type) const { return m_type == type; }
 
 private:
+	static constexpr int ITEM_PRIORITY = DEFAULT_OBJ_PRIORITY;		// アイテムの優先順位
+
 	CObjectBillboard3D *m_pIcon = nullptr;		// 表示アイコン
 	CPlayer *m_pPlayer = nullptr;		// プレイヤーへのポインタ
 	CParticle *m_pParticle = nullptr;	// パーティクルへのポインタ

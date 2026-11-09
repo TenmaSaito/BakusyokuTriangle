@@ -45,9 +45,7 @@ CSceneTransition *CSceneTransition::Create(const TYPE type)
 // --- コンストラクタ ---
 //==================================================================================
 CSceneTransition::CSceneTransition()
-{ // メンバ変数の初期化
-	m_modeNext = CScene::MODE::NONE;
-	m_state = STATE::STAY;
+{
 }
 
 //==================================================================================
