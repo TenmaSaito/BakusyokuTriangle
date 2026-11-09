@@ -14,13 +14,6 @@
 #include "object/base/parentable.h"
 
 //**********************************************************************************
-// *** 定数宣言 ***
-//**********************************************************************************
-constexpr int DEFAULT_OBJX_PRIORITY = DEFAULT_OBJ_PRIORITY;		// objXの基本優先順位	
-inline constexpr ConstVector3 DEFAULT_OBJX_POS = VECTOR3_NULL;			// objXの基本位置
-inline constexpr ConstVector3 DEFAULT_OBJX_ROT = VECTOR3_NULL;			// objXの基本角度
-
-//**********************************************************************************
 // *** オブジェクトXクラス ***
 //**********************************************************************************
 class CObjectX : public CObject, public IParentable
@@ -54,9 +47,14 @@ public:
 	bool IsHitByRay(const Vector3 &start, const Vector3 &vec, const float fLength);
 
 protected:
+	static constexpr int DEFAULT_OBJX_PRIORITY = DEFAULT_OBJ_PRIORITY;		// objXの基本優先順位	
+
 	Matrix *GetMatrixPtr(void) { return &m_mtxWorld; }
 
 private:
+	static constexpr ConstVector3 DEFAULT_OBJX_POS = VECTOR3_NULL;			// objXの基本位置
+	static constexpr ConstVector3 DEFAULT_OBJX_ROT = VECTOR3_NULL;			// objXの基本角度
+
 	HRESULT	LoadXFile(std::string_view pFilename);
 
 	LPD3DXMESH m_pMesh = nullptr;			// メッシュ(頂点情報)へのポインタ

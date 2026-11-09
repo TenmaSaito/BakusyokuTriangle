@@ -15,12 +15,6 @@
 #include <functional>
 
 //**********************************************************************************
-// *** マクロ定義 ***
-//**********************************************************************************
-inline constexpr ConstVector2 DEFAULT_OBJBILL_SIZE = ConstVector2(100.0f, 100.0f);		// obj3Dの基本サイズ
-inline constexpr ConstColor INVALID_COLOR = ConstColor(-1.0f, -1.0f, -1.0f, -1.0f);	// 色の無効値
-
-//**********************************************************************************
 // *** オブジェクトビルボードクラス ***
 //**********************************************************************************
 class CObjectBillboard3D : public CObject
@@ -62,21 +56,24 @@ public:
 	void SetStateFunctionBeforeDraw(std::function<void(LPDIRECT3DDEVICE9)> before) { m_beforeDraw = before; }
 	void SetStateFunctionAfterDraw(std::function<void(LPDIRECT3DDEVICE9)> after) { m_afterDraw = after; }
 
+protected:
+	static constexpr ConstVector2 DEFAULT_OBJBILL_SIZE = ConstVector2(100.0f, 100.0f);		// obj3Dの基本サイズ
+
 private:
-	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点バッファへのポインタ
-	int m_nIdxTexture;		// テクスチャインデックス
+	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff = nullptr;	// 頂点バッファへのポインタ
+	int m_nIdxTexture = -1;		// テクスチャインデックス
 	Matrix m_mtxWorld;		// ワールドマトリックス
-	const Matrix *m_pMtxParent;		// 親ワールドマトリックスへのポインタ
-	Vector3 m_pos;			// 位置
-	Vector3 m_rot;			// 角度
-	Vector3 m_move;			// 移動量
-	Vector2 m_size;			// サイズ
-	Color m_col;			// 色
-	float m_fLength;		// 対角線の長さ
-	float m_fAngle;			// 対角線の角度
-	int m_nLife;			// 体力
-	bool m_bDisp;			// 描画するか
-	bool m_bAlpha;			// αテストの有効化
+	const Matrix *m_pMtxParent = nullptr;		// 親ワールドマトリックスへのポインタ
+	Vector3 m_pos = VECTOR3_NULL;			// 位置
+	Vector3 m_rot = VECTOR3_NULL;			// 角度
+	Vector3 m_move = VECTOR3_NULL;			// 移動量
+	Vector2 m_size = VECTOR2_NULL;			// サイズ
+	Color m_col = COLOR_NULL;			// 色
+	float m_fLength = 0.0f;		// 対角線の長さ
+	float m_fAngle = 0.0f;			// 対角線の角度
+	int m_nLife = 0;			// 体力
+	bool m_bDisp = true;			// 描画するか
+	bool m_bAlpha = true;			// αテストの有効化
 	std::function<void(LPDIRECT3DDEVICE9)> m_beforeDraw;	// Draw関数前の呼び出し関数
 	std::function<void(LPDIRECT3DDEVICE9)> m_afterDraw;		// Draw関数後の呼び出し関数
 };

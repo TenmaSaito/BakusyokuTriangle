@@ -14,11 +14,6 @@
 #include "object/base/parentable.h"
 
 //**********************************************************************************
-// *** 定数宣言 ***
-//**********************************************************************************
-constexpr int DEFAULT_OBJX_AFTERIMAGE_PRIORITY = DEFAULT_OBJ_PRIORITY;		// objXの残像の基本優先順位	
-
-//**********************************************************************************
 // *** オブジェクトXの残像クラス ***
 //**********************************************************************************
 class CObjectXAfterImage : public CObject, public IParentable
@@ -43,6 +38,8 @@ public:
 	const Matrix *GetParent(void) const { return m_pMtxParent; }
 
 private:
+	static constexpr int DEFAULT_OBJX_AFTERIMAGE_PRIORITY = DEFAULT_OBJ_PRIORITY;		// objXの残像の基本優先順位	
+
 	const Matrix *m_pMtxParent = nullptr;	// 親マトリックスへのポインタ
 	Matrix m_mtxWorld;			// ワールドマトリックス
 	float m_fAlpha = 0.0f;		// α値

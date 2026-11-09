@@ -14,11 +14,6 @@
 #include "object/3d/object3D.h"
 
 //**********************************************************************************
-// *** 定数宣言 ***
-//**********************************************************************************
-constexpr int FIELD_PRIORITY = DEFAULT_OBJ3D_PRIORITY;		// 床の優先順位
-
-//**********************************************************************************
 // *** 床クラス ***
 //**********************************************************************************
 class CField : public CObject3D
@@ -37,6 +32,11 @@ public:
 	void Uninit(void) override;
 	void Update(void) override;
 	void Draw(void) override;
+
+	static CField *Find(void);	// シーン上のインスタンスを検索
+
+protected:
+	static constexpr int FIELD_PRIORITY = DEFAULT_OBJ3D_PRIORITY;		// 床の優先順位
 
 private:
 };

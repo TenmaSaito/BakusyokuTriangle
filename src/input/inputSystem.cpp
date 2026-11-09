@@ -206,16 +206,16 @@ float CInputSystem::ReadControl(const INPUT_CONTROL_PATH &path) const
 
 	case INPUT_DEVICE::JOYPAD_BUTTON:	// ジョイパッドのキー
 		// デバイスインデックスチェック
-		assert(path.nIdxDevice >= 0 && path.nIdxDevice < MAX_JOYPAD);
-		if (!(path.nIdxDevice >= 0 && path.nIdxDevice < MAX_JOYPAD)) return 0.0f;
+		assert(CJoypad::IsValidPadID(path.nIdxDevice));
+		if (!CJoypad::IsValidPadID(path.nIdxDevice)) return 0.0f;
 
 		fValue = m_pJoypad->GetPress(static_cast<CJoypad::KEY>(path.nControl), path.nIdxDevice) ? 1.0f : 0.0f;
 		break;
 
 	case INPUT_DEVICE::JOYPAD_AXIS:	// ジョイパッドの軸指定スティック
 		// デバイスインデックスチェック
-		assert(path.nIdxDevice >= 0 && path.nIdxDevice < MAX_JOYPAD);
-		if (!(path.nIdxDevice >= 0 && path.nIdxDevice < MAX_JOYPAD)) return 0.0f;
+		assert(CJoypad::IsValidPadID(path.nIdxDevice));
+		if (!CJoypad::IsValidPadID(path.nIdxDevice)) return 0.0f;
 
 		fValue = m_pJoypad->GetAxis(static_cast<CJoypad::AXIS>(path.nControl), path.nIdxDevice);
 		break;
@@ -233,9 +233,9 @@ float CInputSystem::ReadControl(const INPUT_CONTROL_PATH &path) const
 Vector3 CInputSystem::ReadStick(const INPUT_CONTROL_PATH &path) const
 { // デバイスタイプが無効もしくはデバイスインデックスが範囲外の場合、アサート + スキップ
 	assert(path.device == INPUT_DEVICE::JOYPAD_STICK);
-	assert(path.nIdxDevice >= 0 && path.nIdxDevice < MAX_JOYPAD);
+	assert(CJoypad::IsValidPadID(path.nIdxDevice));
 	if (path.device != INPUT_DEVICE::JOYPAD_STICK
-		|| !(path.nIdxDevice >= 0 && path.nIdxDevice < MAX_JOYPAD)) return VECTOR3_NULL;
+		|| !CJoypad::IsValidPadID(path.nIdxDevice)) return VECTOR3_NULL;
 
 	Vector3 value = VECTOR3_NULL;	// 値
 	m_pJoypad->GetStick(static_cast<CJoypad::STICK>(path.nControl), &value, path.nIdxDevice);

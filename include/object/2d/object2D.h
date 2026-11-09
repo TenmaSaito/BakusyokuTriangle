@@ -15,11 +15,6 @@
 #include "object/base/object.h"
 
 //**********************************************************************************
-// *** マクロ定義 ***
-//**********************************************************************************
-inline constexpr int DEFAULT_OBJ2D_PRIORITY = DEFAULT_UI_PRIORITY;		// オブジェクト2Dの基本優先順位
-
-//**********************************************************************************
 // *** オブジェクト2Dクラス ***
 //**********************************************************************************
 class CObject2D : public CObject
@@ -71,15 +66,17 @@ public:
 	void BindTexture(const int nIdxTexture) { m_nIdxTexture = nIdxTexture; }
 
 private:
-	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;			// 頂点バッファへのポインタ
-	int m_nIdxTexture;		// テクスチャインデックス
-	Vector3 m_pos;			// オブジェクトの位置
-	Vector3 m_offset;		// オブジェクト描画時のオフセット
-	Vector3 m_rot;			// オブジェクトの角度
-	Vector2 m_size;			// オブジェクトのサイズ
-	Color m_color;			// 色
-	float m_fLength;		// 対角線の長さ
-	float m_fAngle;			// 対角線の角度
-	bool m_bDisp;			// 描画の有無
+	static constexpr int DEFAULT_OBJ2D_PRIORITY = DEFAULT_UI_PRIORITY;		// オブジェクト2Dの基本優先順位
+
+	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff = nullptr;			// 頂点バッファへのポインタ
+	int m_nIdxTexture = -1;		// テクスチャインデックス
+	Vector3 m_pos = VECTOR3_NULL;			// オブジェクトの位置
+	Vector3 m_offset = VECTOR3_NULL;		// オブジェクト描画時のオフセット
+	Vector3 m_rot = VECTOR3_NULL;			// オブジェクトの角度
+	Vector2 m_size = VECTOR2_NULL;			// オブジェクトのサイズ
+	Color m_color = COLOR_NULL;			// 色
+	float m_fLength = 0.0f;		// 対角線の長さ
+	float m_fAngle = 0.0f;			// 対角線の角度
+	bool m_bDisp = false;			// 描画の有無
 };
 #endif

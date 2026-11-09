@@ -156,12 +156,12 @@ void CItem::Update(void)
 {
 	if (m_pPlayer == nullptr)
 	{ // プレイヤーへのポインタが未取得の場合、取得
-		m_pPlayer = CObject::FindAnyObjectByType<CPlayer>(PLAYER_PRIORITY);
+		m_pPlayer = CPlayer::Find();
 	}
 
 	if (m_pScore == nullptr)
 	{ // スコア表示へのポインタが未取得の場合、取得
-		m_pScore = CObject::FindAnyObjectByType<CScore>(SCORE_PRIORITY);
+		m_pScore = CScore::Find();
 	}
 
 	if (m_pPlayer == nullptr || m_pScore == nullptr)

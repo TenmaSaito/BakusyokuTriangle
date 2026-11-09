@@ -16,6 +16,8 @@
 namespace
 {
 	constexpr DWORD FPS_MEASURE_INTERVAL = 500;	// FPSを計測する間隔 (ミリ秒)
+	constexpr DWORD MILLISECONDS_PER_SECOND = 1000;	// 1秒あたりのミリ秒
+	constexpr int DEFAULT_APPLICATION_DRAW_PER_SECOND = 60;			// 一秒間にDrawする回数
 }
 
 //**********************************************************************************
@@ -27,8 +29,7 @@ constexpr int TIME_PERIOD = 1;						// 分解能の値
 // --- コンストラクタ ---
 //==================================================================================
 CDirectX::CDirectX()
-{ // メンバ変数をクリア
-	m_bThreadLoop = false;
+{
 }
 
 //==================================================================================
@@ -86,7 +87,7 @@ void CDirectX::DirectXProc(HINSTANCE hInstance, HWND hWnd, BOOL bWindowed, int n
 					dwFrameCount = 0;						// フレームカウントをクリア
 				}
 
-				if ((dwCurrentTime - dwExecLastTimeUpdate) >= static_cast<DWORD>(MILLISECONDS_PER_SECOND / DEFAULT_APPLICATION_UPDATE_PER_SECOND))
+				if ((dwCurrentTime - dwExecLastTimeUpdate) >= static_cast<DWORD>(MILLISECONDS_PER_SECOND / CManager::SecToFrame(1)))
 				{ // 60分の1秒経過
 					dwExecLastTimeUpdate = dwCurrentTime;		// 処理開始時刻[現在時刻]を保存
 

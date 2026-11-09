@@ -74,7 +74,7 @@ HRESULT CModelParticle::Init(const Setting &setting)
 	if (pModel == nullptr || pModel->GetFilePath() != m_setting.sModelPath) return E_FAIL;
 
 	// 親にするステージを取得し、先に消えた場合に備えて監視
-	m_pStage = FindAnyObjectByType<CStage>(STAGE_PRIORITY);
+	m_pStage = CStage::Find();
 	if (m_pStage != nullptr)
 	{ // ステージがあれば監視開始
 		m_pStage->AddObserver(this);

@@ -37,19 +37,7 @@ constexpr float FEEDBACK_ALPHA = 0.80f;		// フィードバック用ポリゴンのα値
 // --- コンストラクタ ---
 //==================================================================================
 CRenderer::CRenderer()
-{
-	// 各メンバ変数のクリア
-	m_pD3D = nullptr;
-	m_pD3DDevice = nullptr;
-	m_pRenderDef = nullptr;
-	m_pZBuffDef = nullptr;
-	ZeroMemory(m_apRenderMT, sizeof(m_apRenderMT));
-	ZeroMemory(m_apTextureMT, sizeof(m_apTextureMT));
-	m_pVtxBuffMT = nullptr;
-	m_pZBuffMT = nullptr;
-	m_viewportDef = {};
-	m_viewportMT = {};
-	m_bEnableFeedBack = false;
+{ // マトリックスを単位行列で初期化
 	D3DXMatrixIdentity(&m_mtxProjDef);
 	D3DXMatrixIdentity(&m_mtxViewDef);
 }

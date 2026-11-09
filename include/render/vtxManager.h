@@ -8,12 +8,12 @@ class CVtxBuffManager final
 public:
 	struct VTXBUFF_INFO
 	{
-		LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;		// 頂点バッファへのポインタ
-		UINT nNumVtx;		// 頂点数
-		DWORD dwUsage;		// フラグ
-		DWORD dwFVF;		// FVF
-		D3DPOOL pool;		// プールタイプ
-		bool bUse;			// 使用しているか
+		LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff = nullptr;		// 頂点バッファへのポインタ
+		UINT nNumVtx = 0;		// 頂点数
+		DWORD dwUsage = 0;		// フラグ
+		DWORD dwFVF = 0;		// FVF
+		D3DPOOL pool = D3DPOOL_DEFAULT;		// プールタイプ
+		bool bUse = false;			// 使用しているか
 	};
 
 	CVtxBuffManager() = default;

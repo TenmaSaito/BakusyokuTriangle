@@ -13,24 +13,6 @@
 #include "core/main.h"
 
 //**********************************************************************************
-// *** マクロ定義 ***
-//**********************************************************************************
-#define CLIENT_TCP_SUCCESS(code)	(code >= CLIENT_S_FUNCTION)		// 処理の成功判定マクロ
-#define CLIENT_TCP_FAILED(code)		(code < CLIENT_S_FUNCTION)		// 処理の失敗判定マクロ
-
-//**********************************************************************************
-// *** 定数宣言 ***
-//**********************************************************************************
-constexpr int CLIENT_S_FUNCTION = 1;			// 処理成功
-constexpr int CLIENT_E_INVALID_SOCKET = -1;		// 無効なソケットだった場合
-constexpr int CLIENT_E_INVALID_POINTER = -2;	// 引数が無効なポインタだった場合
-constexpr int CLIENT_E_INVALID_ARG = -3;		// 引数が無効な値だった場合
-constexpr int CLIENT_E_ALLOCATE = -4;			// メモリ確保に失敗した場合
-constexpr int CLIENT_E_CONNECTION = -5;			// 接続に失敗した場合
-constexpr int CLIENT_E_RECV_TIMEOUT = -6;		// 受信中にタイムアウト時間が経過した場合
-constexpr int RECV_INFINITY = -1;				// 無限待機
-
-//**********************************************************************************
 // *** クライアントのTCP送受信クラス ***
 //**********************************************************************************
 class CTcpClient
@@ -49,12 +31,40 @@ public:
 	template<class T> int RecvAll(T *pOut, const int num);
 	template<class T> int Recv(T *pOut, const int num, const long nSeconds, const long nMill = 0);
 
+	static constexpr bool IsSuccess(const int nCode) noexcept;	// 処理の成功判定
+	static constexpr bool IsFailed(const int nCode) noexcept;	// 処理の失敗判定
+
 private:
+	static constexpr int CLIENT_S_FUNCTION = 1;			// 処理成功
+	static constexpr int CLIENT_E_INVALID_SOCKET = -1;		// 無効なソケットだった場合
+	static constexpr int CLIENT_E_INVALID_POINTER = -2;	// 引数が無効なポインタだった場合
+	static constexpr int CLIENT_E_INVALID_ARG = -3;		// 引数が無効な値だった場合
+	static constexpr int CLIENT_E_ALLOCATE = -4;			// メモリ確保に失敗した場合
+	static constexpr int CLIENT_E_CONNECTION = -5;			// 接続に失敗した場合
+	static constexpr int CLIENT_E_RECV_TIMEOUT = -6;		// 受信中にタイムアウト時間が経過した場合
+	static constexpr int RECV_INFINITY = -1;				// 無限待機
+
 	void CloseSocket(void);
 
 	SOCKET m_sock = INVALID_SOCKET;		// 通信用ソケット
 	struct sockaddr_in m_addr = {};		// クライアントの情報
 };
+
+//==================================================================================
+// --- 処理の成功判定 ---
+//==================================================================================
+constexpr bool CTcpClient::IsSuccess(const int nCode) noexcept
+{
+	return nCode >= CLIENT_S_FUNCTION;
+}
+
+//==================================================================================
+// --- 処理の失敗判定 ---
+//==================================================================================
+constexpr bool CTcpClient::IsFailed(const int nCode) noexcept
+{
+	return nCode < CLIENT_S_FUNCTION;
+}
 
 //==================================================================================
 // --- データ送信処理 (エンディアン変換は外部で行う) ---

@@ -36,9 +36,9 @@ public:
 	void Draw(void);
 
 private:
-	Vector2 m_defSize;		// 基準サイズ
-	float m_fScalingVal;	// 一フレームに加算されるスケーリング倍率
-	int m_nDefLife;			// 基準体力
-	int m_nCounterFrame;	// フレームカウンター
+	Vector2 m_defSize = VECTOR2_NULL;		// 基準サイズ
+	float m_fScalingVal = 0.0f;	// 一フレームに加算されるスケーリング倍率
+	int m_nDefLife = 0;			// 基準体力
+	int m_nCounterFrame = 0;	// フレームカウンター
 };
 #endif

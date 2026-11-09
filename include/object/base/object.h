@@ -21,18 +21,6 @@
 #define DEBUG_ASSERT_TYPE_NONE				// オブジェクトにタイプが指定されていなかった場合、アサーション
 
 //**********************************************************************************
-// *** 定数宣言 ***
-//**********************************************************************************
-constexpr int MAX_OBJPRIORITY = 8;			// 優先順位の総数
-constexpr int DEFAULT_BG_PRIORITY = 0;		// 背景の優先順位
-constexpr int DEFAULT_OBJ_PRIORITY = 3;		// オブジェクトの優先順位
-constexpr int DEFAULT_EFFECT_PRIORITY = 4;	// エフェクト関連の優先順位
-constexpr int DEFAULT_ADD_PRIORITY = 5;		// 加算合成関連の優先順位
-constexpr int DEFAULT_UI_PRIORITY = 6;		// UI関連の優先順位
-constexpr int FINALLY_PRIORITY = 7;			// 全てのオブジェクトが描画された後の最終優先順位
-constexpr std::string_view NOTIFY_WHEN_DEATH = "Death";			// 死んだ際に通知される文字列
-
-//**********************************************************************************
 // *** オブジェクトクラス ***
 //**********************************************************************************
 class CObject
@@ -107,9 +95,19 @@ public:
 	static bool GetEnablePriority(const int nPriority) { return m_vEnablePriority[nPriority]; }
 
 protected:
+	static constexpr int DEFAULT_BG_PRIORITY = 0;		// 背景の優先順位
+	static constexpr int DEFAULT_OBJ_PRIORITY = 3;		// オブジェクトの優先順位
+	static constexpr int DEFAULT_EFFECT_PRIORITY = 4;	// エフェクト関連の優先順位
+	static constexpr int DEFAULT_ADD_PRIORITY = 5;		// 加算合成関連の優先順位
+	static constexpr int DEFAULT_UI_PRIORITY = 6;		// UI関連の優先順位
+	static constexpr int FINALLY_PRIORITY = 7;			// 全てのオブジェクトが描画された後の最終優先順位
+	static constexpr std::string_view NOTIFY_WHEN_DEATH = "Death";			// 死んだ際に通知される文字列
+
 	void Release(void);
 
 private:
+	static constexpr int MAX_OBJPRIORITY = 8;			// 優先順位の総数
+
 	void AddList(void);
 	void RemoveList(void);
 	void NotifyAllWhenDeath(void);

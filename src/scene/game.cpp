@@ -86,7 +86,7 @@ void CGame::Update(void)
 		pManager->SetEnablePause(!pManager->GetEnablePause());
 	}
 
-	if (CObject::FindAnyObjectByType<CTimer>(DEFAULT_TIMER_PRIORITY)->GetTimer() <= 0
+	if (CTimer::Find()->GetTimer() <= 0
 		&& CManager::GetInstance()->IsTransition() == false)
 	{
 		auto pRankingClient = std::make_unique<CRankingClient>();

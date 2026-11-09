@@ -29,7 +29,6 @@ namespace
 constexpr ConstVector3 INIT_POS = VECTOR3_NULL;		// 初期位置
 constexpr ConstVector2 INIT_SIZE = ConstVector2(50, 65);		// 初期サイズ
 constexpr int INIT_TIME = 0;					// 初期タイマー
-constexpr int INIT_NUM = MAX_TIMERNUM;		// 初期数値数
 constexpr std::string_view FRAME_PATH = "data/TEXTURE/frame.png";		// 画面フレームのパス
 constexpr float NUMBER_MARGIN = 6.5f;				// 各桁の余裕
 
@@ -69,16 +68,18 @@ CTimer *CTimer::Create(const Vector3 &pos,
 }
 
 //==================================================================================
+// --- 検索処理 ---
+//==================================================================================
+CTimer *CTimer::Find(void)
+{
+	return FindAnyObjectByType<CTimer>(DEFAULT_TIMER_PRIORITY);
+}
+
+//==================================================================================
 // --- コンストラクタ ---
 //==================================================================================
 CTimer::CTimer(const int nPriority) : CObject(nPriority)
-{ // メンバ変数をクリア
-	m_nTime = 0;
-	m_nNumTime = 0;
-	m_nCounter = 0;
-	m_bUpdate = true;
-
-	// タイプを指定
+{ // タイプを指定
 	SetType(TYPE::TIMER);
 }
 

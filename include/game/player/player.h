@@ -18,11 +18,6 @@
 class CStage;
 
 //**********************************************************************************
-// *** 定数宣言 ***
-//**********************************************************************************
-constexpr int PLAYER_PRIORITY = DEFAULT_OBJX_PRIORITY;		// プレイヤーの優先順位
-
-//**********************************************************************************
 // *** プレイヤークラス ***
 //**********************************************************************************
 class CPlayer : public CObjectX
@@ -48,7 +43,11 @@ public:
 	bool IsAutoRotating(void) const { return m_bAutoRotating; }
 	void Eat(void);
 
+	static CPlayer *Find(void);	// シーン上のインスタンスを検索
+
 private:
+	static constexpr int PLAYER_PRIORITY = DEFAULT_OBJX_PRIORITY;		// プレイヤーの優先順位
+
 	void CharactorMovable(void);
 	void StatusChange(void);
 

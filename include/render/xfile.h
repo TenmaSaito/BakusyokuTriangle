@@ -71,6 +71,7 @@ public:
 		const Vector3 &vec,
 		const float fLength,
 		const Matrix *pMtxInv);
+	bool IsValid(void) const { return m_pBuffMat != nullptr && m_pMesh != nullptr && !m_sFilePath.empty(); }
 
 private:
 	HRESULT Init(std::string_view path);

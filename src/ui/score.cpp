@@ -27,7 +27,6 @@ namespace
 constexpr ConstVector3 INIT_POS = VECTOR3_NULL;		// 初期位置
 constexpr ConstVector2 INIT_SIZE = ConstVector2(50, 65);	// 初期サイズ
 constexpr int INIT_SCORE = 0;					// 初期スコア
-constexpr int INIT_NUM = MAX_SCORENUM;		// 初期数値数
 
 //==================================================================================
 // --- 生成処理 ---
@@ -69,14 +68,18 @@ CScore *CScore::Create(const int nIdxTexture, const D3DXVECTOR3 &pos, const D3DX
 }
 
 //==================================================================================
+// --- 検索処理 ---
+//==================================================================================
+CScore *CScore::Find(void)
+{
+	return FindAnyObjectByType<CScore>(SCORE_PRIORITY);
+}
+
+//==================================================================================
 // --- コンストラクタ ---
 //==================================================================================
 CScore::CScore(const int nPriority) : CObject(nPriority)
-{ // メンバ変数をクリア
-	memset(m_apNumber, 0, sizeof(m_apNumber));
-	m_nScore = 0;
-	m_nNumScore = 0;
-
+{ // タイプを指定
 	SetType(TYPE::SCORE);
 }
 

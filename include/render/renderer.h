@@ -20,11 +20,6 @@
 #define ENABLE_FEEDBACK_EFFECT				// フィードバックエフェクト
 
 //**********************************************************************************
-// *** 定数宣言 ***
-//**********************************************************************************
-constexpr int FEEDBACK_TEX_NUM = 2;			// フィードバックエフェクト用バッファの配列数
-
-//**********************************************************************************
 // *** 前方宣言 ***
 //**********************************************************************************
 class CCamera;
@@ -59,28 +54,30 @@ public:
 #endif
 
 private:
+	static constexpr int FEEDBACK_TEX_NUM = 2;			// フィードバックエフェクト用バッファの配列数
+
 #ifdef ENABLE_FEEDBACK_EFFECT
 	void DrawFeedBack(void);
 	void DrawScreen(void);
 	void SwapTarget(void);
 #endif
-	LPDIRECT3D9 m_pD3D;					// Direct3Dオブジェクトへのポインタ
-	LPDIRECT3DDEVICE9 m_pD3DDevice;		// 〃デバイスへのポインタ
-	LPDIRECT3DSURFACE9 m_pRenderDef;	// デフォルトインターフェース
-	LPDIRECT3DSURFACE9 m_pZBuffDef;		// 〃Zバッファ
-	D3DVIEWPORT9 m_viewportDef;			// 〃ビューポート
+	LPDIRECT3D9 m_pD3D = nullptr;					// Direct3Dオブジェクトへのポインタ
+	LPDIRECT3DDEVICE9 m_pD3DDevice = nullptr;		// 〃デバイスへのポインタ
+	LPDIRECT3DSURFACE9 m_pRenderDef = nullptr;	// デフォルトインターフェース
+	LPDIRECT3DSURFACE9 m_pZBuffDef = nullptr;		// 〃Zバッファ
+	D3DVIEWPORT9 m_viewportDef = {};			// 〃ビューポート
 	Matrix m_mtxProjDef;			// 〃プロジェクションマトリックス
 	Matrix m_mtxViewDef;			// 〃ビューマトリックス
 #ifdef ENABLE_FEEDBACK_EFFECT
-	LPDIRECT3DTEXTURE9 m_apTextureMT[FEEDBACK_TEX_NUM];		// レンダリングターゲット用テクスチャ
-	LPDIRECT3DSURFACE9 m_apRenderMT[FEEDBACK_TEX_NUM];		// テクスチャレンダリング用インターフェース
-	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuffMT;	// フィードバックエフェクト用頂点バッファ
-	bool m_bEnableFeedBack;					// フィードバックエフェクトの有無
+	LPDIRECT3DTEXTURE9 m_apTextureMT[FEEDBACK_TEX_NUM] = {};		// レンダリングターゲット用テクスチャ
+	LPDIRECT3DSURFACE9 m_apRenderMT[FEEDBACK_TEX_NUM] = {};		// テクスチャレンダリング用インターフェース
+	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuffMT = nullptr;	// フィードバックエフェクト用頂点バッファ
+	bool m_bEnableFeedBack = false;					// フィードバックエフェクトの有無
 #else
-	LPDIRECT3DTEXTURE9 m_pTextureMT;	// レンダリングターゲット用テクスチャ
-	LPDIRECT3DSURFACE9 m_pRenderMT;		// テクスチャレンダリング用インターフェース
+	LPDIRECT3DTEXTURE9 m_pTextureMT = nullptr;	// レンダリングターゲット用テクスチャ
+	LPDIRECT3DSURFACE9 m_pRenderMT = nullptr;		// テクスチャレンダリング用インターフェース
 #endif
-	LPDIRECT3DSURFACE9 m_pZBuffMT;		// 〃Zバッファ
-	D3DVIEWPORT9 m_viewportMT;			// 〃ビューポート
+	LPDIRECT3DSURFACE9 m_pZBuffMT = nullptr;		// 〃Zバッファ
+	D3DVIEWPORT9 m_viewportMT = {};			// 〃ビューポート
 };
 #endif

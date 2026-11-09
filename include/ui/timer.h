@@ -20,12 +20,6 @@
 class CNumber;	
 
 //**********************************************************************************
-// *** マクロ定義 ***
-//**********************************************************************************
-constexpr int MAX_TIMERNUM = 8;								// タイマーの最大桁数
-constexpr int DEFAULT_TIMER_PRIORITY = DEFAULT_UI_PRIORITY;	// タイマーの基本優先順位
-
-//**********************************************************************************
 // *** タイマークラス ***
 //**********************************************************************************
 class CTimer : public CObject
@@ -63,12 +57,18 @@ public:
 	void AddTimer(const int nValue);
 	int GetTimer(void) const;
 
+	static CTimer *Find(void);	// シーン上のインスタンスを検索
+
 private:
+	static constexpr int DEFAULT_TIMER_PRIORITY = DEFAULT_UI_PRIORITY;	// タイマーの基本優先順位
+
+	static constexpr int MAX_TIMERNUM = 8;								// タイマーの最大桁数
+
 	std::array<std::unique_ptr<CNumber>, MAX_TIMERNUM> m_apNumber;		// 数値表示オブジェクトへのポインタ
-	int m_nNumTime;		// タイマーの桁数
-	int m_nTime;		// 現在のタイマー
-	int m_nCounter;		// フレームカウンター
-	bool m_bUpdate;		// タイマーの自動更新フラグ
+	int m_nNumTime = 0;		// タイマーの桁数
+	int m_nTime = 0;		// 現在のタイマー
+	int m_nCounter = 0;		// フレームカウンター
+	bool m_bUpdate = true;		// タイマーの自動更新フラグ
 };
 
 #endif

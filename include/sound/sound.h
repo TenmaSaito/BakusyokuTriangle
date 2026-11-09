@@ -20,11 +20,6 @@
 #define ENABLE_SOUND		// サウンド有効マクロ
 
 //**********************************************************************************
-// *** 定数宣言 ***
-//**********************************************************************************
-constexpr float SOUND_VOLUME = 0.2f;	// 音量
-
-//**********************************************************************************
 // *** 前方宣言 ***
 //**********************************************************************************
 class CSoundCallbacker;		// XAudio2のコールバッククラス
@@ -55,15 +50,6 @@ public:
 		return EnumUtil::InRange(value, LABEL::BGM_TITLE, LABEL::MAX);
 	}
 
-	//*****************************************************************************
-	// *** サウンド情報 ***
-	//*****************************************************************************
-	typedef struct
-	{
-		const char* pFilename;		// ファイル名
-		int nCntLoop;				// ループカウント
-	} INFO;
-
 	CSound();
 	~CSound();
 
@@ -82,12 +68,11 @@ private:
 	HRESULT CheckChunk(const HANDLE hFile, const DWORD format, DWORD *pChunkSize, DWORD *pChunkDataPosition);
 	HRESULT ReadChunkData(const HANDLE hFile, void *pBuffer, const DWORD dwBuffersize, const DWORD dwBufferoffset);
 
-	IXAudio2 *m_pXAudio2;								// XAudio2オブジェクトへのインターフェイス
-	IXAudio2MasteringVoice *m_pMasteringVoice;			// マスターボイス
-	IXAudio2SourceVoice *m_apSourceVoice[EnumUtil::ToIndex(LABEL::MAX)];	// ソースボイス
-	CSoundCallbacker *m_apCallback[EnumUtil::ToIndex(LABEL::MAX)];			// コールバック
-	BYTE *m_apDataAudio[EnumUtil::ToIndex(LABEL::MAX)];						// オーディオデータ
-	DWORD m_aSizeAudio[EnumUtil::ToIndex(LABEL::MAX)];						// オーディオデータサイズ
-	static const INFO m_aInfo[EnumUtil::ToIndex(LABEL::MAX)];				// サウンド情報
+	IXAudio2 *m_pXAudio2 = nullptr;								// XAudio2オブジェクトへのインターフェイス
+	IXAudio2MasteringVoice *m_pMasteringVoice = nullptr;			// マスターボイス
+	IXAudio2SourceVoice *m_apSourceVoice[EnumUtil::ToIndex(LABEL::MAX)] = {};	// ソースボイス
+	CSoundCallbacker *m_apCallback[EnumUtil::ToIndex(LABEL::MAX)] = {};			// コールバック
+	BYTE *m_apDataAudio[EnumUtil::ToIndex(LABEL::MAX)] = {};						// オーディオデータ
+	DWORD m_aSizeAudio[EnumUtil::ToIndex(LABEL::MAX)] = {};						// オーディオデータサイズ
 };
 #endif

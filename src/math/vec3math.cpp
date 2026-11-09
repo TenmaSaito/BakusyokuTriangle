@@ -283,7 +283,7 @@ Vector3 Vec3::Normalize(const Vector3 &vec)
 
 	// ベクトルの長さを取得
 	fLength = Length(vec);
-	if (fLength == 0.0f) VECTOR3_NULL;
+	if (fLength == 0.0f) return VECTOR3_NULL;
 
 	// ベクトルの長さで正規化
 	return Vector3(vec.x / fLength, vec.y / fLength, vec.z / fLength);

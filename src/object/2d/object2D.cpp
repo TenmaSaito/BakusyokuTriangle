@@ -130,19 +130,7 @@ CObject2D *CObject2D::Create(const Info &info)
 // --- コンストラクタ ---
 //==================================================================================
 CObject2D::CObject2D(const int nPriority) : CObject(nPriority)
-{ // メンバ変数をクリア
-	m_pVtxBuff = NULL;
-	m_nIdxTexture = -1;
-	m_pos = VECTOR3_NULL;
-	m_rot = VECTOR3_NULL;
-	m_offset = VECTOR3_NULL;
-	m_size = VECTOR2_NULL;
-	m_color = COLOR_NULL;
-	m_fLength = 0.0f;
-	m_fAngle = 0.0f;
-	m_bDisp = false;
-
-	// タイプを指定
+{ // タイプを指定
 	SetType(TYPE::OBJ_2D);
 }
 

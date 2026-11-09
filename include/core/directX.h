@@ -33,6 +33,6 @@ public:
 	void Quit(void);
 
 private:
-	std::atomic_bool m_bThreadLoop;		// スレッドループフラグ
+	std::atomic_bool m_bThreadLoop = false;		// スレッドループフラグ
 };
 #endif

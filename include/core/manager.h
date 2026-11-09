@@ -24,12 +24,6 @@
 #define ENABLE_INPUT_SYSTEM
 
 //**********************************************************************************
-// *** ’è”éŒ¾ ***
-//**********************************************************************************
-constexpr int DEFAULT_APPLICATION_UPDATE_PER_SECOND = 60;		// ˆê•bŠÔ‚ÉUpdate‚·‚é‰ñ”
-constexpr int DEFAULT_APPLICATION_DRAW_PER_SECOND = 60;			// ˆê•bŠÔ‚ÉDraw‚·‚é‰ñ”
-
-//**********************************************************************************
 // *** ‘O•ûéŒ¾ ***
 //**********************************************************************************
 class CRenderer;
@@ -95,6 +89,8 @@ public:
 	static constexpr float RatioToFrame(const float fT) { return 1.0f / fT ; }
 
 private:
+	static constexpr int DEFAULT_APPLICATION_UPDATE_PER_SECOND = 60;		// ˆê•bŠÔ‚ÉUpdate‚·‚é‰ñ”
+
 	CManager();
 	~CManager();
 

@@ -25,7 +25,6 @@
 // *** 定数宣言 ***
 //**********************************************************************************
 constexpr int DEFAULT_SIZE = 23;	// 基本サイズ
-constexpr int DEFAULT_STRING_CAPACITY = 2048;	// 文字数の初期サイズ
 constexpr std::string_view DEFAULT_FONT = "Terminal";	// 基本フォント
 
 //**********************************************************************************
@@ -45,8 +44,8 @@ public:
 	template<class... Args> void ForcePrint(std::_Fmt_string<Args...> format, Args ...args);
 
 private:
-	LPD3DXFONT m_pFont;		// フォントへのポインタ
-	Color m_colFont;		// フォントカラー
+	LPD3DXFONT m_pFont = nullptr;		// フォントへのポインタ
+	Color m_colFont = ConstColor(1.0f, 1.0f, 1.0f, 1.0f);		// フォントカラー
 	std::string m_sProc;	// 表示する文字列
 };
 

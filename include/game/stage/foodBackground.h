@@ -13,15 +13,6 @@
 #include "object/base/object.h"
 
 //**********************************************************************************
-// *** 定数宣言 ***
-//**********************************************************************************
-constexpr int FOOD_BACKGROUND_PRIORITY = DEFAULT_BG_PRIORITY;	// 描画・更新順位
-constexpr int FOOD_BACKGROUND_COLUMN = 7;						// 横の配置数
-constexpr int FOOD_BACKGROUND_ROW = 4;							// 縦の配置数
-constexpr int FOOD_BACKGROUND_COUNT = FOOD_BACKGROUND_COLUMN * FOOD_BACKGROUND_ROW;	// 配置数
-constexpr int FOOD_BACKGROUND_MODEL_COUNT = 3;					// モデルの種類数
-
-//**********************************************************************************
 // *** 食べ物の背景演出クラス ***
 //
 // INFO : 食べ物モデルを画面全体にまばらに配置する装飾用オブジェクト
@@ -40,6 +31,12 @@ public:
 	void Draw(void) override;
 
 private:
+	static constexpr int FOOD_BACKGROUND_PRIORITY = DEFAULT_BG_PRIORITY;	// 描画・更新順位
+	static constexpr int FOOD_BACKGROUND_COLUMN = 7;						// 横の配置数
+	static constexpr int FOOD_BACKGROUND_ROW = 4;							// 縦の配置数
+	static constexpr int FOOD_BACKGROUND_COUNT = FOOD_BACKGROUND_COLUMN * FOOD_BACKGROUND_ROW;	// 配置数
+	static constexpr int FOOD_BACKGROUND_MODEL_COUNT = 3;					// モデルの種類数
+
 	//**********************************************************************************
 	// *** 装飾ごとの描画情報 ***
 	//**********************************************************************************

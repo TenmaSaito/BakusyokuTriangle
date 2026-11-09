@@ -13,11 +13,6 @@
 #include "object/2d/object2D.h"
 
 //**********************************************************************************
-// *** 定数宣言 ***
-//**********************************************************************************
-constexpr int SCREEN_EFFECT_PRIORITY = FINALLY_PRIORITY;		// スクリーンエフェクトの描画順位
-
-//**********************************************************************************
 // *** スクリーンエフェクトクラス ***
 //**********************************************************************************
 class CScreenEffect : public CObject2D
@@ -36,7 +31,11 @@ public:
 	void Draw(void) override;
 	void Flash(const float fAlpha = DEFAULT_FLASH_ALPHA);
 
+	static CScreenEffect *Find(void);	// シーン上のインスタンスを検索
+
 private:
+	static constexpr int SCREEN_EFFECT_PRIORITY = FINALLY_PRIORITY;		// スクリーンエフェクトの描画順位
+
 	static constexpr float DEFAULT_FLASH_ALPHA = 1.0f;		// デフォルトのフラッシュ光度
 	float m_fAlphaDecrease = 0.0f;
 };

@@ -30,13 +30,13 @@ namespace
 	constexpr float DEFAULT_ZN = 0.0f;		// 視野角
 	constexpr float DEFAULT_ZF = 10000.0f;	// 視野角
 
-	constexpr ConstColor LIGHT_DIFFUSE[DEFAULT_LIGHT_NUM] =		// 各ライトの拡散光
+	constexpr ConstColor LIGHT_DIFFUSE[] =		// 各ライトの拡散光
 	{
 		ConstColor(1.0f, 1.0f, 1.0f, 1.0f),
 		ConstColor(0.7f, 0.7f, 0.7f, 1.0f),
 		ConstColor(0.3f, 0.3f, 0.3f, 1.0f),
 	};
-	constexpr ConstVector3 LIGHT_DIRECTION[DEFAULT_LIGHT_NUM] =	// 各ライトの方向 (正規化前)
+	constexpr ConstVector3 LIGHT_DIRECTION[] =	// 各ライトの方向 (正規化前)
 	{
 		ConstVector3(0.0f, -0.5f, -0.4f),
 		ConstVector3(-0.3f, 0.4f, 0.5f),
@@ -64,6 +64,10 @@ CLight::~CLight()
 //==================================================================================
 void CLight::Init(void)
 {
+	// 定数配列の要素数はライトの数と一致させる
+	static_assert(std::size(LIGHT_DIFFUSE) == DEFAULT_LIGHT_NUM);
+	static_assert(std::size(LIGHT_DIRECTION) == DEFAULT_LIGHT_NUM);
+
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();		// デバイスへのポインタ
 	Vector3 vecDir[DEFAULT_LIGHT_NUM];			// ライトの方向ベクトル
 

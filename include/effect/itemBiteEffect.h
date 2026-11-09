@@ -18,11 +18,6 @@
 class CObjectBillboard3D;
 
 //**********************************************************************************
-// *** 定数宣言 ***
-//**********************************************************************************
-constexpr int ITEM_BITE_EFFECT_PRIORITY = DEFAULT_EFFECT_PRIORITY;	// 描画・更新順位
-
-//**********************************************************************************
 // *** アイテム取得時の噛みつき演出クラス ***
 //**********************************************************************************
 class CItemBiteEffect : public CObject
@@ -37,6 +32,8 @@ public:
 	void Update(void) override;
 
 private:
+	static constexpr int ITEM_BITE_EFFECT_PRIORITY = DEFAULT_EFFECT_PRIORITY;	// 描画・更新順位
+
 	void UpdatePose(void);	// 牙の位置と透明度を更新
 
 	CObjectBillboard3D *m_pUpper = nullptr;	// 上あご

@@ -119,6 +119,7 @@ Vector2 Vec2::Normalize(const Vector2 &vec)
 
 	// ベクトルの長さを取得
 	fLength = Length(vec);
+	if (fLength == 0.0f) return VECTOR2_NULL;
 
 	// ベクトルの長さで正規化
 	return Vector2(vec.x / fLength, vec.y / fLength);
