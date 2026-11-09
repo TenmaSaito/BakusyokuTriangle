@@ -107,6 +107,8 @@ struct ConstVector2
 
 	// D3DX‚ÌŒ^‚Ö•ÏŠ·
 	operator D3DXVECTOR2() const;
+	D3DXVECTOR2 *AsD3DX(void) noexcept;				// D3DXŠÖ”‚Ìo—Íˆø”‚Ö“n‚·—p
+	const D3DXVECTOR2 *AsD3DX(void) const noexcept;	// D3DXŠÖ”‚Ì“ü—Íˆø”‚Ö“n‚·—p
 
 	// ‰‰Zq
 	constexpr ConstVector2 operator+(const ConstVector2 &v) const noexcept;
@@ -193,6 +195,8 @@ struct ConstVector3
 
 	// D3DX‚ÌŒ^‚Ö•ÏŠ·
 	operator D3DXVECTOR3() const;
+	D3DXVECTOR3 *AsD3DX(void) noexcept;				// D3DXŠÖ”‚Ìo—Íˆø”‚Ö“n‚·—p
+	const D3DXVECTOR3 *AsD3DX(void) const noexcept;	// D3DXŠÖ”‚Ì“ü—Íˆø”‚Ö“n‚·—p
 
 	// ‰‰Zq
 	constexpr ConstVector3 operator+(const ConstVector3 &v) const noexcept;
@@ -268,6 +272,9 @@ inline constexpr ConstVector2 ConstVector2::PositiveInfinity = ConstVector2(Cons
 inline constexpr ConstVector2 ConstVector2::NegativeInfinity = ConstVector2(-ConstVectorDetail::FLOAT_INF, -ConstVectorDetail::FLOAT_INF);
 
 inline ConstVector2::operator D3DXVECTOR2() const { return D3DXVECTOR2(x, y); }
+inline D3DXVECTOR2 *ConstVector2::AsD3DX(void) noexcept { return reinterpret_cast<D3DXVECTOR2 *>(this); }
+inline const D3DXVECTOR2 *ConstVector2::AsD3DX(void) const noexcept { return reinterpret_cast<const D3DXVECTOR2 *>(this); }
+static_assert(sizeof(ConstVector2) == sizeof(D3DXVECTOR2) && std::is_standard_layout_v<ConstVector2>, "ConstVector2‚Ìƒƒ‚ƒŠ”z’u‚ªD3DXVECTOR2‚Æˆê’v‚µ‚Ü‚¹‚ñ");
 
 // ‰‰Zq
 constexpr ConstVector2 ConstVector2::operator+(const ConstVector2 &v) const noexcept { return { x + v.x, y + v.y }; }
@@ -367,6 +374,9 @@ inline constexpr ConstVector3 ConstVector3::PositiveInfinity = ConstVector3(Cons
 inline constexpr ConstVector3 ConstVector3::NegativeInfinity = ConstVector3(-ConstVectorDetail::FLOAT_INF, -ConstVectorDetail::FLOAT_INF, -ConstVectorDetail::FLOAT_INF);
 
 inline ConstVector3::operator D3DXVECTOR3() const { return D3DXVECTOR3(x, y, z); }
+inline D3DXVECTOR3 *ConstVector3::AsD3DX(void) noexcept { return reinterpret_cast<D3DXVECTOR3 *>(this); }
+inline const D3DXVECTOR3 *ConstVector3::AsD3DX(void) const noexcept { return reinterpret_cast<const D3DXVECTOR3 *>(this); }
+static_assert(sizeof(ConstVector3) == sizeof(D3DXVECTOR3) && std::is_standard_layout_v<ConstVector3>, "ConstVector3‚Ìƒƒ‚ƒŠ”z’u‚ªD3DXVECTOR3‚Æˆê’v‚µ‚Ü‚¹‚ñ");
 
 // ‰‰Zq
 constexpr ConstVector3 ConstVector3::operator+(const ConstVector3 &v) const noexcept { return { x + v.x, y + v.y, z + v.z }; }
