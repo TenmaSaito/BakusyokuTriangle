@@ -157,6 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="speechBubble.cpp" />
     <ClCompile Include="src\core\Coroutine.cpp" />
     <ClCompile Include="src\core\directX.cpp" />
     <ClCompile Include="src\core\main.cpp" />
@@ -316,6 +317,7 @@
     <ClInclude Include="include\util\enumUtil.h" />
     <ClInclude Include="include\util\filestream.h" />
     <ClInclude Include="include\util\util.h" />
+    <ClInclude Include="speechBubble.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

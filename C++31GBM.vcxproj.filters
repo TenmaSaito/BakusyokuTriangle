@@ -342,6 +342,9 @@
     <ClCompile Include="src\util\util.cpp">
       <Filter>src\util</Filter>
     </ClCompile>
+    <ClCompile Include="speechBubble.cpp">
+      <Filter>src\object\3d</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\core\Coroutine.h">
@@ -586,6 +589,9 @@
     </ClInclude>
     <ClInclude Include="include\util\util.h">
       <Filter>include\util</Filter>
+    </ClInclude>
+    <ClInclude Include="speechBubble.h">
+      <Filter>include\object\3d</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
