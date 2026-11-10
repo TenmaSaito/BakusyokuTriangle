@@ -9,6 +9,7 @@
 //**********************************************************************************
 #include "game/stage/stage.h"
 #include "core/manager.h"
+#include "render/texture.h"
 #include "input/input.h"
 #include "input/joypad.h"
 #include "input/inputSystem.h"
@@ -75,7 +76,8 @@ HRESULT CStage::Init(const Vector3 &pos,
 	const Vector3 &rot,
 	const Vector2 &size)
 { // eƒNƒ‰ƒX‚Ì‰Šú‰»
-	return CField::Init(pos, rot, size);
+	HRESULT hr = CField::Init(pos, rot, size);
+	return hr;
 }
 
 //==================================================================================
