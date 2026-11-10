@@ -25,6 +25,7 @@
 #include "game/stage/wall.h"
 #include "math/ray.h"
 #include "object/3d/objectXAfterImage.h"
+#include "object/3d/objectBillboard3D.h"
 #include <bitset>
 
 //**********************************************************************************
@@ -121,6 +122,23 @@ HRESULT CPlayer::Init(const std::string_view pFilename,
 	m_fAngleAdd = DEFAULT_ANGLE_ADD;
 	Mtx::Identity(&m_mtxRot);
 
+	// 吹き出し生成
+	CObjectBillboard3D *pBill = CObjectBillboard3D::Create(ConstVector3(100.0f, 0.0f, 100.0f), 
+		VECTOR3_NULL,
+		ConstVector2(150.0f, 185.0f));
+	pBill->SetParent(GetMatrix());
+	pBill->BindTexture(CTexture::GetInstance()->Register("data/TEXTURE/next.png"));
+
+	// レンダーステートの各種設定
+	pBill->AddRenderState({ D3DRS_ZFUNC, D3DCMP_ALWAYS }, false);
+	pBill->AddRenderState({ D3DRS_ZENABLE, FALSE }, false);
+	pBill->AddRenderState({ D3DRS_ZWRITEENABLE, FALSE }, false);
+	pBill->AddRenderState({ D3DRS_LIGHTING, FALSE }, false);
+
+	pBill->AddRenderState({ D3DRS_ZFUNC, D3DCMP_LESSEQUAL }, true);
+	pBill->AddRenderState({ D3DRS_ZENABLE, TRUE }, true);
+	pBill->AddRenderState({ D3DRS_ZWRITEENABLE, TRUE }, true);
+	pBill->AddRenderState({ D3DRS_LIGHTING, TRUE }, true);
 	return S_OK;
 }
 
