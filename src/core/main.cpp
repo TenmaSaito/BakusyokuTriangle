@@ -52,7 +52,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 		LoadCursor(NULL,IDC_ARROW),				// マウスカーソル
 		(HBRUSH)(COLOR_WINDOW + 1),				// クライアント領域の背景色
 		NULL,									// メニューバー
-		CLASS_NAME.data(),								// ウィンドウクラスの名前
+		CLASS_NAME.data(),						// ウィンドウクラスの名前
 		NULL									// ファイルのアイコン
 	};
 
@@ -65,8 +65,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 	// ウィンドウの生成
 	hWnd = CreateWindowEx(
 		0,									// 拡張ウィンドウスタイル
-		CLASS_NAME.data(),							// ウィンドウクラスの名前
-		WINDOW_NAME.data(),						// ウィンドウの名前
+		CLASS_NAME.data(),					// ウィンドウクラスの名前
+		WINDOW_NAME.data(),					// ウィンドウの名前
 		WS_OVERLAPPEDWINDOW,				// ウィンドウスタイル
 		CW_USEDEFAULT,						// ウィンドウの左上X座標
 		CW_USEDEFAULT,						// ウィンドウの左上Y座標
