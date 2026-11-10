@@ -18,9 +18,16 @@ jobs:
       fail-fast: false
       matrix:
         configuration: [Debug, Release]
+    env:
+      # Clang AST の命名チェックは MSBuild のログを使うので、PR の Debug ビルドで 1 回だけ行う
+      RUN_AST: ${{ matrix.configuration == 'Debug' && github.event_name == 'pull_request' }}
+      PYTHONUTF8: '1'
 
     steps:
       - uses: actions/checkout@v7
+        with:
+          # AST チェックで PR の差分を取るために履歴全体が必要
+          fetch-depth: 0
 
       # ランナーには DirectX SDK (June 2010) が入っていないので、ヘッダーと x86 ライブラリだけを取得する。
       # インストーラー本体は約600MBあるため、展開結果をキャッシュする。
@@ -59,3 +66,168 @@ jobs:
           $msbuild = & $vswhere -latest -requires Microsoft.Component.MSBuild -find 'MSBuild\**\Bin\MSBuild.exe' | Select-Object -First 1
           & $msbuild C++31GBM.vcxproj -t:Build "-p:Configuration=${{ matrix.configuration }}" -p:Platform=Win32 -m -v:m -nologo
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      # チェッカーと規則は PR 内で変更されたものを使わず、ベース側のものを使う
+      - name: Fetch trusted AST checker from base branch
+        if: env.RUN_AST == 'true'
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: .prguard-base
+          persist-credentials: false
+
+      - name: Select AST checker
+        if: env.RUN_AST == 'true'
+        shell: pwsh
+        run: |
+          $dir = '.prguard-base'
+          if (-not (Test-Path "$dir/tools/check_semantic_naming.py") -or -not (Test-Path "$dir/naming_policy.json")) {
+            # チェッカーを導入する PR の時点では、ベース側にまだ存在しない
+            Write-Output '::warning::ベースブランチに AST チェッカーがないため、この PR に含まれるチェッカーを使います'
+            $dir = '.'
+          }
+          "GUARD_DIR=$dir" >> $env:GITHUB_ENV
+
+      - uses: actions/setup-python@v6
+        if: env.RUN_AST == 'true'
+        with:
+          python-version: '3.12'
+
+      # clang-cl が MSVC のヘッダーを見つけるために必要
+      - uses: ilammy/msvc-dev-cmd@v1
+        if: env.RUN_AST == 'true'
+        with:
+          arch: x86
+          # ソースが v142 の STL にしかない std::_Fmt_string を使っているので、ビルドと同じ版に揃える
+          toolset: '14.29'
+
+      # clang-cl は Shift-JIS を読めないので、ビルド後のワークスペースだけ UTF-8 に変換する
+      - name: Prepare sources and compile database for Clang
+        if: env.RUN_AST == 'true'
+        shell: pwsh
+        run: |
+          python "$env:GUARD_DIR/tools/convert_sources_to_utf8.py" src include
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python "$env:GUARD_DIR/tools/msbuild_tlog_to_compdb.py" --root . --out compile_commands.json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      # STRICT_SEMANTIC_NAMING が true でなければ、違反は警告として報告するだけで失敗にしない。
+      # ただし解析自体に失敗した場合は、違反なしと誤認しないように常に失敗にする
+      - name: Check naming with Clang AST
+        if: env.RUN_AST == 'true'
+        shell: pwsh
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          STRICT_SEMANTIC_NAMING: ${{ vars.STRICT_SEMANTIC_NAMING }}
+        run: |
+          Get-Command clang-cl -ErrorAction Stop | Out-Host
+          # DirectX SDK は vcxproj の IncludePath で渡されるので、MSBuild のログに残らない
+          $env:INCLUDE = "C:\DXSDK_Jun10\Include;$env:INCLUDE"
+          $flags = @()
+          if ($env:STRICT_SEMANTIC_NAMING -ne 'true') { $flags += '--no-fail' }
+          python "$env:GUARD_DIR/tools/check_semantic_naming.py" `
+            --base "$env:BASE_SHA" --head "$env:HEAD_SHA" `
+            --compdb compile_commands.json `
+            --policy "$env:GUARD_DIR/naming_policy.json" `
+            --report reports/semantic_naming.json @flags
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Write AST summary
+        if: always() && env.GUARD_DIR != ''
+        shell: pwsh
+        run: python "$env:GUARD_DIR/tools/semantic_summary.py" --report reports/semantic_naming.json
+
+      - name: Upload AST report
+        if: always() && env.GUARD_DIR != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: semantic-naming-report
+          path: reports/semantic_naming.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  naming:
+    name: 命名規則チェック
+    # 変更箇所だけを検査するので、比較元のある PR でのみ実行する
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      STRICT_NAMING: ${{ vars.STRICT_NAMING }}
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      # チェッカーと規則は PR 内で変更されたものを使わず、ベース側のものを使う
+      - name: Fetch trusted checker from base branch
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: .prguard-base
+          persist-credentials: false
+
+      - name: Select checker
+        run: |
+          if [ -f .prguard-base/tools/check_filenames.py ] && [ -f .prguard-base/naming_policy.json ]; then
+            echo 'GUARD_DIR=.prguard-base' >> "$GITHUB_ENV"
+          else
+            # チェッカーを導入する PR の時点では、ベース側にまだ存在しない
+            echo '::warning::ベースブランチにチェッカーがないため、この PR に含まれるチェッカーを使います'
+            echo 'GUARD_DIR=.' >> "$GITHUB_ENV"
+          fi
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Check file names
+        id: filenames
+        continue-on-error: true
+        run: >-
+          python "$GUARD_DIR/tools/check_filenames.py"
+          --base "$BASE_SHA" --head "$HEAD_SHA"
+          --policy "$GUARD_DIR/naming_policy.json"
+
+      # STRICT_NAMING が true でなければ、識別子の違反は警告として報告するだけで失敗にしない
+      - name: Check C++ identifiers
+        id: identifiers
+        continue-on-error: true
+        run: |
+          flags=()
+          if [ "${STRICT_NAMING,,}" != 'true' ]; then flags+=(--no-fail); fi
+          python "$GUARD_DIR/tools/check_identifiers.py" \
+            --base "$BASE_SHA" --head "$HEAD_SHA" \
+            --policy "$GUARD_DIR/naming_policy.json" "${flags[@]}"
+
+      - name: Write summary
+        if: always()
+        run: python "$GUARD_DIR/tools/ci_summary.py"
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: naming-report
+          path: reports/*.json
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Judge result
+        if: always()
+        env:
+          FILE_RESULT: ${{ steps.filenames.outcome }}
+          IDENT_RESULT: ${{ steps.identifiers.outcome }}
+        run: |
+          if [ "$FILE_RESULT" != 'success' ]; then
+            echo '::error::ファイル名の命名規則チェックに失敗しました。注釈とレポートを確認してください。'
+            exit 1
+          fi
+          if [ "$IDENT_RESULT" != 'success' ]; then
+            echo '::error::C++ 識別子の命名規則チェックに失敗しました。注釈とレポートを確認してください。'
+            exit 1
+          fi

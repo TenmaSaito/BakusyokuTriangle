@@ -35,7 +35,7 @@ CRay::CRay(const Vector3 &start, const Vector3 &vec, const float fLength)
 //==================================================================================
 // --- コンストラクタ (始点と終点指定) ---
 //==================================================================================
-CRay::CRay(const Vector3 &start = VECTOR3_NULL, const Vector3 &end = VECTOR3_NULL)
+CRay::CRay(const Vector3 &start, const Vector3 &end)
 { // 引数を保存
 	m_start = start;
 	m_end = end;
