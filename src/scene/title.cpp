@@ -15,6 +15,7 @@
 #include "input/joypad.h"
 #include "render/texture.h"
 #include "render/camera.h"
+#include "scene/transition/sceneTransition.h"
 #include "game/stage/foodBackground.h"
 #include "sound/sound.h"
 #include "util/util.h"
@@ -53,9 +54,9 @@ CTitle::~CTitle()
 //==================================================================================
 // --- 初期化処理 ---
 //==================================================================================
-HRESULT CTitle::Init(void)
+HRESULT CTitle::Init(const ManagerContext::SceneContext &sceneContext)
 { // 開始処理
-	Start();
+	Start(sceneContext);
 
 	return S_OK;
 }
@@ -70,19 +71,19 @@ void CTitle::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CTitle::Update(void)
+void CTitle::Update(const ManagerContext::SceneContext &sceneContext)
 {
-	CManager *pManager = CManager::GetInstance();
-	CInputKeyboard *pKeyboard = pManager->GetInputKeyboard();
-	CJoypad *pJoypad = pManager->GetJoypad();
+	CInputKeyboard *pKeyboard = sceneContext.pInputSystem->GetKeyboard();
+	CJoypad *pJoypad = sceneContext.pInputSystem->GetJoypad();
+	bool bIsTransition = sceneContext.pTransition->GetState() != CSceneTransition::STATE::STAY;
 
 	if ((pKeyboard->GetTrigger(DIK_RETURN)
 		|| pJoypad->GetTrigger(CJoypad::KEY::A)
 		|| pJoypad->GetTrigger(CJoypad::KEY::START))
-		&& pManager->IsTransition() == false)
+		&& bIsTransition == false)
 	{ // 遷移中でなく、Enterを押されたら遷移
 		CManager::GetInstance()->GetSound()->Play(CSound::LABEL::SE_BITE);
-		pManager->SetTransition(MODE::GAME);
+		sceneContext.pTransition->StartTransition(sceneContext.TRANSITION_FRAME, MODE::GAME);
 	}
 
 	if (m_pCharacter == nullptr) return;
@@ -96,14 +97,14 @@ void CTitle::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CTitle::Draw(void)
+void CTitle::Draw(const ManagerContext::SceneContext &sceneContext)
 {
 }
 
 //==================================================================================
 // --- 開始時処理 ---
 //==================================================================================
-void CTitle::Start(void)
+void CTitle::Start(const ManagerContext::SceneContext &sceneContext)
 {
 	CObject2D::Info info = {};
 

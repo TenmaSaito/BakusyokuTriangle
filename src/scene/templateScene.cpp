@@ -26,9 +26,9 @@ CTemplateScene::~CTemplateScene()
 //==================================================================================
 // --- 初期化処理 ---
 //==================================================================================
-HRESULT CTemplateScene::Init(void)
+HRESULT CTemplateScene::Init(const ManagerContext::SceneContext &sceneContext)
 { // 開始処理
-	Start();
+	Start(sceneContext);
 
 	return S_OK;
 }
@@ -43,7 +43,7 @@ void CTemplateScene::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CTemplateScene::Update(void)
+void CTemplateScene::Update(const ManagerContext::SceneContext &sceneContext)
 {
 	
 }
@@ -51,13 +51,13 @@ void CTemplateScene::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CTemplateScene::Draw(void)
+void CTemplateScene::Draw(const ManagerContext::SceneContext &sceneContext)
 {
 }
 
 //==================================================================================
 // --- 開始時処理 ---
 //==================================================================================
-void CTemplateScene::Start(void)
+void CTemplateScene::Start(const ManagerContext::SceneContext &sceneContext)
 {
 }

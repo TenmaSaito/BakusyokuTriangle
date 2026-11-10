@@ -12,11 +12,14 @@
 #include "scene/title.h"
 #include "scene/game.h"
 #include "scene/ranking.h"
+#include "core/manager.h"
 
 //==================================================================================
 // --- モードの設定処理 (pOutに代入後初期化) ---
 //==================================================================================
-CScene *CScene::Create(const MODE mode, std::unique_ptr<CScene> &rpOut)
+CScene *CScene::Create(const ManagerContext::SceneContext &sceneContext,
+	const MODE mode, 
+	std::unique_ptr<CScene> &rpOut)
 {
 	CScene *pScene = nullptr;		// 生成したシーン
 
@@ -41,7 +44,7 @@ CScene *CScene::Create(const MODE mode, std::unique_ptr<CScene> &rpOut)
 
 	if (pScene != nullptr)
 	{ // 生成成功時、シーンの初期化
-		pScene->Init();
+		pScene->Init(sceneContext);
 	}
 
 	return pScene;

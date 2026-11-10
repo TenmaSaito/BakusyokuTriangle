@@ -56,9 +56,9 @@ CGame::~CGame()
 //==================================================================================
 // --- 初期化処理 ---
 //==================================================================================
-HRESULT CGame::Init(void)
+HRESULT CGame::Init(const ManagerContext::SceneContext &sceneContext)
 { // 開始処理
-	Start();
+	Start(sceneContext);
 
 	return S_OK;
 }
@@ -73,7 +73,7 @@ void CGame::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CGame::Update(void)
+void CGame::Update(const ManagerContext::SceneContext &sceneContext)
 {
 	CManager *pManager = CManager::GetInstance();
 	CInputKeyboard *pKeyboard = pManager->GetInputKeyboard();
@@ -112,14 +112,14 @@ void CGame::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CGame::Draw(void)
+void CGame::Draw(const ManagerContext::SceneContext &sceneContext)
 {
 }
 
 //==================================================================================
 // --- 開始時処理 ---
 //==================================================================================
-void CGame::Start(void)
+void CGame::Start(const ManagerContext::SceneContext &sceneContext)
 { // マップ読み込み
 	std::unique_ptr pMapScriptLoader = std::make_unique<CMapScriptLoader>();		// マップ読み込みインスタンス
 	auto hr = pMapScriptLoader->Load("data/SCRIPT/system.ini");

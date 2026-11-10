@@ -22,12 +22,12 @@ public:
 	CGame();
 	~CGame();
 
-	HRESULT Init(void) override;
+	HRESULT Init(const ManagerContext::SceneContext &sceneContext) override;
 	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	void Update(const ManagerContext::SceneContext &sceneContext) override;
+	void Draw(const ManagerContext::SceneContext &sceneContext) override;
 
 private:
-	void Start(void);
+	void Start(const ManagerContext::SceneContext &sceneContext);
 };
 #endif
