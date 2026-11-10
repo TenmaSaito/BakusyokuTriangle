@@ -60,7 +60,7 @@ public:
 	static CTimer *Find(void);	// シーン上のインスタンスを検索
 
 private:
-	static constexpr int DEFAULT_TIMER_PRIORITY = DEFAULT_UI_PRIORITY;	// タイマーの基本優先順位
+	static constexpr int DEFAULT_TIMER_PRIORITY = DEFAULT_2DUI_PRIORITY;	// タイマーの基本優先順位
 
 	static constexpr int MAX_TIMERNUM = 8;								// タイマーの最大桁数
 

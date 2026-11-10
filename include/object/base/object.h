@@ -96,10 +96,11 @@ public:
 
 protected:
 	static constexpr int DEFAULT_BG_PRIORITY = 0;		// 背景の優先順位
-	static constexpr int DEFAULT_OBJ_PRIORITY = 3;		// オブジェクトの優先順位
-	static constexpr int DEFAULT_EFFECT_PRIORITY = 4;	// エフェクト関連の優先順位
-	static constexpr int DEFAULT_ADD_PRIORITY = 5;		// 加算合成関連の優先順位
-	static constexpr int DEFAULT_UI_PRIORITY = 6;		// UI関連の優先順位
+	static constexpr int DEFAULT_OBJ_PRIORITY = 2;		// オブジェクトの優先順位
+	static constexpr int DEFAULT_EFFECT_PRIORITY = 3;	// エフェクト関連の優先順位
+	static constexpr int DEFAULT_ADD_PRIORITY = 4;		// 加算合成関連の優先順位
+	static constexpr int DEFAULT_3DUI_PRIORITY = 5;		// 3DUI関連の優先順位
+	static constexpr int DEFAULT_2DUI_PRIORITY = 6;		// 2DUI関連の優先順位
 	static constexpr int FINALLY_PRIORITY = 7;			// 全てのオブジェクトが描画された後の最終優先順位
 	static constexpr std::string_view NOTIFY_WHEN_DEATH = "Death";			// 死んだ際に通知される文字列
 

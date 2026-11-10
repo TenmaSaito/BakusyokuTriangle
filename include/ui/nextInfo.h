@@ -37,7 +37,7 @@ public:
 	static CNextInfo *Find(void);	// シーン上のインスタンスを検索
 
 private:
-	static constexpr int NEXTINFO_PRIORITY = DEFAULT_UI_PRIORITY;		// アイテムUI表示の優先順位
+	static constexpr int NEXTINFO_PRIORITY = DEFAULT_2DUI_PRIORITY;		// アイテムUI表示の優先順位
 
 	static constexpr int ANGRY_FRAME = 90;		// 怒るフレーム数
 	CObject2D *m_pBase = nullptr;		// 一番下に表示されるコメント
