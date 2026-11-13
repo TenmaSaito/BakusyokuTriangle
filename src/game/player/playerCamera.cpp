@@ -21,9 +21,9 @@
 //**********************************************************************************
 namespace
 {
-	constexpr float LENGTH_PLAYER = 1500.0f;		// カメラとプレイヤーの距離
+	constexpr float LENGTH_PLAYER = 500.0f;		// カメラとプレイヤーの距離
 	constexpr float ROTATE_SPD = 0.04f;			// カメラの回転速度
-	constexpr float POSITION_DEST_ACCELE = 0.03f;	// カメラの目標位置への移動速度
+	constexpr float POSITION_DEST_ACCELE = 0.95f;	// カメラの目標位置への移動速度
 	constexpr float CAMERA_ROT_Z = -0.4f;		// カメラの見下ろし角度
 }
 
@@ -112,35 +112,12 @@ void CPlayerCamera::Update(void)
 	CManager *pManager = CManager::GetInstance();		// マネージャへのポインタ
 	CInputKeyboard *pKeyboard = pManager->GetInputKeyboard();		// キーボードへのポインタ
 
-#if 0
-	// 視点回転
-	if (pKeyboard->GetPress(DIK_Q))
-	{
-		rot.z -= ROTATE_SPD;
-	}
-	else if (pKeyboard->GetPress(DIK_E))
-	{
-		rot.z += ROTATE_SPD;
-	}
-	// 上方向ベクトル回転
-	if (pKeyboard->GetPress(DIK_LEFT))
-	{
-		m_fPhi += ROTATE_SPD;
-		m_fPhi = std::clamp(m_fPhi, -1.0f, 1.0f);
-	}
-	else if (pKeyboard->GetPress(DIK_RIGHT))
-	{
-		m_fPhi -= ROTATE_SPD;
-		m_fPhi = std::clamp(m_fPhi, -1.0f, 1.0f);
-	}
-#endif
-
 	// プレイヤーへのポインタが存在するなら
 	if (m_pPlayer != nullptr)
 	{ // プレイヤーへ滑らかに追従するために、過去の位置と現在位置で補間
 		const Vector3 vecOrigin = VECTOR3_NULL;		// ローカル座標の原点
 		Vector3 posWorld = *D3DXVec3TransformCoord(&posWorld, &vecOrigin, m_pPlayer->GetMatrix());
-		Vector3 posDiff = posWorld - posR;				// 現在位置と予定位置の差分
+		Vector3 posDiff = posWorld - posR;					// 現在位置と予定位置の差分
 		posR = posR + (posDiff * POSITION_DEST_ACCELE);		// 次の注視点座標を計算
 	}
 
