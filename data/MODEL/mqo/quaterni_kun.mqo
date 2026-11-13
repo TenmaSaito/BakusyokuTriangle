@@ -18,7 +18,7 @@ Scene {
 	}
 }
 Material 1 {
-	"baseMat" col(0.996 1.000 0.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex("C:\Users\student\Desktop\DesktopFile\ëfçﬁ\âÊëú\exec-4fcb12a9-daa6-4d44-820f-68325c1ddf5b.png")
+	"baseMat" col(0.996 1.000 0.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex("..\..\TEXTURE\exec-4fcb12a9-daa6-4d44-820f-68325c1ddf5b.png")
 }
 Object "obj1" {
 	visible 15

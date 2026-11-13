@@ -526,7 +526,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\DesktopFile\\ëfçﬁ\\âÊëú\\exec-4fcb12a9-daa6-4d44-820f-68325c1ddf5b.png";
+    "data\\TEXTURE\\face100.png";
    }
   }
  }
