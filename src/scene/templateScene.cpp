@@ -29,7 +29,6 @@ CTemplateScene::~CTemplateScene()
 HRESULT CTemplateScene::Init(const ManagerContext::SceneContext &sceneContext)
 { // ŠJnˆ—
 	Start(sceneContext);
-
 	return S_OK;
 }
 
