@@ -49,6 +49,7 @@ public:
 		SCREEN_EFFECT,	// 画面エフェクト (閃光)
 		NEXTINFO,		// 次のアイテムの表示
 		MODEL_PARTICLE,	// モデルパーティクル
+		SPEECH_BUBBLE,	// 吹き出し
 		MAX
 	};
 
