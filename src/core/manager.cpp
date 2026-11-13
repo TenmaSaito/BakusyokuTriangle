@@ -358,8 +358,24 @@ void CManager::Update(void)
 		m_pDebugProc->Print("[現在ポーズ中！]\n");
 	}
 
+	ManagerContext::RenderContext renderContext;
+	ManagerContext::SceneContext sceneContext = { .TRANSITION_FRAME = TRANSITION_FRAME };			// シーンコンテキスト
+
+	// 描画コンテキストを作成
+	renderContext.pDevice = m_pRenderer->GetDevice();
+	renderContext.pFocus = CCamera::GetCamera(CCamera::GetFocus());
+	renderContext.pLight = m_pLight.get();
+	renderContext.pTexture = CTexture::GetInstance();
+	renderContext.pXFile = CXFile::GetInstance();
+
+	// シーンコンテキストを作成
+	sceneContext.pRenderContext = &renderContext;
+	sceneContext.pInputSystem = CInputSystem::GetInstance();
+	sceneContext.pSound = m_pSound.get();
+	sceneContext.pTransition = m_pTransition.get();
+
 	// シーンの更新
-	m_pScene->Update();
+	m_pScene->Update(sceneContext);
 
 	// トランジション更新
 	m_pTransition->Update();
@@ -415,8 +431,24 @@ HRESULT CManager::SetMode(const CScene::MODE modeNext)
 	// ポーズの解除
 	m_bPause = false;
 
+	ManagerContext::RenderContext renderContext;		// 描画コンテキスト
+	ManagerContext::SceneContext sceneContext;			// シーンコンテキスト
+
+	// 描画コンテキストを作成
+	renderContext.pDevice = m_pRenderer->GetDevice();
+	renderContext.pFocus = CCamera::GetCamera(CCamera::GetFocus());
+	renderContext.pLight = m_pLight.get();
+	renderContext.pTexture = CTexture::GetInstance();
+	renderContext.pXFile = CXFile::GetInstance();
+
+	// シーンコンテキストを作成
+	sceneContext.pRenderContext = &renderContext;
+	sceneContext.pInputSystem = CInputSystem::GetInstance();
+	sceneContext.pSound = m_pSound.get();
+	sceneContext.pTransition = m_pTransition.get();
+
 	// シーンの生成
-	CScene::Create(modeNext, m_pScene);
+	CScene::Create(sceneContext, modeNext, m_pScene);
 	m_pPause->SetDisp(false);
 	return (m_pScene == nullptr) ? E_FAIL : S_OK;
 }

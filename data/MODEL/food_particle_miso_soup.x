@@ -213,7 +213,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\DesktopFile\\‘fŞ\\‰æ‘œ\\miso_soup.png";
+    "data\\TEXTURE\\miso_soup.png";
    }
   }
  }

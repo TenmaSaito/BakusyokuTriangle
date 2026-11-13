@@ -178,6 +178,7 @@
     <ClCompile Include="src\game\item\itemGenerator.cpp" />
     <ClCompile Include="src\game\player\player.cpp" />
     <ClCompile Include="src\game\player\playerCamera.cpp" />
+    <ClCompile Include="src\game\player\speechBubble.cpp" />
     <ClCompile Include="src\game\stage\field.cpp" />
     <ClCompile Include="src\game\stage\foodBackground.cpp" />
     <ClCompile Include="src\game\stage\mapScriptLoader.cpp" />
@@ -241,6 +242,7 @@
     <ClInclude Include="include\core\main.h" />
     <ClInclude Include="include\core\manager.h" />
     <ClInclude Include="include\core\pch.h" />
+    <ClInclude Include="include\core\resourceable.h" />
     <ClInclude Include="include\core\singleton.h" />
     <ClInclude Include="include\debug\debugproc.h" />
     <ClInclude Include="include\debug\Log.h" />
@@ -253,6 +255,7 @@
     <ClInclude Include="include\game\item\itemGenerator.h" />
     <ClInclude Include="include\game\player\player.h" />
     <ClInclude Include="include\game\player\playerCamera.h" />
+    <ClInclude Include="include\game\player\speechBubble.h" />
     <ClInclude Include="include\game\stage\field.h" />
     <ClInclude Include="include\game\stage\foodBackground.h" />
     <ClInclude Include="include\game\stage\mapScriptLoader.h" />

@@ -39,6 +39,32 @@ class CLight;
 class CScene;
 class CSceneTransition;
 class CPause;
+class CCamera;
+class CTexture;
+class CXFile;
+
+namespace ManagerContext
+{
+	// 各オブジェクトの初期化、描画時に必要な各インスタンスへのポインタ
+	struct RenderContext
+	{
+		LPDIRECT3DDEVICE9 pDevice = nullptr;		// デバイス
+		CCamera *pFocus = nullptr;					// フォーカス中のカメラ
+		CLight *pLight = nullptr;					// ライト
+		CTexture *pTexture = nullptr;				// テクスチャ管理
+		CXFile *pXFile = nullptr;					// XFile管理
+	};
+
+	// 各シーンに渡される、必要な各インスタンスへのポインタ
+	struct SceneContext
+	{
+		RenderContext *pRenderContext = nullptr;	// 描画に必要なコンテキスト
+		CInputSystem *pInputSystem = nullptr;		// インプットシステム
+		CSound *pSound = nullptr;					// サウンド
+		CSceneTransition *pTransition = nullptr;	// 遷移演出
+		const int TRANSITION_FRAME = 0;				// 遷移にかかる時間
+	};
+}
 
 //**********************************************************************************
 // *** マネージャクラス ***

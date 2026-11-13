@@ -57,9 +57,9 @@ CRanking::~CRanking()
 //==================================================================================
 // --- 初期化処理 ---
 //==================================================================================
-HRESULT CRanking::Init(void)
+HRESULT CRanking::Init(const ManagerContext::SceneContext &sceneContext)
 { // 開始処理
-	Start();
+	Start(sceneContext);
 	return S_OK;
 }
 
@@ -73,7 +73,7 @@ void CRanking::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CRanking::Update(void)
+void CRanking::Update(const ManagerContext::SceneContext &sceneContext)
 {
 	CManager *pManager = CManager::GetInstance();
 	CInputKeyboard *pKeyboard = pManager->GetInputKeyboard();
@@ -92,14 +92,14 @@ void CRanking::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CRanking::Draw(void)
+void CRanking::Draw(const ManagerContext::SceneContext &sceneContext)
 {
 }
 
 //==================================================================================
 // --- 開始時処理 ---
 //==================================================================================
-void CRanking::Start(void)
+void CRanking::Start(const ManagerContext::SceneContext &sceneContext)
 { // カメラ設置
 	CCamera::Create(VECTOR3_ONE, VECTOR3_NULL);
 
@@ -115,7 +115,7 @@ void CRanking::Start(void)
 	CFoodBackground::Create();
 
 	// ランキングを表示
-	CreateRanking();
+	CreateRanking(sceneContext);
 
 	// BGM再生
 	CManager::GetInstance()->GetSound()->Play(CSound::LABEL::BGM_RESULT);
@@ -124,7 +124,7 @@ void CRanking::Start(void)
 //==================================================================================
 // --- ランキング生成処理 ---
 //==================================================================================
-void CRanking::CreateRanking(void)
+void CRanking::CreateRanking(const ManagerContext::SceneContext &sceneContext)
 { // ランキングをサーバーから取得
 	std::array<int, MAX_RANKING> aScore = {};		// 取得したスコア
 	auto pRankingClient = std::make_unique<CRankingClient>();

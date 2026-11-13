@@ -342,6 +342,9 @@
     <ClCompile Include="src\util\util.cpp">
       <Filter>src\util</Filter>
     </ClCompile>
+    <ClCompile Include="src\game\player\speechBubble.cpp">
+      <Filter>src\game\player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\core\Coroutine.h">
@@ -586,6 +589,12 @@
     </ClInclude>
     <ClInclude Include="include\util\util.h">
       <Filter>include\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\player\speechBubble.h">
+      <Filter>include\game\player</Filter>
+    </ClInclude>
+    <ClInclude Include="include\core\resourceable.h">
+      <Filter>include\core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -9,6 +9,7 @@
 //**********************************************************************************
 #include "game/stage/stage.h"
 #include "core/manager.h"
+#include "render/texture.h"
 #include "input/input.h"
 #include "input/joypad.h"
 #include "input/inputSystem.h"
@@ -24,9 +25,9 @@ namespace
 {
 	constexpr float LEAN_MIN = -QUARTER_PI * 0.5f;		// ŒX‚«‚ÌÅ¬
 	constexpr float LEAN_MAX = QUARTER_PI * 0.5f;		// ŒX‚«‚ÌÅ‘å
-	constexpr float LEAN_POW = 0.05f;		// ŒX‚¯‚é‹­‚³
+	constexpr float LEAN_POW = 0.01f;		// ŒX‚¯‚é‹­‚³
 	constexpr float LEAN_RESIST = 0.1f;		// ŒX‚«‚ÌŒ³‚É–ß‚é‹­‚³
-	constexpr float ROLL_FORCE = 0.03f;		// “]‚ª‚·‹­‚³
+	constexpr float ROLL_FORCE = 0.05f;		// “]‚ª‚·‹­‚³
 }
 
 //==================================================================================
@@ -75,7 +76,8 @@ HRESULT CStage::Init(const Vector3 &pos,
 	const Vector3 &rot,
 	const Vector2 &size)
 { // eƒNƒ‰ƒX‚Ì‰Šú‰»
-	return CField::Init(pos, rot, size);
+	HRESULT hr = CField::Init(pos, rot, size);
+	return hr;
 }
 
 //==================================================================================

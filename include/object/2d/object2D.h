@@ -66,7 +66,7 @@ public:
 	void BindTexture(const int nIdxTexture) { m_nIdxTexture = nIdxTexture; }
 
 private:
-	static constexpr int DEFAULT_OBJ2D_PRIORITY = DEFAULT_UI_PRIORITY;		// オブジェクト2Dの基本優先順位
+	static constexpr int DEFAULT_OBJ2D_PRIORITY = DEFAULT_2DUI_PRIORITY;		// オブジェクト2Dの基本優先順位
 
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff = nullptr;			// 頂点バッファへのポインタ
 	int m_nIdxTexture = -1;		// テクスチャインデックス

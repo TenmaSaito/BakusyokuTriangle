@@ -851,7 +851,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\DesktopFile\\GC2\\Git\\cpp_TKG\\data\\TEXTURE\\rice_map.jpg";
+    "data\\TEXTURE\\rice_map.jpg";
    }
   }
   Material {
@@ -860,7 +860,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\DesktopFile\\ëfçﬁ\\âÊëú\\miso_soup.png";
+    "data\\TEXTURE\\miso_soup.png";
    }
   }
   Material {

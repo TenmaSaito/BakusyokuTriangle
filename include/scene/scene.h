@@ -15,6 +15,11 @@
 #include "util/enumUtil.h"
 #include <concepts>
 
+namespace ManagerContext
+{
+	struct SceneContext;
+}
+
 //**********************************************************************************
 // *** シーンクラス ***
 //**********************************************************************************
@@ -40,12 +45,14 @@ public:
 	CScene(const MODE mode);
 	virtual ~CScene();
 
-	static CScene *Create(const MODE mode, std::unique_ptr<CScene> &rpOut);
+	static CScene *Create(const ManagerContext::SceneContext &sceneContext, 
+		const MODE mode,
+		std::unique_ptr<CScene> &rpOut);
 
-	virtual HRESULT Init(void) = 0;
+	virtual HRESULT Init(const ManagerContext::SceneContext &sceneContext) = 0;
 	virtual void Uninit(void) = 0;
-	virtual void Update(void) = 0;
-	virtual void Draw(void) = 0;
+	virtual void Update(const ManagerContext::SceneContext &sceneContext) = 0;
+	virtual void Draw(const ManagerContext::SceneContext &sceneContext) = 0;
 	MODE GetMode(void) const { return m_mode; }
 
 private:

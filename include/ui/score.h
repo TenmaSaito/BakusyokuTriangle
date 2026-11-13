@@ -43,7 +43,7 @@ public:
 	static CScore *Find(void);	// シーン上のインスタンスを検索
 
 private:
-	static constexpr int SCORE_PRIORITY = DEFAULT_UI_PRIORITY;		// スコアの基本優先順位
+	static constexpr int SCORE_PRIORITY = DEFAULT_2DUI_PRIORITY;		// スコアの基本優先順位
 
 	static constexpr int MAX_SCORENUM = 8;							// スコアの最大桁数
 
