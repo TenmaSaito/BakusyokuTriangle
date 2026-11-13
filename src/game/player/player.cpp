@@ -163,16 +163,8 @@ void CPlayer::Update(void)
 		if (m_pStage == nullptr) return;
 	}
 
-	// ŒX‚«“ü—ÍŽž‚ÍŽ©“®‰ñ“]‚ðs‚í‚È‚¢
-	//m_bAutoRotating = !m_pStage->IsLeanInput();
-
 	// ‰ß‹Ž‚ÌÀ•W‚ð•Û‘¶
 	m_posOld = *GetPosition();
-
-	if (CManager::GetInstance()->GetInputKeyboard()->GetTrigger(DIK_R))
-	{
-		m_fAngleAdd *= -1;
-	}
 
 	// Ž©“®‰ñ“]ƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚ê‚ÎAŒX‚¢‚Ä‚¢‚È‚¢‚½‚ßŠp“x‚ð‰ÁŽZ‚µ‰ñ“]
 	if(m_bAutoRotating == true) AddForce(m_fAngle + m_fAngleAdd, m_fRotSpeed);
@@ -188,9 +180,6 @@ void CPlayer::Update(void)
 			m_fValueRot = 0.0f;
 		}
 	}
-
-	// ƒXƒe[ƒ^ƒX•ÏX
-	StatusChange();
 
 	// ‰ñ“]Ž²‚ð‹‚ß‚é
 	m_vecAxis = Vec2::ToVector3(Vec2::Direction(Util::FixedRotation(GetRotation()->y - HALF_PI)));
