@@ -91,7 +91,7 @@ HRESULT CFoodBackground::Init(void)
 	for (int nCntModel = 0; nCntModel < FOOD_BACKGROUND_MODEL_COUNT; nCntModel++)
 	{ // 食べ物モデルを登録
 		m_aModelId[nCntModel] = pXFile->Register(MODEL_PATHS[nCntModel]);
-		CXFile::CXInfo *pModel = pXFile->GetAddress(m_aModelId[nCntModel]);		// 登録したモデル
+		CXInfo *pModel = pXFile->GetAddress(m_aModelId[nCntModel]);		// 登録したモデル
 
 		// CXFile::Register は読み込み失敗時も番号を返すため、保存されたパスも確認する
 		if (pModel == nullptr || pModel->GetFilePath() != MODEL_PATHS[nCntModel]) return E_FAIL;
@@ -171,7 +171,7 @@ void CFoodBackground::Update(void)
 	for (int nCntDecoration = 0; nCntDecoration < FOOD_BACKGROUND_COUNT; nCntDecoration++)
 	{ // 各装飾のワールドマトリックスを計算
 		Decoration &decoration = m_aDecoration[nCntDecoration];
-		CXFile::CXInfo *pModel = pXFile->GetAddress(m_aModelId[decoration.nModel]);
+		CXInfo *pModel = pXFile->GetAddress(m_aModelId[decoration.nModel]);
 		if (pModel == nullptr)
 		{ // モデルが無くなっていれば描画しない
 			m_bReady = false;
@@ -226,7 +226,7 @@ void CFoodBackground::Draw(void)
 
 	for (const Decoration &decoration : m_aDecoration)
 	{ // 各装飾を描画
-		CXFile::CXInfo *pModel = pXFile->GetAddress(m_aModelId[decoration.nModel]);
+		CXInfo *pModel = pXFile->GetAddress(m_aModelId[decoration.nModel]);
 		if (pModel == nullptr) continue;
 
 		// ワールドマトリックスの設定

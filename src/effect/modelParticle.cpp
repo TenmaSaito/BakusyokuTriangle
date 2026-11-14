@@ -68,7 +68,7 @@ HRESULT CModelParticle::Init(const Setting &setting)
 
 	// モデルを登録
 	m_uModelId = pXFile->Register(m_setting.sModelPath);
-	CXFile::CXInfo *pModel = pXFile->GetAddress(m_uModelId);		// 登録したモデル
+	CXInfo *pModel = pXFile->GetAddress(m_uModelId);		// 登録したモデル
 
 	// CXFile::Register は読み込み失敗時も番号を返すため、保存されたパスも確認する
 	if (pModel == nullptr || pModel->GetFilePath() != m_setting.sModelPath) return E_FAIL;
@@ -209,7 +209,7 @@ void CModelParticle::Draw(void)
 
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();		// デバイス
 	CTexture *pTexture = CTexture::GetInstance();		// テクスチャ管理
-	CXFile::CXInfo *pModel = CXFile::GetInstance()->GetAddress(m_uModelId);		// 描画するモデル
+	CXInfo *pModel = CXFile::GetInstance()->GetAddress(m_uModelId);		// 描画するモデル
 	D3DMATERIAL9 matDef;		// 現在のマテリアル保存用
 
 	if (pModel == nullptr) return;

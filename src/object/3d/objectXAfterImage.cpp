@@ -64,7 +64,7 @@ HRESULT CObjectXAfterImage::Init(std::string_view pFilename,
 	// XFILE読み込み
 	m_uIdxXInfo = CXFile::GetInstance()->Register(pFilename);
 
-	return (m_uIdxXInfo == INVALID_XFILE_ID) ? E_FAIL : S_OK;
+	return (IResourceable::IsValid(m_uIdxXInfo) == false) ? E_FAIL : S_OK;
 }
 
 //==================================================================================
@@ -99,7 +99,7 @@ void CObjectXAfterImage::Draw(void)
 	CTexture *pTexture = CTexture::GetInstance();			// テクスチャへのポインタ
 	CXFile *pXFile = CXFile::GetInstance();					// XFILEへのポインタ
 	D3DMATERIAL9 matDef;				// 現在のマテリアル保存用
-	CXFile::CXInfo *pInfo = nullptr;	// XFILE情報へのポインタ
+	CXInfo *pInfo = nullptr;			// XFILE情報へのポインタ
 	Matrix mtxWorld = m_mtxWorld;		// ワールドマトリックス
 
 	//描画するためにXFILE情報を取得
