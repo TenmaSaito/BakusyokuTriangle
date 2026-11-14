@@ -76,7 +76,7 @@ private:
 
 	CStage *m_pStage = nullptr;				// 親にするステージへのポインタ
 	std::vector<Piece> m_vPiece;			// モデル1個ごとの情報
-	UINT m_uModelId = INVALID_XFILE_ID;		// 登録済みモデルのインデックス
+	UINT m_uModelId = IResourceable::INVALID_RESOURCE_ID;		// 登録済みモデルのインデックス
 	Setting m_setting = {};					// 設定
 };
 #endif

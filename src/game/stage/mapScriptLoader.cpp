@@ -81,7 +81,7 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 			Vector3 pos = VECTOR3_NULL;		// 位置
 			Vector2 size = VECTOR2_NULL;	// サイズ
 			int nTime = 0;					// 制限時間
-			int nIdxTexture = INVALID_TEX_ID;	// テクスチャ無効値
+			int nIdxTexture = IResourceable::INVALID_RESOURCE_ID;	// テクスチャ無効値
 
 			while (1)
 			{ // プレイヤーの設置に必要な各情報を読み込み
