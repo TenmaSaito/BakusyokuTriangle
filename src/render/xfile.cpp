@@ -22,15 +22,6 @@ namespace
 }
 
 //==================================================================================
-// --- インスタンス取得処理 ---
-//==================================================================================
-CXFile *CXFile::GetInstance(void)
-{
-	static CXFile instance;		// インスタンス
-	return &instance;
-}
-
-//==================================================================================
 // --- コンストラクタ ---
 //==================================================================================
 CXFile::CXFile()
@@ -73,53 +64,40 @@ void CXFile::Unload(void)
 //==================================================================================
 // --- XFILEの登録処理 ---
 //==================================================================================
-UINT CXFile::Register(std::string_view path)
+UINT CXFile::RegisterImpl(std::string_view path)
 { // ファイル名がnullもしくはインデックスが無効値手前の場合失敗
-	if (path.empty()) return INVALID_XFILE_ID;
-	if (m_vXInfo.size() == INVALID_XFILE_ID - 1U) return INVALID_XFILE_ID;
+	if (path.empty()) return INVALID_RESOURCE_ID;
+	if (m_vXInfo.size() == INVALID_RESOURCE_ID - 1U) return INVALID_RESOURCE_ID;
 
-	// 既に読み込んでいないかを確認
-	for (int nCntXFile = 0; nCntXFile < static_cast<int>(m_vXInfo.size()); nCntXFile++)
-	{
-		if (m_vXInfo[nCntXFile].GetFilePath() == path)
-		{ // 既に読み込み済みのテクスチャなら、そのインデックスを返す
-			return static_cast<UINT>(nCntXFile);
-		}
-	}
-
-	// 新規で読み込み
-	return Load(path);
-}
-
-//==================================================================================
-// --- XFILEの登録処理 (nullptr対策) ---
-//==================================================================================
-UINT CXFile::Register(const char *pPath)
-{ // nullptrの場合、無効値を渡す
-	if (pPath == nullptr) return INVALID_XFILE_ID;
-
-	// 存在すれば正式に処理を呼び出す
-	return Register(std::string_view(pPath));
+	// 既に読み込んでいないかを確認し、読み込んでいない場合は新規で読み込み
+	UINT uIdx = IsAlreadyRegister(path);
+	return (IResourceable::IsValid(uIdx) == true) ? uIdx :  Load(path);
 }
 
 //==================================================================================
 // --- XFILEの事前登録処理 ---
 //==================================================================================
-UINT CXFile::PreRegister(std::string path)
+UINT CXFile::PreRegister(std::string_view path)
 { // 登録済みならインデックスを返す
-	if (UINT uIdx = IsAlreadyRegister(path) != -1) return uIdx;
+	for (int nCntTexture = 0; nCntTexture < static_cast<int>(m_vsPathPreLoad.size()); nCntTexture++)
+	{ // 既に登録されていないかを確認
+		if (m_vsPathPreLoad[static_cast<UINT>(nCntTexture)] == path)
+		{ // 既に読み込み済みのテクスチャなら、そのインデックスを返す
+			return static_cast<UINT>(nCntTexture);
+		}
+	}
 
 	UINT uIdx = m_vsPathPreLoad.size();		// インデックス
-	m_vsPathPreLoad.push_back(path);		// パスを登録
+	m_vsPathPreLoad.push_back(std::string(path));		// パスを登録
 	return uIdx;
 }
 
 //==================================================================================
 // --- 読み込んだXFILEの取得処理 ---
 //==================================================================================
-CXFile::CXInfo *CXFile::GetAddress(const UINT uIdx)
+CXInfo *CXFile::GetAddress(const UINT uIdx)
 { // 無効なインデックスならnullptrを返す
-	if (uIdx >= m_vXInfo.size() || uIdx == INVALID_XFILE_ID) return nullptr;
+	if (uIdx >= m_vXInfo.size() || IResourceable::IsValid(uIdx) == false) return nullptr;
 
 	// XInfoへのポインタを返す
 	return &m_vXInfo[uIdx];
@@ -139,7 +117,7 @@ UINT CXFile::IsAlreadyRegister(std::string_view path)
 		}
 	}
 
-	return INVALID_XFILE_ID;
+	return INVALID_RESOURCE_ID;
 }
 
 //==================================================================================
@@ -161,7 +139,7 @@ UINT CXFile::Load(std::string_view path)
 //==================================================================================
 // --- 初期化処理 ---
 //==================================================================================
-HRESULT CXFile::CXInfo::Init(std::string_view path)
+HRESULT CXInfo::Init(std::string_view path)
 {
 	CManager *pManager = CManager::GetInstance();			// マネージャーへのポインタ
 	CRenderer *pRenderer = pManager->GetRenderer();			// レンダラーへのポインタ
@@ -243,7 +221,7 @@ HRESULT CXFile::CXInfo::Init(std::string_view path)
 //==================================================================================
 // --- 終了処理 ---
 //==================================================================================
-void CXFile::CXInfo::Uninit(void)
+void CXInfo::Uninit(void)
 {
 	// メッシュを解放
 	SafeRelease(m_pMesh);
@@ -258,7 +236,7 @@ void CXFile::CXInfo::Uninit(void)
 //==================================================================================
 // --- レイとの処衝突判定処理 ---
 //==================================================================================
-bool CXFile::CXInfo::IsHitByRay(const Vector3 &start,
+bool CXInfo::IsHitByRay(const Vector3 &start,
 	const Vector3 &vec, 
 	const float fLength,
 	const Matrix *pMtxInv)

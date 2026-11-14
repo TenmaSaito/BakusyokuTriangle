@@ -37,15 +37,6 @@ namespace
 }
 
 //==================================================================================
-// --- インスタンス取得処理 ---
-//==================================================================================
-CTexture *CTexture::GetInstance(void)
-{
-	static CTexture instance;		// インスタンス
-	return &instance;
-}
-
-//==================================================================================
 // --- コンストラクタ ---
 //==================================================================================
 CTexture::CTexture()
@@ -63,14 +54,12 @@ CTexture::~CTexture()
 //==================================================================================
 // --- 既存テクスチャの読み込み処理 ---
 //==================================================================================
-HRESULT CTexture::Load(void)
+void CTexture::Load(void)
 {
 	for (const auto &path : c_asPrimitivePath)
 	{ // 事前に用意されたテクスチャを読み込み
 		Register(path);
 	}
-
-	return S_OK;
 }
 
 //==================================================================================
@@ -97,10 +86,10 @@ void CTexture::Unload(void)
 //==================================================================================
 // --- テクスチャの登録処理 ---
 //==================================================================================
-UINT CTexture::Register(std::string_view path)
+UINT CTexture::RegisterImpl(std::string_view path)
 { // ファイル名がnullもしくはインデックスが無効値手前の場合失敗
-	if (path.empty()) return INVALID_TEX_ID;
-	if (m_vTexBuff.size() == INVALID_TEX_ID - 1U) return INVALID_TEX_ID;
+	if (path.empty()) return INVALID_RESOURCE_ID;
+	if (m_vTexBuff.size() == INVALID_RESOURCE_ID - 1U) return INVALID_RESOURCE_ID;
 
 	// 既に読み込んでいないかを確認
 	for (UINT uCntTexture = 0; uCntTexture < m_vTexBuff.size(); uCntTexture++)
@@ -116,14 +105,21 @@ UINT CTexture::Register(std::string_view path)
 }
 
 //==================================================================================
-// --- テクスチャの登録処理 (nullptr対策) ---
+// --- テクスチャの事前登録処理 ---
 //==================================================================================
-UINT CTexture::Register(const char *pPath)
-{ // nullptrの場合、無効値を渡す
-	if (pPath == nullptr) return INVALID_TEX_ID;
+UINT CTexture::PreRegister(std::string_view path)
+{ // 登録済みならインデックスを返す
+	for (int nCntTexture = 0; nCntTexture < static_cast<int>(m_vsPathPreLoad.size()); nCntTexture++)
+	{ // 既に登録されていないかを確認
+		if (m_vsPathPreLoad[static_cast<UINT>(nCntTexture)] == path)
+		{ // 既に読み込み済みのテクスチャなら、そのインデックスを返す
+			return static_cast<UINT>(nCntTexture);
+		}
+	}
 
-	// 存在すれば正式に処理を呼び出す
-	return Register(std::string_view(pPath));
+	UINT uIdx = m_vsPathPreLoad.size();					// インデックス
+	m_vsPathPreLoad.push_back(std::string(path));		// パスを登録
+	return uIdx;
 }
 
 //==================================================================================
@@ -131,7 +127,7 @@ UINT CTexture::Register(const char *pPath)
 //==================================================================================
 LPDIRECT3DTEXTURE9 CTexture::GetAddress(const UINT uIdx)
 { // 無効なインデックスならnullptrを返す
-	if (uIdx >= m_vTexBuff.size() || uIdx == INVALID_TEX_ID) return nullptr;
+	if (uIdx >= m_vTexBuff.size() || IResourceable::IsValid(uIdx) == false) return nullptr;
 
 	// テクスチャへのポインタを返す
 	return m_vTexBuff[uIdx].pTexture;
@@ -145,7 +141,7 @@ UINT CTexture::Load(std::string_view path)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();	// テクスチャの読み込み
 	UINT uIdxTex = m_vTexBuff.size();		// テクスチャのインデックス
 	HRESULT hr = S_OK;			// 処理結果
-	BUFFER texbuf = {};			// テクスチャのバッファ
+	Buffer texbuf = {};			// テクスチャのバッファ
 
 	// テクスチャを読み込み
 	hr = D3DXCreateTextureFromFile(pDevice,
@@ -153,7 +149,7 @@ UINT CTexture::Load(std::string_view path)
 		&texbuf.pTexture);
 	if (FAILED(hr))
 	{ // 読み込み失敗時、無効値を返す
-		return INVALID_TEX_ID;
+		return INVALID_RESOURCE_ID;
 	}
 	
 	// ファイル名を保存
