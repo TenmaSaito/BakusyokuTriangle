@@ -18,6 +18,7 @@
 #include "render/camera.h"
 #include "game/player/playerCamera.h"
 #include "render/light.h"
+#include "core/resourceManager.h"
 #include "render/texture.h"
 #include "render/xfile.h"
 #include "scene/transition/sceneTransition.h"
@@ -227,11 +228,8 @@ HRESULT CManager::Init(const HINSTANCE hInstance, const HWND hWnd, const BOOL bW
 		}
 	}
 
-	// テクスチャの読み込み
-	CTexture::GetInstance()->Load();
-
-	// モデルの読み込み
-	CXFile::GetInstance()->Load();
+	// リソースの読み込み
+	CResourceManager::GetInstance()->LoadAll();
 
 	// ライトの生成
 	m_pLight = std::make_unique<CLight>();
@@ -261,11 +259,8 @@ void CManager::Uninit(void)
 	// 全カメラの破棄、終了処理
 	CCamera::ReleaseAll();
 
-	// XFILEの破棄
-	CXFile::GetInstance()->Unload();
-
-	// テクスチャの破棄
-	CTexture::GetInstance()->Unload();
+	// リソースの破棄
+	CResourceManager::GetInstance()->UnloadAll();
 
 	// ポーズオブジェクトの破棄
 	SafeUniqueUninit(m_pPause);
