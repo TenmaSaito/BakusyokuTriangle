@@ -75,8 +75,11 @@ std::vector<std::string> StringUtil::Split(std::string_view source, const char d
 	std::vector<std::string> vSplit;		// •ªŠ„‚µ‚½•¶š—ñŒQ
 
 	for (const auto &split : splitRng)
-	{ // •ªŠ„‚µ‚½•¶š—ñ‚ğ‘ã“ü
-		vSplit.emplace_back(split.data());
+	{ // •ªŠ„‚µ‚½•¶š—ñ‚Ì‘OŒã‚Ì‹ó”’‚ğæ‚èœ‚¢‚Ä’Ç‰Á
+		std::string_view elem(split.begin(), split.end());
+		size_t first = elem.find_first_not_of(" \t");
+		size_t last = elem.find_last_not_of(" \t");
+		vSplit.emplace_back((first == std::string_view::npos) ? std::string_view() : elem.substr(first, last - first + 1));
 	}
 
 	return vSplit;
