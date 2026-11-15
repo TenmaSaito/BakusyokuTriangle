@@ -234,6 +234,7 @@
     <ClCompile Include="src\ui\score.cpp" />
     <ClCompile Include="src\ui\timer.cpp" />
     <ClCompile Include="src\util\filestream.cpp" />
+    <ClCompile Include="src\util\stringUtil.cpp" />
     <ClCompile Include="src\util\util.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -320,6 +321,7 @@
     <ClInclude Include="include\ui\timer.h" />
     <ClInclude Include="include\util\enumUtil.h" />
     <ClInclude Include="include\util\filestream.h" />
+    <ClInclude Include="include\util\stringUtil.h" />
     <ClInclude Include="include\util\util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

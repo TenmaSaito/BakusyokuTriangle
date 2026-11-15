@@ -9,6 +9,7 @@
 //**********************************************************************************
 #include "game/stage/mapScriptLoader.h"
 #include "util/filestream.h"
+#include "util/stringUtil.h"
 #include "core/manager.h"
 #include "render/texture.h"
 #include "ui/timer.h"
@@ -24,7 +25,7 @@ namespace
 	//==================================================================================
 	// --- コメント・タブスペースを消去した文字列の一列読み込み処理 ---
 	//==================================================================================
-	std::optional<std::string> ReadCleanLine(CFile &file)
+	std::optional<std::string> ReadCleanLine(CFileStream &file)
 	{ // 文字列を一列読み込み、読み込めなかった場合は無効値を返す
 		std::optional<std::string> line = file.ReadLine();
 		if (line.has_value() == false) return std::nullopt;
@@ -65,11 +66,11 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 	std::optional<std::string> line;		// 読み込んだ文字列
 	CManager *pManager = CManager::GetInstance();			// マネージャへのポインタ
 	CTexture *pTexture = CTexture::GetInstance();			// テクスチャへのポインタ
-	std::unique_ptr pFile = std::make_unique<CFile>();		// ファイルストリームへのポインタ
+	std::unique_ptr pFile = std::make_unique<CFileStream>();		// ファイルストリームへのポインタ
 	std::vector<IParentable*> vpParentable;		// 親マトリックスの設定可能なオブジェクト
 	CStage *pStage = nullptr;				// ステージへのポインタ
 
-	if (pFile->Open(path, CFile::MODE::READ) == false)
+	if (pFile->Open(path, CFileStream::MODE::READ) == false)
 	{ // ファイルオープン失敗時
 		hr = E_FAIL;
 		return hr;
@@ -84,7 +85,7 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 			hr = S_FALSE;
 			return hr;
 		}
-		else if (pFile->FindString(*line, "SCRIPT") == true)
+		else if (StringUtil::Contains(*line, "SCRIPT") == true)
 		{ // 見つかった場合
 			break;
 		}
@@ -94,11 +95,11 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 	{ // 各オブジェクトを配置
 		// 文字列を一列読み込み
 		line = pFile->ReadLine();
-		if (line.has_value() == false || pFile->FindString(*line, "END_SCRIPT"))
+		if (line.has_value() == false || StringUtil::Contains(*line, "END_SCRIPT"))
 		{ // 読み込み終了
 			break;
 		}
-		else if (pFile->FindString(*line, "TIMERSET"))
+		else if (StringUtil::Contains(*line, "TIMERSET"))
 		{ // タイマーの設置キーワードの場合
 			std::string sTexturePath;		// テクスチャのパス
 			Vector3 pos = VECTOR3_NULL;		// 位置
@@ -108,8 +109,6 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 
 			while (1)
 			{ // プレイヤーの設置に必要な各情報を読み込み
-				size_t find = 0U;		// 見つけた文字列の位置
-
 				// コメント・タブスペースを消去した文字列を一列読み込み
 				std::optional<std::string> data = ReadCleanLine(*pFile);
 				if (data.has_value() == false)
@@ -118,31 +117,31 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 				}
 				std::string &sLine = data.value();		// 読み込んだ文字列
 
-				if (pFile->FindString(sLine,"END_TIMERSET"))
+				if (StringUtil::Contains(sLine, "END_TIMERSET"))
 				{ // タイマーの情報が終了した場合、設置
 					CTimer::Create(pos, size, Util::GetNumInt(nTime), nTime, pTexture->Register(sTexturePath));
 					break;
 				}
-				else if (pFile->FindString(sLine,"POS = ", &find, true))
+				else if (auto value = StringUtil::GetValue(sLine, "POS = "))
 				{ // 位置の情報だった場合、読み込み
-					pos = pFile->ToVector3(&sLine[find]);
+					pos = StringUtil::ToVector3(*value);
 				}
-				else if (pFile->FindString(sLine,"SIZE = ", &find, true))
+				else if (auto value = StringUtil::GetValue(sLine, "SIZE = "))
 				{ // 位置の情報だった場合、読み込み
-					size = pFile->ToVector2(&sLine[find]);
+					size = StringUtil::ToVector2(*value);
 				}
-				else if (pFile->FindString(sLine,"TIME = ", &find, true))
+				else if (auto value = StringUtil::GetValue(sLine, "TIME = "))
 				{ // 制限時間の情報だった場合、読み込み
-					nTime = pFile->ToInt(&sLine[find]);
+					nTime = StringUtil::ToInt(*value);
 				}
-				else if (pFile->FindString(sLine,"TEXTURE_FILENAME = ", &find, true))
+				else if (auto value = StringUtil::GetValue(sLine, "TEXTURE_FILENAME = "))
 				{ // テクスチャパス情報だった場合、コメント消去後読み込み
-					std::string_view filename = &sLine[find];		// 見つかった文字列
+					std::string_view filename = *value;		// 見つかった文字列
 					sTexturePath = filename;		// モデルのパスを保存
 				}
 			}
 		}
-		else if (pFile->FindString(*line, "PLAYERSET"))
+		else if (StringUtil::Contains(*line, "PLAYERSET"))
 		{ // プレイヤーの設置キーワードの場合
 			std::string sModelPath;			// モデルのパス
 			Vector3 pos = VECTOR3_NULL;		// 位置
@@ -150,8 +149,6 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 
 			while (1)
 			{ // プレイヤーの設置に必要な各情報を読み込み
-				size_t find = 0U;		// 見つけた文字列の位置
-
 				// コメント・タブスペースを消去した文字列を一列読み込み
 				std::optional<std::string> data = ReadCleanLine(*pFile);
 				if (data.has_value() == false)
@@ -160,28 +157,28 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 				}
 				std::string &sLine = data.value();		// 読み込んだ文字列
 
-				if (pFile->FindString(sLine,"END_PLAYERSET"))
+				if (StringUtil::Contains(sLine, "END_PLAYERSET"))
 				{ // プレイヤーの情報が終了した場合、設置
 					CPlayer *pPlayer = CPlayer::Create(sModelPath.c_str(), pos, fRadius);
 					vpParentable.push_back(pPlayer);
 					break;
 				}
-				else if (pFile->FindString(sLine,"POS = ", &find, true))
+				else if (auto value = StringUtil::GetValue(sLine, "POS = "))
 				{ // 位置の情報だった場合、読み込み
-					pos = pFile->ToVector3(&sLine[find]);
+					pos = StringUtil::ToVector3(*value);
 				}
-				else if (pFile->FindString(sLine,"RADIUS = ", &find, true))
+				else if (auto value = StringUtil::GetValue(sLine, "RADIUS = "))
 				{ // 位置の情報だった場合、読み込み
-					fRadius = pFile->ToFloat(&sLine[find]);
+					fRadius = StringUtil::ToFloat(*value);
 				}
-				else if (pFile->FindString(sLine,"MODEL_FILENAME = ", &find, true))
+				else if (auto value = StringUtil::GetValue(sLine, "MODEL_FILENAME = "))
 				{ // モデルパス情報だった場合、コメント消去後読み込み
-					std::string_view filename = &sLine[find];		// 見つかった文字列
+					std::string_view filename = *value;		// 見つかった文字列
 					sModelPath = filename;		// モデルのパスを保存
 				}
 			}
 		}
-		else if (pFile->FindString(*line, "FIELDSET"))
+		else if (StringUtil::Contains(*line, "FIELDSET"))
 		{ // 床の設置キーワードの場合
 			std::string sTexturePath;		// テクスチャのパス
 			Vector3 pos = VECTOR3_NULL;		// 位置
@@ -189,8 +186,6 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 
 			while (1)
 			{ // 床の設置に必要な各情報を読み込み
-				size_t find = 0U;		// 見つけた文字列の位置
-
 				// コメント・タブスペースを消去した文字列を一列読み込み
 				std::optional<std::string> data = ReadCleanLine(*pFile);
 				if (data.has_value() == false)
@@ -199,28 +194,28 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 				}
 				std::string &sLine = data.value();		// 読み込んだ文字列
 
-				if (pFile->FindString(sLine,"END_FIELDSET"))
+				if (StringUtil::Contains(sLine, "END_FIELDSET"))
 				{ // 床の情報が終了した場合、設置
 					pStage = CStage::Create(pos, VECTOR3_NULL, size);
 					pStage->BindTexture(pTexture->Register(sTexturePath));
 					break;
 				}
-				else if (pFile->FindString(sLine,"POS = ", &find, true))
+				else if (auto value = StringUtil::GetValue(sLine, "POS = "))
 				{ // 位置の情報だった場合、読み込み
-					pos = pFile->ToVector3(&sLine[find]);
+					pos = StringUtil::ToVector3(*value);
 				}
-				else if (pFile->FindString(sLine,"SIZE = ", &find, true))
+				else if (auto value = StringUtil::GetValue(sLine, "SIZE = "))
 				{ // サイズの情報だった場合、読み込み
-					size = pFile->ToVector2(&sLine[find]);
+					size = StringUtil::ToVector2(*value);
 				}
-				else if (pFile->FindString(sLine,"TEXTURE_FILENAME = ", &find, true))
+				else if (auto value = StringUtil::GetValue(sLine, "TEXTURE_FILENAME = "))
 				{ // テクスチャパス情報だった場合、コメント消去後読み込み
-					std::string_view filename = &sLine[find];		// 見つかった文字列
+					std::string_view filename = *value;		// 見つかった文字列
 					sTexturePath = filename;		// テクスチャのパスを保存
 				}
 			}
 		}
-		else if (pFile->FindString(*line, "WALLSET"))
+		else if (StringUtil::Contains(*line, "WALLSET"))
 		{ // 壁の設置キーワードの場合
 			std::string sTexturePath;		// テクスチャのパス
 			Vector3 pos = VECTOR3_NULL;		// 位置
@@ -229,8 +224,6 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 
 			while (1)
 			{ // 壁の設置に必要な各情報を読み込み
-				size_t find = 0U;		// 見つけた文字列の位置
-
 				// コメント・タブスペースを消去した文字列を一列読み込み
 				std::optional<std::string> data = ReadCleanLine(*pFile);
 				if (data.has_value() == false)
@@ -239,28 +232,28 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 				}
 				std::string &sLine = data.value();		// 読み込んだ文字列
 
-				if (pFile->FindString(sLine,"END_WALLSET"))
+				if (StringUtil::Contains(sLine, "END_WALLSET"))
 				{ // 壁の情報が終了した場合、設置
 					CWall *pWall = CWall::Create(pos, rot, size);
 					pWall->BindTexture(pTexture->Register(sTexturePath));
 					vpParentable.push_back(pWall);
 					break;
 				}
-				else if (pFile->FindString(sLine,"POS = ", &find, true))
+				else if (auto value = StringUtil::GetValue(sLine, "POS = "))
 				{ // 位置の情報だった場合、読み込み
-					pos = pFile->ToVector3(&sLine[find]);
+					pos = StringUtil::ToVector3(*value);
 				}
-				else if (pFile->FindString(sLine,"ROT = ", &find, true))
+				else if (auto value = StringUtil::GetValue(sLine, "ROT = "))
 				{ // 位置の情報だった場合、読み込み
-					rot = pFile->ToVector3(&sLine[find]);
+					rot = StringUtil::ToVector3(*value);
 				}
-				else if (pFile->FindString(sLine,"SIZE = ", &find, true))
+				else if (auto value = StringUtil::GetValue(sLine, "SIZE = "))
 				{ // サイズの情報だった場合、読み込み
-					size = pFile->ToVector2(&sLine[find]);
+					size = StringUtil::ToVector2(*value);
 				}
-				else if (pFile->FindString(sLine,"TEXTURE_FILENAME = ", &find, true))
+				else if (auto value = StringUtil::GetValue(sLine, "TEXTURE_FILENAME = "))
 				{ // テクスチャパス情報だった場合、コメント消去後読み込み
-					std::string_view filename = &sLine[find];		// 見つかった文字列
+					std::string_view filename = *value;		// 見つかった文字列
 					sTexturePath = filename;		// テクスチャのパスを保存
 				}
 			}

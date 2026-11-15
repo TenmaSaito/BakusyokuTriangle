@@ -13,14 +13,14 @@
 //==================================================================================
 // --- コンストラクタ ---
 //==================================================================================
-CFile::CFile() noexcept
+CFileStream::CFileStream() noexcept
 {
 }
 
 //==================================================================================
 // --- デストラクタ ---
 //==================================================================================
-CFile::~CFile()
+CFileStream::~CFileStream()
 { // ファイルクローズ
 	Close();
 }
@@ -28,7 +28,7 @@ CFile::~CFile()
 //==================================================================================
 // --- ファイルオープン処理 ---
 //==================================================================================
-bool CFile::Open(std::string_view sPath, const MODE mode, const bool bBinary)
+bool CFileStream::Open(std::string_view sPath, const MODE mode, const bool bBinary)
 { // ファイルを閉じる
 	Close();
 
@@ -85,7 +85,7 @@ bool CFile::Open(std::string_view sPath, const MODE mode, const bool bBinary)
 //==================================================================================
 // --- ファイルクローズ処理 ---
 //==================================================================================
-void CFile::Close(void)
+void CFileStream::Close(void)
 {
 	m_fstream = std::monostate{};		// ファイルを閉じる
 	m_filename.clear();		// ファイル名をリセット
@@ -95,7 +95,7 @@ void CFile::Close(void)
 //==================================================================================
 // --- ファイルのオープン確認処理 ---
 //==================================================================================
-bool CFile::IsOpen(void) const 
+bool CFileStream::IsOpen(void) const 
 { // 空なら失敗
 	if (IsState(STATE::INVALID)) return false;
 	
@@ -112,7 +112,7 @@ bool CFile::IsOpen(void) const
 //==================================================================================
 // --- ファイルの状態確認処理 ---
 //==================================================================================
-bool CFile::IsState(const STATE state) const
+bool CFileStream::IsState(const STATE state) const
 {
 	switch (state)
 	{
@@ -131,9 +131,23 @@ bool CFile::IsState(const STATE state) const
 }
 
 //==================================================================================
+// --- EOFの確認処理 ---
+//==================================================================================
+bool CFileStream::IsEoF(void) const
+{ // ファイルのオープン確認
+	if (IsState(STATE::READ) == false)
+	{ // 入力ストリームでファイルが開かれていなければ、失敗扱い
+		return false;
+	}
+
+	// ファイルのEOFを返す
+	return Get<std::ifstream>().eof();
+}
+
+//==================================================================================
 // --- テキストファイルからの1行読み込み処理 ---
 //==================================================================================
-std::optional<std::string> CFile::ReadLine(void)
+std::optional<std::string> CFileStream::ReadLine(void)
 { // 入力ストリーム以外もしくはフラグが無効の場合、無効値を返す
 	if (IsState(STATE::READ) == false || m_bBinary == true) return std::nullopt;
 
@@ -147,7 +161,7 @@ std::optional<std::string> CFile::ReadLine(void)
 //==================================================================================
 // --- テキストファイルからの1文読み込み処理 ---
 //==================================================================================
-std::optional<std::string> CFile::ReadWord(void)
+std::optional<std::string> CFileStream::ReadWord(void)
 { // 入力ストリーム以外もしくはフラグが無効の場合、無効値を返す
 	if (IsState(STATE::READ) == false || m_bBinary == true) return std::nullopt;
 
@@ -161,7 +175,7 @@ std::optional<std::string> CFile::ReadWord(void)
 //==================================================================================
 // --- テキストファイルからの特定の文字までの読み込み処理 ---
 //==================================================================================
-std::optional<std::string> CFile::ReadUntil(const char cDelim)
+std::optional<std::string> CFileStream::ReadUntil(const char cDelim)
 { // 入力ストリーム以外もしくはフラグが無効の場合、無効値を返す
 	if (IsState(STATE::READ) == false || m_bBinary == true) return std::nullopt;
 
@@ -175,7 +189,7 @@ std::optional<std::string> CFile::ReadUntil(const char cDelim)
 //==================================================================================
 // --- テキストファイルへの文字列の書き出し処理 ---
 //==================================================================================
-bool CFile::WriteString(std::string_view out)
+bool CFileStream::WriteString(std::string_view out)
 { // 出力ストリーム以外もしくはフラグが無効の場合、無効値を返す
 	if (IsState(STATE::WRITE) == false || m_bBinary == true) return false;
 
@@ -187,7 +201,7 @@ bool CFile::WriteString(std::string_view out)
 //==================================================================================
 // --- バイナリファイルからの読み込み処理 ---
 //==================================================================================
-bool CFile::ReadBytes(std::span<std::byte> in)
+bool CFileStream::ReadBytes(std::span<std::byte> in)
 { // ストリームもしくはフラグが無効なら失敗
 	if (IsState(STATE::READ) == false || m_bBinary == false) return false;
 
@@ -202,7 +216,7 @@ bool CFile::ReadBytes(std::span<std::byte> in)
 //==================================================================================
 // --- バイナリファイルへの書き込み処理 ---
 //==================================================================================
-bool CFile::WriteBytes(std::span<const std::byte> out)
+bool CFileStream::WriteBytes(std::span<const std::byte> out)
 { // 出力ストリーム以外もしくはフラグが無効の場合、無効値を返す
 	if (IsState(STATE::WRITE) == false || m_bBinary == false) return false;
 
@@ -212,88 +226,4 @@ bool CFile::WriteBytes(std::span<const std::byte> out)
 	// バイナリデータを書き出し
 	Get<std::ofstream>().write(pOut, byte);
 	return static_cast<bool>(Get<std::ofstream>());
-}
-
-//==================================================================================
-// --- EOFの確認処理 ---
-//==================================================================================
-bool CFile::IsEoF(void) const
-{ // ファイルのオープン確認
-	if (std::holds_alternative<std::ifstream>(m_fstream) == false)
-	{ // 入力ストリームでファイルが開かれていなければ、失敗扱い
-		return false;
-	}
-
-	// ファイルのEOFを返す
-	return Get<std::ifstream>().eof();
-}
-
-//==================================================================================
-// --- 文字列から文字列を検索する処理 ---
-// 
-// pOut		: 検索した文字列の最初のインデックス
-// bSkip	: 検索した文字列の一番最後のインデックスを返すフラグ
-//==================================================================================
-bool CFile::FindString(std::string_view source,
-	std::string_view s,
-	size_t *pOut,
-	const bool bSkip)
-{ // 文字列検索
-	size_t pos = source.find(s);		// 見つかったインデックス
-
-	// nullじゃなければ、見つかったインデックスを返す
-	if (pOut) *pOut = (bSkip) ? pos + s.length() : pos;
-
-	// 文字列が見つかったかの判定を返す
-	return pos != std::string::npos;
-}
-
-//==================================================================================
-// --- 文字列からのVector2読み込み処理 ---
-//==================================================================================
-Vector2 CFile::ToVector2(const char *pStr, char **ppEnd, const bool bInt)
-{
-	char *pNext = nullptr;		// 次の開始位置へのポインタ
-	Vector2 ret;				// 結果
-
-	if (bInt)
-	{ // Intとして読み込み
-		ret.x = static_cast<float>(ToInt(pStr, &pNext));
-		ret.y = static_cast<float>(ToInt(pNext, &pNext));
-		if (ppEnd) *ppEnd = pNext;
-		return ret;
-	}
-	else
-	{ // Floatとして読み込み
-		ret.x = static_cast<float>(ToFloat(pStr, &pNext));
-		ret.y = static_cast<float>(ToFloat(pNext, &pNext));
-		if (ppEnd) *ppEnd = pNext;
-		return ret;
-	}
-}
-
-//==================================================================================
-// --- 文字列からのVector3読み込み処理 ---
-//==================================================================================
-Vector3 CFile::ToVector3(const char *pStr, char **ppEnd, const bool bInt)
-{
-	char *pNext = nullptr;		// 次の開始位置へのポインタ
-	Vector3 ret;				// 結果
-
-	if (bInt)
-	{ // Intとして読み込み
-		ret.x = static_cast<float>(ToInt(pStr, &pNext));
-		ret.y = static_cast<float>(ToInt(pNext, &pNext));
-		ret.z = static_cast<float>(ToInt(pNext, &pNext));
-		if (ppEnd) *ppEnd = pNext;
-		return ret;
-	}
-	else
-	{ // Floatとして読み込み
-		ret.x = static_cast<float>(ToFloat(pStr, &pNext));
-		ret.y = static_cast<float>(ToFloat(pNext, &pNext));
-		ret.z = static_cast<float>(ToFloat(pNext, &pNext));
-		if (ppEnd) *ppEnd = pNext;
-		return ret;
-	}
 }

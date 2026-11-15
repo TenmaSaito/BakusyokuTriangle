@@ -15,7 +15,6 @@
 #include <fstream>
 #include <string>
 #include <string_view>
-#include <format>
 #include <variant>
 #include <optional>
 #include <span>
@@ -23,7 +22,7 @@
 //**********************************************************************************
 // *** ファイル入出力クラス ***
 //**********************************************************************************
-class CFile
+class CFileStream
 {
 public:
 	// ファイルオープンモード
@@ -45,16 +44,17 @@ public:
 		MAX
 	};
 
-	CFile() noexcept;
-	CFile(const CFile &file) = delete;
-	CFile(CFile &&other) noexcept = default;
-	~CFile();
+	CFileStream() noexcept;
+	CFileStream(const CFileStream &file) = delete;
+	CFileStream(CFileStream &&other) noexcept = default;
+	~CFileStream();
 
 	// File Relation Function
 	bool Open(std::string_view sFilename, const MODE mode, const bool bBinary = false);
 	void Close(void);
 	bool IsOpen(void) const;
 	bool IsState(const STATE state) const;
+	bool IsEoF(void) const;
 	uintmax_t GetSize(void) const { return m_size; }
 	std::string_view GetPath(void) const { return m_filename; }
 	std::variant<std::monostate, std::ifstream, std::ofstream> &GetStream(void) { return m_fstream; }
@@ -78,20 +78,8 @@ public:
 	template<class T> bool WriteType(const T &out);
 	template<class T> bool WriteType(std::span<const T> out);
 
-	static bool FindString(const std::string_view source, 
-		const std::string_view s,
-		size_t *pOut = nullptr,
-		const bool bSkip = false);
-	static int ToInt(const char *pStr, char **ppEnd = nullptr) { return std::strtol(pStr, ppEnd, 0); }
-	static float ToFloat(const char *pStr, char **ppEnd = nullptr) { return std::strtof(pStr, ppEnd); }
-	static Vector2 ToVector2(const char *pStr, char **ppEnd = nullptr, const bool bInt = false);
-	static Vector3 ToVector3(const char *pStr, char **ppEnd = nullptr, const bool bInt = false);
-	bool IsEoF(void) const;
-
-	template<class... Args> static std::string ToString(std::_Fmt_string<Args...> fmt, Args... args);
-
-	CFile &operator=(const CFile &file) = delete;
-	CFile &operator=(CFile &&other) noexcept = default;
+	CFileStream &operator=(const CFileStream &file) = delete;
+	CFileStream &operator=(CFileStream &&other) noexcept = default;
 
 private:
 	template<class FStream> FStream &Get(void) { return std::get<FStream>(m_fstream); }
@@ -106,7 +94,7 @@ private:
 //==================================================================================
 // --- テキストファイルへの値の書き出し処理 ---
 //==================================================================================
-template<class T> bool CFile::WriteWord(const T &out)
+template<class T> bool CFileStream::WriteWord(const T &out)
 { // 出力ストリーム以外もしくはフラグが無効の場合、無効値を返す
 	if (IsState(STATE::WRITE) == false || m_bBinary == true) return false;
 
@@ -118,7 +106,7 @@ template<class T> bool CFile::WriteWord(const T &out)
 //==================================================================================
 // --- バイナリファイルからの値の読み込み処理 ---
 //==================================================================================
-template<class T> bool CFile::ReadType(T &in)
+template<class T> bool CFileStream::ReadType(T &in)
 { // 入力ストリーム以外もしくはフラグが無効の場合、無効値を返す
 	if (IsState(STATE::READ) == false || m_bBinary == false) return false;
 
@@ -130,7 +118,7 @@ template<class T> bool CFile::ReadType(T &in)
 //==================================================================================
 // --- バイナリファイルからの値の読み込み処理 (配列) ---
 //==================================================================================
-template<class T> bool CFile::ReadType(std::span<T> in)
+template<class T> bool CFileStream::ReadType(std::span<T> in)
 { // 入力ストリーム以外もしくはフラグが無効の場合、無効値を返す
 	if (IsState(STATE::READ) == false || m_bBinary == false) return false;
 
@@ -142,7 +130,7 @@ template<class T> bool CFile::ReadType(std::span<T> in)
 //==================================================================================
 // --- バイナリファイルへの値の書き出し処理 ---
 //==================================================================================
-template<class T> bool CFile::WriteType(const T &in)
+template<class T> bool CFileStream::WriteType(const T &in)
 { // 出力ストリーム以外もしくはフラグが無効の場合、無効値を返す
 	if (IsState(STATE::WRITE) == false || m_bBinary == false) return false;
 
@@ -154,20 +142,12 @@ template<class T> bool CFile::WriteType(const T &in)
 //==================================================================================
 // --- バイナリファイルへの値の書き出し処理 (配列) ---
 //==================================================================================
-template<class T> bool CFile::WriteType(const std::span<const T> in)
+template<class T> bool CFileStream::WriteType(const std::span<const T> in)
 { // 出力ストリーム以外もしくはフラグが無効の場合、無効値を返す
 	if (IsState(STATE::WRITE) == false || m_bBinary == false) return false;
 
 	// バイトデータ配列にキャストして書き出し
 	static_assert(std::is_trivially_copyable_v<T>);
 	return WriteBytes(std::as_bytes(in));
-}
-
-//==================================================================================
-// --- 文字列化のヘルパー関数 ---
-//==================================================================================
-template<class... Args> static std::string CFile::ToString(std::_Fmt_string<Args...> fmt, Args... args)
-{
-	return std::format(fmt, std::forward<Args>(args)...);
 }
 #endif // !_FILESTREAM_H_
