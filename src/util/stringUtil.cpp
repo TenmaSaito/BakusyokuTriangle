@@ -9,6 +9,7 @@
 //**********************************************************************************
 #include "util/stringUtil.h"
 #include <charconv>
+#include <ranges>
 
 //**********************************************************************************
 // *** 補助関数 ***
@@ -21,7 +22,7 @@ namespace
 	const char *SkipSpace(const char *pFirst, const char *pLast)
 	{ // 空白・タブ・'+'記号を読み飛ばす (from_charsは先頭の空白と'+'を受け付けないため)
 		while (pFirst != pLast && (*pFirst == ' ' || *pFirst == '\t' || *pFirst == '+'))
-		{
+		{ // 読み飛ばし終わるか最後の文字になるまで繰り返す
 			pFirst++;
 		}
 		return pFirst;
@@ -32,10 +33,12 @@ namespace
 	//==================================================================================
 	template<class T> const char *Parse(const char *pFirst, const char *pLast, T &out)
 	{ // 空白を読み飛ばしてから変換 (失敗時は0のまま)
-		out = T();
-		pFirst = SkipSpace(pFirst, pLast);
-		auto [pNext, ec] = std::from_chars(pFirst, pLast, out);
-		return (ec == std::errc()) ? pNext : pFirst;
+		out = T();		// コンストラクタにて初期化
+
+		// 先頭のスペースを読み飛ばす
+		pFirst = SkipSpace(pFirst, pLast);		
+		auto [pNext, ec] = std::from_chars(pFirst, pLast, out);		// タプルで変換結果とエラーを取得
+		return (ec == std::errc()) ? pNext : pFirst;				// エラーがない場合次の位置を返す
 	}
 }
 
@@ -59,6 +62,24 @@ std::optional<std::string_view> StringUtil::GetValue(std::string_view line, std:
 
 	// キーの後ろを返す
 	return line.substr(pos + key.length());
+}
+
+//==================================================================================
+// --- 文字列分割処理 ---
+//
+// 例 : Split("cat,dog,panda", ',') -> {"cat", "dog", "panda"}
+//==================================================================================
+std::vector<std::string> StringUtil::Split(std::string_view source, const char delim)
+{ // delimで文字列を分割
+	auto splitRng = source | std::ranges::views::split(delim);
+	std::vector<std::string> vSplit;		// 分割した文字列群
+
+	for (const auto &split : splitRng)
+	{ // 分割した文字列を代入
+		vSplit.emplace_back(split.data());
+	}
+
+	return vSplit;
 }
 
 //==================================================================================

@@ -21,6 +21,7 @@ namespace StringUtil
 	// •¶š—ñŒŸõ
 	bool Contains(std::string_view source, std::string_view find);
 	std::optional<std::string_view> GetValue(std::string_view line, std::string_view key);
+	std::vector<std::string> Split(std::string_view source, const char delim);
 
 	// ”’l•ÏŠ· (•ÏŠ·‚Å‚«‚È‚©‚Á‚½ê‡‚Í0‚ğ•Ô‚·)
 	int ToInt(std::string_view str);
