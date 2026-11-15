@@ -131,6 +131,20 @@ bool CFileStream::IsState(const STATE state) const
 }
 
 //==================================================================================
+// --- EOFの確認処理 ---
+//==================================================================================
+bool CFileStream::IsEoF(void) const
+{ // ファイルのオープン確認
+	if (IsState(STATE::READ) == false)
+	{ // 入力ストリームでファイルが開かれていなければ、失敗扱い
+		return false;
+	}
+
+	// ファイルのEOFを返す
+	return Get<std::ifstream>().eof();
+}
+
+//==================================================================================
 // --- テキストファイルからの1行読み込み処理 ---
 //==================================================================================
 std::optional<std::string> CFileStream::ReadLine(void)
@@ -212,18 +226,4 @@ bool CFileStream::WriteBytes(std::span<const std::byte> out)
 	// バイナリデータを書き出し
 	Get<std::ofstream>().write(pOut, byte);
 	return static_cast<bool>(Get<std::ofstream>());
-}
-
-//==================================================================================
-// --- EOFの確認処理 ---
-//==================================================================================
-bool CFileStream::IsEoF(void) const
-{ // ファイルのオープン確認
-	if (std::holds_alternative<std::ifstream>(m_fstream) == false)
-	{ // 入力ストリームでファイルが開かれていなければ、失敗扱い
-		return false;
-	}
-
-	// ファイルのEOFを返す
-	return Get<std::ifstream>().eof();
 }

@@ -54,6 +54,7 @@ public:
 	void Close(void);
 	bool IsOpen(void) const;
 	bool IsState(const STATE state) const;
+	bool IsEoF(void) const;
 	uintmax_t GetSize(void) const { return m_size; }
 	std::string_view GetPath(void) const { return m_filename; }
 	std::variant<std::monostate, std::ifstream, std::ofstream> &GetStream(void) { return m_fstream; }
@@ -76,8 +77,6 @@ public:
 	bool WriteBytes(std::span<const std::byte> out);
 	template<class T> bool WriteType(const T &out);
 	template<class T> bool WriteType(std::span<const T> out);
-
-	bool IsEoF(void) const;
 
 	CFileStream &operator=(const CFileStream &file) = delete;
 	CFileStream &operator=(CFileStream &&other) noexcept = default;
