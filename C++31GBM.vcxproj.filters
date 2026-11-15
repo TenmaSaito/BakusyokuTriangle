@@ -351,6 +351,9 @@
     <ClCompile Include="src\core\resourceManager.cpp">
       <Filter>src\core</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\script.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\core\Coroutine.h">
@@ -607,6 +610,9 @@
     </ClInclude>
     <ClInclude Include="include\util\stringUtil.h">
       <Filter>include\util</Filter>
+    </ClInclude>
+    <ClInclude Include="include\core\script.h">
+      <Filter>include\core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
