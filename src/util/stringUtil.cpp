@@ -69,9 +69,9 @@ std::optional<std::string_view> StringUtil::GetValue(std::string_view line, std:
 //
 // 例 : Split("cat,dog,panda", ',') -> {"cat", "dog", "panda"}
 //==================================================================================
-std::vector<std::string> StringUtil::Split(std::string_view source, const char delim)
+std::vector<std::string> StringUtil::Split(std::string_view source, const char cDelim)
 { // delimで文字列を分割
-	auto splitRng = source | std::ranges::views::split(delim);
+	auto splitRng = source | std::ranges::views::split(cDelim);
 	std::vector<std::string> vSplit;		// 分割した文字列群
 
 	for (const auto &split : splitRng)
@@ -83,6 +83,24 @@ std::vector<std::string> StringUtil::Split(std::string_view source, const char d
 	}
 
 	return vSplit;
+}
+
+//==================================================================================
+// --- 文字列のトリミング処理 ---
+//
+// 例 : Trim("  Hello World ", " ") -> "Hello World"
+//==================================================================================
+std::string StringUtil::Trim(std::string_view source, std::string_view trim)
+{
+	// trimするとき削除する文字以外の最初の文字の位置を取得します。
+	size_t start = source.find_first_not_of(trim);
+	if (start == std::string_view::npos) return std::string();
+
+	// trimするとき削除する文字以外の最後の文字の位置を取得します。
+	size_t end = source.find_last_not_of(trim);
+
+	// trimするとき削除する文字以外の文字列を切り出します。
+	return std::string(source.substr(start, end - start + 1));
 }
 
 //==================================================================================
