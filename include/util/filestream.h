@@ -12,60 +12,72 @@
 // *** インクルードファイル ***
 //**********************************************************************************
 #include <iostream>
-#include "util/enumUtil.h"
 #include <fstream>
 #include <string>
 #include <string_view>
 #include <format>
-#include <functional>
-
-#pragma push_macro("CreateFile")
-#undef CreateFile
+#include <variant>
+#include <optional>
+#include <span>
 
 //**********************************************************************************
 // *** ファイル入出力クラス ***
 //**********************************************************************************
-class CFileStream
+class CFile
 {
 public:
-	// 書き出し時、ファイルが存在した場合のフラグの種類
-	enum class FLAG
+	// ファイルオープンモード
+	enum class MODE
 	{
-		OVERWRITE = 0,		// ファイルを初期化し上書き
-		CONTINUE,			// ファイルの続きから記入
-		CANCEL,			// 処理を取り消し
+		READ = 0,		// 読み込み
+		WRITE,			// 書き込み (上書き)
+		WRITE_IF,		// 書き込み (作成済みなら取り消し)
+		APPEND,			// 書き込み (追記)
 		MAX
 	};
 
-	// 有効値かどうかの判定
-	static constexpr bool IsValid(const FLAG value) noexcept
+	// ファイルの状態
+	enum class STATE
 	{
-		return EnumUtil::InRange(value, FLAG::OVERWRITE, FLAG::MAX);
-	}
+		INVALID = 0,	// 無効 (ファイルが開いていない)
+		READ,			// 読み込みモード
+		WRITE,			// 書き込みモード
+		MAX
+	};
 
-	CFileStream() noexcept;
-	CFileStream(std::string_view sFilename, const bool bBinary);
-	CFileStream(std::string_view sFilename, const bool bBinary, const FLAG flag);
-	CFileStream(const CFileStream &file) = delete;
-	CFileStream(CFileStream &&other) noexcept;
-	~CFileStream();
+	CFile() noexcept;
+	CFile(const CFile &file) = delete;
+	CFile(CFile &&other) noexcept = default;
+	~CFile();
 
-	bool Open(std::string_view sFilename, const bool bBinary);
-	bool Create(std::string_view sFilename, const bool bBinary, const FLAG flag);
+	// File Relation Function
+	bool Open(std::string_view sFilename, const MODE mode, const bool bBinary = false);
 	void Close(void);
 	bool IsOpen(void) const;
-	bool Check(void) const;
-	bool IsInStream(void) const { return m_bInStream; }
+	bool IsState(const STATE state) const;
 	uintmax_t GetSize(void) const { return m_size; }
 	std::string_view GetPath(void) const { return m_filename; }
-	std::ifstream *GetInStream(void) { return &m_Infile; }
-	std::ofstream *GetOutStream(void) { return &m_Outfile; }
+	std::variant<std::monostate, std::ifstream, std::ofstream> &GetStream(void) { return m_fstream; }
 
-	template<class T> bool Read(T &data);
-	template<class T> bool Read(T *pData, const int nArray);
-	template<class T> bool Read(T *pData, const size_t size);
-	bool ReadByFunc(std::function<void(std::ifstream&)> readFunc);
-	bool ReadString(std::string &string);
+	// Text Reader Function
+	std::optional<std::string> ReadLine(void);
+	std::optional<std::string> ReadWord(void);
+	std::optional<std::string> ReadUntil(const char cDelim);
+
+	// Text Writer Function
+	template<class T> bool WriteWord(const T &out);
+	bool WriteString(std::string_view out);
+
+	// Binary Reader Function
+	bool ReadBytes(std::span<std::byte> in);
+	template<class T> bool ReadType(T &in);
+	template<class T> bool ReadType(std::span<T> in);
+
+	// Binary Writer Function
+	bool WriteBytes(std::span<const std::byte> out);
+	template<class T> bool WriteType(const T &out);
+	template<class T> bool WriteType(std::span<const T> out);
+
 	static bool FindString(const std::string_view source, 
 		const std::string_view s,
 		size_t *pOut = nullptr,
@@ -76,380 +88,86 @@ public:
 	static Vector3 ToVector3(const char *pStr, char **ppEnd = nullptr, const bool bInt = false);
 	bool IsEoF(void) const;
 
-	template<class T> bool Write(const T &data);
-	template<class T> bool Write(const T *pData, const int nArray);
-	template<class T> bool Write(const T *pData, const size_t size);
-	bool WriteByFunc(std::function<void(std::ofstream&)> writeFunc);
-	bool WriteString(const std::string_view &string);
 	template<class... Args> static std::string ToString(std::_Fmt_string<Args...> fmt, Args... args);
 
-	CFileStream &operator=(const CFileStream &file) = delete;
-	CFileStream &operator=(CFileStream &&other) noexcept;
-	template<class T> const CFileStream &operator >> (T &data);
-	template<class T, size_t num> const CFileStream &operator >> (T (&data)[num]);
-	template<class T> CFileStream &operator << (const T &data);
-	template<class T, size_t num> CFileStream &operator << (const T (&data)[num]);
-	operator bool(void) const;
+	CFile &operator=(const CFile &file) = delete;
+	CFile &operator=(CFile &&other) noexcept = default;
 
 private:
-	void CloseFileInStream(void);
-	void CloseFileOutStream(void);
-	bool IsOpenInStream(void) const;
-	bool IsOpenOutStream(void) const;
-	bool CheckFileInStream(void) const;
-	bool CheckFileOutStream(void) const;
-	void ScanSizeInStream(void);
+	template<class FStream> FStream &Get(void) { return std::get<FStream>(m_fstream); }
+	template<class FStream> const FStream &Get(void) const { return std::get<FStream>(m_fstream); }
 
-	std::ifstream m_Infile;		// ファイル入力ストリーム
-	std::ofstream m_Outfile;	// ファイル出力ストリーム
+	std::variant<std::monostate, std::ifstream, std::ofstream> m_fstream;		// 現在のファイルストリーム
 	std::string m_filename;		// 開いているファイル名
 	uintmax_t m_size = 0U;		// ファイルのサイズ
 	bool m_bBinary = false;		// バイナリかどうか
-	bool m_bInStream = false;	// ファイル入力かどうか
 };
 
 //==================================================================================
-// --- ファイルからの情報取得処理 ---
+// --- テキストファイルへの値の書き出し処理 ---
 //==================================================================================
-template<class T> bool CFileStream::Read(T &data)
-{
-	// EOFの確認
-	if (IsEoF() == true)
-	{ // EOFの場合、処理失敗
-		return false;
-	}
+template<class T> bool CFile::WriteWord(const T &out)
+{ // 出力ストリーム以外もしくはフラグが無効の場合、無効値を返す
+	if (IsState(STATE::WRITE) == false || m_bBinary == true) return false;
 
-	// 入力ストリームかどうか確認
-	if (m_bInStream == false)
-	{ // 出力ストリームだった場合、失敗
-		return false;
-	}
-
-	if (m_bBinary == true)
-	{ // バイナリファイルの場合
-		// バイナリデータを読み込み
-		m_Infile.read((char *)&data, sizeof(T));
-	}
-	else
-	{ // テキストファイルの場合
-		// ストリーム演算子で読み込み
-		m_Infile >> data;
-	}
-
-	// ファイル読み込みのチェック
-	bool bCheck = Check();
-	if (bCheck == false)
-	{ // 読み込み時に問題が発生したため、falseを返す
-		return false;
-	}
-
-	// 成功
-	return true;
+	// ストリーム演算子で書き出し
+	Get<std::ofstream>() << out;
+	return static_cast<bool>(Get<std::ofstream>());
 }
 
 //==================================================================================
-// --- ファイルからの情報取得処理 (配列) ---
+// --- バイナリファイルからの値の読み込み処理 ---
 //==================================================================================
-template<class T> bool CFileStream::Read(T *pData, const int nArray)
-{
-	// EOFの確認
-	if (IsEoF() == true)
-	{ // EOFの場合、処理失敗
-		return false;
-	}
+template<class T> bool CFile::ReadType(T &in)
+{ // 入力ストリーム以外もしくはフラグが無効の場合、無効値を返す
+	if (IsState(STATE::READ) == false || m_bBinary == false) return false;
 
-	// 入力ストリームかどうか確認
-	if (m_bInStream == false)
-	{ // 出力ストリームだった場合、失敗
-		return false;
-	}
-
-	// nullチェック
-	if (pData == nullptr)
-	{ // nullならアサーション
-		assert(pData != nullptr);
-		return false;
-	}
-
-	if (m_bBinary == true)
-	{ // バイナリファイルの場合
-		// バイナリデータを配列サイズ分読み込み
-		m_Infile.read(reinterpret_cast<char*>(pData), sizeof(T) * nArray);
-	}
-	else
-	{ // テキストファイルの場合
-		// 配列分データ読み込み
-		for (int nCntRead = 0; nCntRead < nArray; nCntRead++)
-		{ // スペース区切りで読み込み
-			// ストリーム演算子で読み込み
-			m_Infile >> pData[nCntRead];
-
-			// EOFだったら終了
-			if (IsEoF() == true) break;
-		}
-	}
-
-	// ファイル読み込みのチェック
-	bool bCheck = Check();
-	if (bCheck == false)
-	{ // 読み込み時に問題が発生したため、falseを返す
-		return false;
-	}
-
-	// 読み込み成功
-	return true;
+	// バイトデータ配列にキャストして読み込み
+	static_assert(std::is_trivially_copyable_v<T>);
+	return ReadBytes(std::as_writable_bytes(std::span(&in, 1)));
 }
 
 //==================================================================================
-// --- ファイルからの情報取得処理 (バイナリ限定カスタムサイズ) ---
+// --- バイナリファイルからの値の読み込み処理 (配列) ---
 //==================================================================================
-template<class T> bool CFileStream::Read(T *pData, const size_t size)
-{
-	// ファイルが開かれているか確認
-	if (IsOpen() == false)
-	{ // 開かれていない場合、失敗
-		return false;
-	}
+template<class T> bool CFile::ReadType(std::span<T> in)
+{ // 入力ストリーム以外もしくはフラグが無効の場合、無効値を返す
+	if (IsState(STATE::READ) == false || m_bBinary == false) return false;
 
-	// 入力ストリームかどうか確認
-	if (m_bInStream == false)
-	{ // 出力ストリームだった場合、失敗
-		return false;
-	}
-
-	// バイナリファイルか確認
-	if (m_bBinary == false)
-	{ // バイナリファイルではない場合、失敗
-		return false;
-	}
-
-	// nullチェック
-	if (pData == nullptr)
-	{ // nullならアサーション
-		assert(pData != nullptr);
-		return false;
-	}
-
-	// バイナリデータを配列サイズ分読み込み
-	m_Infile.read(reinterpret_cast<char*>(pData), size);
-
-	// ファイル読み込みのチェック
-	bool bCheck = Check();
-	if (bCheck == false)
-	{ // 読み込み時に問題が発生したため、falseを返す
-		return false;
-	}
-
-	// 読み込み成功
-	return true;
+	// バイトデータ配列にキャストして読み込み
+	static_assert(std::is_trivially_copyable_v<T>);
+	return ReadBytes(std::as_writable_bytes(in));
 }
 
 //==================================================================================
-// --- ファイルへの情報出力処理 ---
+// --- バイナリファイルへの値の書き出し処理 ---
 //==================================================================================
-template<class T> bool CFileStream::Write(const T &data)
-{
-	// ファイルが開かれているか確認
-	if (IsOpen() == false)
-	{ // 開かれていない場合、失敗
-		return false;
-	}
+template<class T> bool CFile::WriteType(const T &in)
+{ // 出力ストリーム以外もしくはフラグが無効の場合、無効値を返す
+	if (IsState(STATE::WRITE) == false || m_bBinary == false) return false;
 
-	// 出力ストリームかどうか確認
-	if (m_bInStream == true)
-	{ // 入力ストリームだった場合、失敗
-		return false;
-	}
-
-	if (m_bBinary == true)
-	{ // バイナリファイルの場合
-		// バイナリデータとして書き出し
-		m_Outfile.write(reinterpret_cast<char*>(const_cast<T*>(&data)), sizeof(T));
-	}
-	else
-	{ // テキストファイルの場合
-		// ストリーム演算子で出力
-		m_Outfile << data;
-	}
-
-	// データの書き出し
-	m_Outfile.flush();
-
-	// ファイル書き出しのチェック
-	bool bCheck = Check();
-	if (bCheck == false)
-	{ // 書き込み時に問題が発生したため、falseを返す
-		return false;
-	}
-
-	// 書き出したサイズ分加算
-	m_size += sizeof(T);
-
-	// 書き出し成功
-	return true;
+	// バイトデータ配列にキャストして書き出し
+	static_assert(std::is_trivially_copyable_v<T>);
+	return WriteBytes(std::as_bytes(std::span(&in, 1)));
 }
 
 //==================================================================================
-// --- ファイルへの情報出力処理 (配列) ---
+// --- バイナリファイルへの値の書き出し処理 (配列) ---
 //==================================================================================
-template<class T> bool CFileStream::Write(const T *pData, const int nArray)
-{
-	// ファイルが開かれているか確認
-	if (IsOpen() == false)
-	{ // 開かれていない場合、失敗
-		return false;
-	}
+template<class T> bool CFile::WriteType(const std::span<const T> in)
+{ // 出力ストリーム以外もしくはフラグが無効の場合、無効値を返す
+	if (IsState(STATE::WRITE) == false || m_bBinary == false) return false;
 
-	// 出力ストリームかどうか確認
-	if (m_bInStream == true)
-	{ // 入力ストリームだった場合、失敗
-		return false;
-	}
-
-	// nullチェック
-	if (pData == nullptr)
-	{ // nullならアサーション
-		assert(pData != nullptr);
-		return false;
-	}
-
-	if (m_bBinary == true)
-	{ // バイナリファイルの場合
-		// バイナリデータとして書き出し
-		m_Outfile.write(reinterpret_cast<char*>(const_cast<T*>(pData)), sizeof(T) * nArray);
-	}
-	else
-	{ // テキストファイルの場合
-		// 配列分データ書き出し
-		for (int nCntRead = 0; nCntRead < nArray; nCntRead++)
-		{
-			// ストリーム演算子で出力
-			m_Outfile << pData[nCntRead];
-
-			// データの書き出し
-			m_Outfile.flush();
-		}
-	}
-
-	// ファイル書き出しのチェック
-	bool bCheck = Check();
-	if (bCheck == false)
-	{ // 書き込み時に問題が発生したため、falseを返す
-		return false;
-	}
-
-	// 書き出したサイズ分加算
-	m_size += sizeof(T) * nArray;
-
-	// 書き出し成功
-	return true;
-}
-
-//==================================================================================
-// --- ファイルへの情報出力処理 (バイナリ限定カスタムサイズ) ---
-//==================================================================================
-template<class T> bool CFileStream::Write(const T *pData, const size_t size)
-{
-	// ファイルが開かれているか確認
-	if (IsOpen() != true)
-	{ // 開かれていない場合、失敗
-		return false;
-	}
-
-	// 出力ストリームかどうか確認
-	if (m_bInStream == true)
-	{ // 入力ストリームだった場合、失敗
-		return false;
-	}
-
-	// バイナリモードか確認
-	if (m_bBinary != true)
-	{ // バイナリファイルではない場合、失敗
-		return false;
-	}
-
-	// nullチェック
-	if (pData == nullptr)
-	{ // nullならアサーション
-		assert(pData != nullptr);
-		return false;
-	}
-
-	// バイナリデータとして書き出し
-	m_Outfile.write(reinterpret_cast<char*>(const_cast<T*>(pData)), size);
-
-	// データの書き出し
-	m_Outfile.flush();
-
-	// ファイル書き出しのチェック
-	bool bCheck = Check();
-	if (bCheck == false)
-	{ // 書き込み時に問題が発生したため、falseを返す
-		return false;
-	}
-
-	// 書き出したサイズ分加算
-	m_size += size;
-
-	// 書き出し成功
-	return true;
+	// バイトデータ配列にキャストして書き出し
+	static_assert(std::is_trivially_copyable_v<T>);
+	return WriteBytes(std::as_bytes(in));
 }
 
 //==================================================================================
 // --- 文字列化のヘルパー関数 ---
 //==================================================================================
-template<class... Args> static std::string CFileStream::ToString(std::_Fmt_string<Args...> fmt, Args... args)
+template<class... Args> static std::string CFile::ToString(std::_Fmt_string<Args...> fmt, Args... args)
 {
 	return std::format(fmt, std::forward<Args>(args)...);
 }
-
-//==================================================================================
-// --- 演算子のオーバーロード (挿入) ---
-//==================================================================================
-template<class T> CFileStream &CFileStream::operator<<(const T &data)
-{
-	// 書き出し処理を行う
-	Write(data);
-
-	// 連続挿入用に自身を返す
-	return *this;
-}
-
-//==================================================================================
-// --- 演算子のオーバーロード (配列挿入) ---
-//==================================================================================
-template<class T, size_t num> CFileStream& CFileStream::operator<<(const T (&data)[num])
-{
-	// 書き出し処理を行う
-	Write(data, num);
-
-	// 連続挿入用に自身を返す
-	return *this;
-}
-
-//==================================================================================
-// --- 演算子のオーバーロード (抽出) ---
-//==================================================================================
-template<class T> const CFileStream &CFileStream::operator>>(T &data)
-{
-	// 読み込み処理を行う
-	Read(data);
-
-	// 連続抽出用に自身を返す
-	return *this;
-}
-
-//==================================================================================
-// --- 演算子のオーバーロード (配列抽出) ---
-//==================================================================================
-template<class T, size_t num> const CFileStream& CFileStream::operator>>(T (&data)[num])
-{
-	// 読み込み処理を行う
-	Read(data, num);
-
-	// 連続抽出用に自身を返す
-	return *this;
-}
-
-#pragma pop_macro("CreateFile")
 #endif // !_FILESTREAM_H_
