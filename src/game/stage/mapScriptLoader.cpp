@@ -24,7 +24,7 @@ namespace
 	//==================================================================================
 	// --- コメント・タブスペースを消去した文字列の一列読み込み処理 ---
 	//==================================================================================
-	std::optional<std::string> ReadCleanLine(CFile &file)
+	std::optional<std::string> ReadCleanLine(CFileStream &file)
 	{ // 文字列を一列読み込み、読み込めなかった場合は無効値を返す
 		std::optional<std::string> line = file.ReadLine();
 		if (line.has_value() == false) return std::nullopt;
@@ -65,11 +65,11 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 	std::optional<std::string> line;		// 読み込んだ文字列
 	CManager *pManager = CManager::GetInstance();			// マネージャへのポインタ
 	CTexture *pTexture = CTexture::GetInstance();			// テクスチャへのポインタ
-	std::unique_ptr pFile = std::make_unique<CFile>();		// ファイルストリームへのポインタ
+	std::unique_ptr pFile = std::make_unique<CFileStream>();		// ファイルストリームへのポインタ
 	std::vector<IParentable*> vpParentable;		// 親マトリックスの設定可能なオブジェクト
 	CStage *pStage = nullptr;				// ステージへのポインタ
 
-	if (pFile->Open(path, CFile::MODE::READ) == false)
+	if (pFile->Open(path, CFileStream::MODE::READ) == false)
 	{ // ファイルオープン失敗時
 		hr = E_FAIL;
 		return hr;

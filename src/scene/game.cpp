@@ -97,8 +97,8 @@ void CGame::Update(const ManagerContext::SceneContext &sceneContext)
 			pRankingClient->Uninit();
 		}
 
-		auto pFile = std::make_unique<CFile>();
-		if (pFile->Open("data/bin/current.bin", CFile::MODE::WRITE, true))
+		auto pFile = std::make_unique<CFileStream>();
+		if (pFile->Open("data/bin/current.bin", CFileStream::MODE::WRITE, true))
 		{ // ファイルに書き出し
 			pFile->WriteType(pScore->GetScore());
 			pFile->Close();
