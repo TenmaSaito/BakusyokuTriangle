@@ -339,6 +339,9 @@
     <ClCompile Include="src\util\filestream.cpp">
       <Filter>src\util</Filter>
     </ClCompile>
+    <ClCompile Include="src\util\stringUtil.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
     <ClCompile Include="src\util\util.cpp">
       <Filter>src\util</Filter>
     </ClCompile>
@@ -601,6 +604,9 @@
     </ClInclude>
     <ClInclude Include="include\core\resourceManager.h">
       <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\util\stringUtil.h">
+      <Filter>include\util</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

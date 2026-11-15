@@ -15,7 +15,6 @@
 #include <fstream>
 #include <string>
 #include <string_view>
-#include <format>
 #include <variant>
 #include <optional>
 #include <span>
@@ -78,17 +77,7 @@ public:
 	template<class T> bool WriteType(const T &out);
 	template<class T> bool WriteType(std::span<const T> out);
 
-	static bool FindString(const std::string_view source, 
-		const std::string_view s,
-		size_t *pOut = nullptr,
-		const bool bSkip = false);
-	static int ToInt(const char *pStr, char **ppEnd = nullptr) { return std::strtol(pStr, ppEnd, 0); }
-	static float ToFloat(const char *pStr, char **ppEnd = nullptr) { return std::strtof(pStr, ppEnd); }
-	static Vector2 ToVector2(const char *pStr, char **ppEnd = nullptr, const bool bInt = false);
-	static Vector3 ToVector3(const char *pStr, char **ppEnd = nullptr, const bool bInt = false);
 	bool IsEoF(void) const;
-
-	template<class... Args> static std::string ToString(std::_Fmt_string<Args...> fmt, Args... args);
 
 	CFileStream &operator=(const CFileStream &file) = delete;
 	CFileStream &operator=(CFileStream &&other) noexcept = default;
@@ -161,13 +150,5 @@ template<class T> bool CFileStream::WriteType(const std::span<const T> in)
 	// バイトデータ配列にキャストして書き出し
 	static_assert(std::is_trivially_copyable_v<T>);
 	return WriteBytes(std::as_bytes(in));
-}
-
-//==================================================================================
-// --- 文字列化のヘルパー関数 ---
-//==================================================================================
-template<class... Args> static std::string CFileStream::ToString(std::_Fmt_string<Args...> fmt, Args... args)
-{
-	return std::format(fmt, std::forward<Args>(args)...);
 }
 #endif // !_FILESTREAM_H_
