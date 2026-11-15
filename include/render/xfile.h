@@ -11,35 +11,33 @@
 // *** インクルードファイル ***
 //**********************************************************************************
 #include "core/main.h"
+#include "core/resourceable.h"
+#include "core/singleton.h"
 
 //**********************************************************************************
-// *** 定数宣言 ***
+// *** 前方宣言 ***
 //**********************************************************************************
-constexpr UINT INVALID_XFILE_ID = static_cast<UINT>(-1);		// XFILEの無効値
+class CXInfo;
 
 //**********************************************************************************
 // *** Xファイルクラス ***
 //**********************************************************************************
-class CXFile
+class CXFile : public ITypedResourceable<CXInfo>, public ISingleton<CXFile>
 {
+	friend ISingleton<CXFile>;
+
 public:
-	// 前方宣言
-	class CXInfo;
-
-	static CXFile *GetInstance(void);
-
-	void Load(void);
-	void Unload(void);
-	UINT Register(std::string_view path);
-	UINT Register(const char *pPath);
-	UINT PreRegister(std::string path);
-	CXInfo *GetAddress(const UINT uIdx);
-
-private:
-
-	CXFile();
 	~CXFile();
 
+	void Load(void) override;
+	void Unload(void) override;
+	UINT PreRegister(std::string_view path) override;
+	CXInfo *GetAddress(const UINT uIdx) override;
+
+private:
+	CXFile();
+
+	UINT RegisterImpl(std::string_view path) override;
 	UINT IsAlreadyRegister(std::string_view path);
 	UINT Load(std::string_view path);
 
@@ -50,12 +48,11 @@ private:
 //**********************************************************************************
 // *** XFILE関連情報クラス ***
 //**********************************************************************************
-class CXFile::CXInfo
+class CXInfo
 {
 public:
-	// Init,Uninit関数呼び出し用
-	friend UINT CXFile::Load(const std::string_view path);
-	friend void CXFile::Unload(void);
+	// リソース管理を任せるためフレンド登録
+	friend CXFile;
 
 	CXInfo() = default;
 	~CXInfo() = default;

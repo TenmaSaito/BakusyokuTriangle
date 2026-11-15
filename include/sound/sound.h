@@ -60,16 +60,26 @@ public:
 	void Stop(void);
 	void Pause(const bool bPause, const LABEL label);
 	void Pause(const bool bPause);
+	void CrossFade(const LABEL nextLabel);
 	void SetPitch(const LABEL label, const float fPitch = 1.0f);
 	bool GetPlay(const LABEL label) const;
 	HRESULT GetError(const LABEL label) const;
 
 private:
+	// オーディオ再生に必要なバッファ構造体
+	struct Buffer
+	{
+		IXAudio2SourceVoice *pSourceVoice = nullptr;	// ソースボイス
+		CSoundCallbacker *pCallback = nullptr;			// コールバック
+		BYTE *pDataAudio = nullptr;		// オーディオデータ
+		DWORD dwSizeAudio = 0;			// オーディオデータサイズ
+	};
+
 	HRESULT CheckChunk(const HANDLE hFile, const DWORD format, DWORD *pChunkSize, DWORD *pChunkDataPosition);
 	HRESULT ReadChunkData(const HANDLE hFile, void *pBuffer, const DWORD dwBuffersize, const DWORD dwBufferoffset);
 
 	IXAudio2 *m_pXAudio2 = nullptr;								// XAudio2オブジェクトへのインターフェイス
-	IXAudio2MasteringVoice *m_pMasteringVoice = nullptr;			// マスターボイス
+	IXAudio2MasteringVoice *m_pMasteringVoice = nullptr;		// マスターボイス
 	IXAudio2SourceVoice *m_apSourceVoice[EnumUtil::ToIndex(LABEL::MAX)] = {};	// ソースボイス
 	CSoundCallbacker *m_apCallback[EnumUtil::ToIndex(LABEL::MAX)] = {};			// コールバック
 	BYTE *m_apDataAudio[EnumUtil::ToIndex(LABEL::MAX)] = {};						// オーディオデータ

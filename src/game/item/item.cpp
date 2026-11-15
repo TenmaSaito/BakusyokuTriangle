@@ -39,7 +39,7 @@ namespace
 
 	const UINT PARTICLE_XFILE_IDS[static_cast<UINT>(CItem::TYPE::MAX)] =
 	{
-		INVALID_XFILE_ID,
+		IResourceable::INVALID_RESOURCE_ID,
 		CXFile::GetInstance()->PreRegister("data/MODEL/food_particle_rice.x"),
 		CXFile::GetInstance()->PreRegister("data/MODEL/food_particle_humbarg.x"),
 		CXFile::GetInstance()->PreRegister("data/MODEL/food_particle_miso_soup.x"),

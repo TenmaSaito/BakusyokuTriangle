@@ -64,7 +64,7 @@ HRESULT CItemBiteEffect::Init(const Vector3 &pos, const float fWidth, const int 
 
 	// テクスチャ読み込み
 	const UINT uTask = pTexture->Register("data/TEXTURE/fang_top.png");
-	if (uTask == INVALID_TEX_ID) return S_FALSE;		// 読み込み失敗
+	if (IResourceable::IsValid(uTask) == false) return S_FALSE;		// 読み込み失敗
 
 	m_pos = pos;						// 発生位置を保存
 	m_fWidth = fWidth;					// 横幅を保存

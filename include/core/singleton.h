@@ -18,6 +18,9 @@ public:
 protected:
 	ISingleton() = default;
 	~ISingleton() = default;
+
+	ISingleton(const ISingleton &) = delete;
+	ISingleton &operator=(const ISingleton &) = delete;
 };
 
 //==================================================================================

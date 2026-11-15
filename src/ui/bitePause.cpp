@@ -62,7 +62,7 @@ HRESULT CBitePause::Init(void)
 
 	// テクスチャ読み込み
 	const UINT uTexture = CTexture::GetInstance()->Register(JAW_TEXTURE);
-	if (uTexture == INVALID_TEX_ID) return E_FAIL;		// 読み込み失敗
+	if (IResourceable::IsValid(uTexture) == false) return E_FAIL;		// 読み込み失敗
 
 	// 牙のポリゴンを生成 (大きさは UpdateJaw で選択中の項目に合わせる)
 	m_pUpper.reset(CPolygon2D::Create(VECTOR3_NULL, VECTOR3_NULL, Vector2(JAW_HEIGHT, JAW_HEIGHT)));
