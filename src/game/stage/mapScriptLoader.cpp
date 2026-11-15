@@ -20,57 +20,31 @@
 #include "game/player/playerCamera.h"
 #include "util/util.h"
 
-namespace
-{
-	//==================================================================================
-	// --- コメント・タブスペースを消去した文字列の一列読み込み処理 ---
-	//==================================================================================
-	std::optional<std::string> ReadCleanLine(CFileStream &file)
-	{ // 文字列を一列読み込み、読み込めなかった場合は無効値を返す
-		std::optional<std::string> line = file.ReadLine();
-		if (line.has_value() == false) return std::nullopt;
-
-		// コメント消去
-		auto comment = line->find_last_of('#');
-		if (comment != std::string::npos)
-		{ // コメントが見つかった場合、そこから後ろを切り捨て
-			line->erase(comment);
-		}
-
-		// タブスペース消去
-		std::erase(*line, '\t');
-		return line;
-	}
-}
-
 //==================================================================================
 // --- コンストラクタ ---
 //==================================================================================
-CMapScriptLoader::CMapScriptLoader()
+CMapLoader::CMapLoader()
 {
 }
 
 //==================================================================================
 // --- デストラクタ ---
 //==================================================================================
-CMapScriptLoader::~CMapScriptLoader()
+CMapLoader::~CMapLoader()
 {
 }
 
 //==================================================================================
 // --- スクリプト読み込み処理 ---
 //==================================================================================
-HRESULT CMapScriptLoader::Load(std::string_view path)
+HRESULT CMapLoader::Load(std::string_view path)
 {
 	HRESULT hr = S_OK;		// 読み込み結果
 	std::optional<std::string> line;		// 読み込んだ文字列
-	CManager *pManager = CManager::GetInstance();			// マネージャへのポインタ
-	CTexture *pTexture = CTexture::GetInstance();			// テクスチャへのポインタ
-	std::unique_ptr pFile = std::make_unique<CFileStream>();		// ファイルストリームへのポインタ
 	std::vector<IParentable*> vpParentable;		// 親マトリックスの設定可能なオブジェクト
 	CStage *pStage = nullptr;				// ステージへのポインタ
 
-	if (pFile->Open(path, CFileStream::MODE::READ) == false)
+	if (Open(path) == false)
 	{ // ファイルオープン失敗時
 		hr = E_FAIL;
 		return hr;
@@ -79,7 +53,7 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 	while (1)
 	{ // SCRIPTキーワードを検索
 		// 文字列を一列読み込み
-		line = pFile->ReadLine();
+		line = ReadCleanLine();
 		if (line.has_value() == false)
 		{ // 見つからないままファイルが終わった場合
 			hr = S_FALSE;
@@ -94,7 +68,7 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 	while (1)
 	{ // 各オブジェクトを配置
 		// 文字列を一列読み込み
-		line = pFile->ReadLine();
+		line = ReadCleanLine();
 		if (line.has_value() == false || StringUtil::Contains(*line, "END_SCRIPT"))
 		{ // 読み込み終了
 			break;
@@ -110,7 +84,7 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 			while (1)
 			{ // プレイヤーの設置に必要な各情報を読み込み
 				// コメント・タブスペースを消去した文字列を一列読み込み
-				std::optional<std::string> data = ReadCleanLine(*pFile);
+				std::optional<std::string> data = ReadCleanLine();
 				if (data.has_value() == false)
 				{ // 終了キーワードが見つからないままファイルが終わった場合、中断
 					break;
@@ -119,7 +93,7 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 
 				if (StringUtil::Contains(sLine, "END_TIMERSET"))
 				{ // タイマーの情報が終了した場合、設置
-					CTimer::Create(pos, size, Util::GetNumInt(nTime), nTime, pTexture->Register(sTexturePath));
+					CTimer::Create(pos, size, Util::GetNumInt(nTime), nTime, m_pTexture->Register(sTexturePath));
 					break;
 				}
 				else if (auto value = StringUtil::GetValue(sLine, "POS = "))
@@ -150,7 +124,7 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 			while (1)
 			{ // プレイヤーの設置に必要な各情報を読み込み
 				// コメント・タブスペースを消去した文字列を一列読み込み
-				std::optional<std::string> data = ReadCleanLine(*pFile);
+				std::optional<std::string> data = ReadCleanLine();
 				if (data.has_value() == false)
 				{ // 終了キーワードが見つからないままファイルが終わった場合、中断
 					break;
@@ -187,7 +161,7 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 			while (1)
 			{ // 床の設置に必要な各情報を読み込み
 				// コメント・タブスペースを消去した文字列を一列読み込み
-				std::optional<std::string> data = ReadCleanLine(*pFile);
+				std::optional<std::string> data = ReadCleanLine();
 				if (data.has_value() == false)
 				{ // 終了キーワードが見つからないままファイルが終わった場合、中断
 					break;
@@ -197,7 +171,7 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 				if (StringUtil::Contains(sLine, "END_FIELDSET"))
 				{ // 床の情報が終了した場合、設置
 					pStage = CStage::Create(pos, VECTOR3_NULL, size);
-					pStage->BindTexture(pTexture->Register(sTexturePath));
+					pStage->BindTexture(m_pTexture->Register(sTexturePath));
 					break;
 				}
 				else if (auto value = StringUtil::GetValue(sLine, "POS = "))
@@ -225,7 +199,7 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 			while (1)
 			{ // 壁の設置に必要な各情報を読み込み
 				// コメント・タブスペースを消去した文字列を一列読み込み
-				std::optional<std::string> data = ReadCleanLine(*pFile);
+				std::optional<std::string> data = ReadCleanLine();
 				if (data.has_value() == false)
 				{ // 終了キーワードが見つからないままファイルが終わった場合、中断
 					break;
@@ -235,7 +209,7 @@ HRESULT CMapScriptLoader::Load(std::string_view path)
 				if (StringUtil::Contains(sLine, "END_WALLSET"))
 				{ // 壁の情報が終了した場合、設置
 					CWall *pWall = CWall::Create(pos, rot, size);
-					pWall->BindTexture(pTexture->Register(sTexturePath));
+					pWall->BindTexture(m_pTexture->Register(sTexturePath));
 					vpParentable.push_back(pWall);
 					break;
 				}
