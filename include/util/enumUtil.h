@@ -68,6 +68,15 @@ namespace EnumUtil
 	{
 		return ToUnderlying(first) <= ToUnderlying(value) && ToUnderlying(value) <= ToUnderlying(last);
 	}
+
+	//******************************************************************************
+	// *** —ñ‹“Œ^‚Ì‰ÁŒ¸‰‰ŽZ ***
+	//******************************************************************************
+	template<Enum E>
+	constexpr E AddEnum(const E &num, const int nValue)
+	{
+		return static_cast<E>(static_cast<int>(num) + nValue);
+	}
 }
 
 #endif

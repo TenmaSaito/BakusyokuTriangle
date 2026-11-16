@@ -39,12 +39,5 @@ namespace Util
 
 		return nNumValue;
 	}
-
-	template<class E> requires std::is_enum_v<E> constexpr E AddEnum(const E &num, const int nValue)
-	{ // —ñ‹“Œ^‚Ì‰ÁŒ¸‰‰Zˆ—
-		int nValueWork = static_cast<int>(num);
-		nValueWork += nValue;
-		return static_cast<E>(nValueWork);
-	}
 }
 #endif
