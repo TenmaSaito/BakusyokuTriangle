@@ -50,6 +50,7 @@ public:
 		NEXTINFO,		// 次のアイテムの表示
 		MODEL_PARTICLE,	// モデルパーティクル
 		SPEECH_BUBBLE,	// 吹き出し
+		CAMERA_TRANS,	// カメラの遷移管理
 		MAX
 	};
 
@@ -96,13 +97,14 @@ public:
 	static bool GetEnablePriority(const int nPriority) { return m_vEnablePriority[nPriority]; }
 
 protected:
-	static constexpr int DEFAULT_BG_PRIORITY = 0;		// 背景の優先順位
+	static constexpr int FIRST_PRIORITY = 0;			// 全てのオブジェクトが更新・描画される前の優先順位
+	static constexpr int DEFAULT_BG_PRIORITY = 1;		// 背景の優先順位
 	static constexpr int DEFAULT_OBJ_PRIORITY = 2;		// オブジェクトの優先順位
 	static constexpr int DEFAULT_EFFECT_PRIORITY = 3;	// エフェクト関連の優先順位
 	static constexpr int DEFAULT_ADD_PRIORITY = 4;		// 加算合成関連の優先順位
 	static constexpr int DEFAULT_3DUI_PRIORITY = 5;		// 3DUI関連の優先順位
 	static constexpr int DEFAULT_2DUI_PRIORITY = 6;		// 2DUI関連の優先順位
-	static constexpr int FINALLY_PRIORITY = 7;			// 全てのオブジェクトが描画された後の最終優先順位
+	static constexpr int FINALLY_PRIORITY = 7;			// 全てのオブジェクトが更新・描画された後の最終優先順位
 	static constexpr std::string_view NOTIFY_WHEN_DEATH = "Death";			// 死んだ際に通知される文字列
 
 	void Release(void);
