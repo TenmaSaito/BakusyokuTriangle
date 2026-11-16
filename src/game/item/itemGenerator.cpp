@@ -20,6 +20,7 @@
 #include "math/rand.h"
 #include "math/vec3math.h"
 #include "util/util.h"
+#include "util/enumUtil.h"
 #include "render/camera.h"
 #include "render/cameraTransition.h"
 
@@ -117,7 +118,7 @@ void CItemGenerator::Update(void)
 	const Vector3 vecOrigin = VECTOR3_NULL;		// ローカル座標の原点
 	Vector3 posPlayer = *D3DXVec3TransformCoord(&posPlayer, &vecOrigin, pPlayer->GetMatrix());
 
-	CItem::TYPE nextType = Util::AddEnum(CItem::TYPE::NONE, 1);		// 出現させる食べ物の種類
+	CItem::TYPE nextType = EnumUtil::AddEnum(CItem::TYPE::NONE, 1);		// 出現させる食べ物の種類
 
 	for (int nCntItem = 0; nCntItem < m_nMaxItem; nCntItem++)
 	{
@@ -176,10 +177,10 @@ void CItemGenerator::Update(void)
 		// ポインタ登録
 		m_vpItem.push_back(pItem);
 
-		nextType = Util::AddEnum(nextType, 1);		// 次に取得する食事の番号を更新
+		nextType = EnumUtil::AddEnum(nextType, 1);		// 次に取得する食事の番号を更新
 		if (nextType >= CItem::TYPE::MAX)
 		{ // 最後まで言った場合は、最初に戻る
-			nextType = Util::AddEnum(CItem::TYPE::NONE, 1);
+			nextType = EnumUtil::AddEnum(CItem::TYPE::NONE, 1);
 		}
 	}
 
@@ -211,10 +212,10 @@ void CItemGenerator::Notified(CObject *pObject, std::string_view message, const 
 	bool bIsEqual = pItem->IsEqualType(m_nextType);
 	if (bIsEqual == true)
 	{ // 正しければ、取得時処理を行う
-		m_nextType = Util::AddEnum(m_nextType, 1);		// 次に取得する食事の番号を更新
+		m_nextType = EnumUtil::AddEnum(m_nextType, 1);		// 次に取得する食事の番号を更新
 		if (m_nextType >= CItem::TYPE::MAX)
 		{ // 最後まで言った場合は、最初に戻る
-			m_nextType = Util::AddEnum(CItem::TYPE::NONE, 1);
+			m_nextType = EnumUtil::AddEnum(CItem::TYPE::NONE, 1);
 		}
 
 		m_nNumItem--;		// 総数減少
@@ -238,7 +239,7 @@ void CItemGenerator::Notified(CObject *pObject, std::string_view message, const 
 		{ // 総数が0を下回ったら、生成数を1増やして再度生成 (上限は超えない)
 			m_nMaxItem = (m_nMaxItem + 1 > MAX_ITEM_NUM) ? MAX_ITEM_NUM - 1 : m_nMaxItem + 1;
 			m_bWasCreated = false;		// 生成フラグを立てる
-			m_nextType = Util::AddEnum(CItem::TYPE::NONE, 1);			// 次の種類をリセット
+			m_nextType = EnumUtil::AddEnum(CItem::TYPE::NONE, 1);			// 次の種類をリセット
 
 			// ポインタの登録解除
 			m_vpItem.erase(std::ranges::find(m_vpItem, pItem));
@@ -275,7 +276,7 @@ void CItemGenerator::Notified(CObject *pObject, std::string_view message, const 
 	m_nCombo = 0;		// コンボ数リセット
 	m_nMaxItem = 1;		// 生成数を1にリセット
 	m_bWasCreated = false;		// 生成フラグを立てる
-	m_nextType = Util::AddEnum(CItem::TYPE::NONE, 1);;			// 次の種類をリセット
+	m_nextType = EnumUtil::AddEnum(CItem::TYPE::NONE, 1);;			// 次の種類をリセット
 	m_nNumItem = 0;				// 総数をリセット
 
 	// ポインタの登録解除
