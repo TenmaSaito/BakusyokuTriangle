@@ -14,6 +14,14 @@
 #include "math/rand.h"
 #include "math/vec3math.h"
 
+//**********************************************************************************
+// *** 定数宣言 ***
+//**********************************************************************************
+namespace
+{
+	constexpr int ITEM_LIFE = 1;		// アイテムの体力
+}
+
 //==================================================================================
 // --- コンストラクタ ---
 //==================================================================================
@@ -37,26 +45,29 @@ std::vector<CItem*> CItemSpawner::Generate(const int nNumItem,
 {
 	CItem::TYPE nextType = EnumUtil::AddEnum(CItem::TYPE::NONE, 1);		// 出現させる食べ物の種類
 	std::vector<CItem*> vpItem;		// 生成したアイテム
+	Vector4 boader;		// 境界線
+
+	// 境界線を計算
+	boader.x = pField->GetPosition()->x + (pField->GetSize()->x * 0.5f) - m_fSpawnFieldMargin;		// 右端
+	boader.y = pField->GetPosition()->y + (pField->GetSize()->y * 0.5f) - m_fSpawnFieldMargin;		// 上端
+	boader.z = pField->GetPosition()->y - (pField->GetSize()->y * 0.5f) + m_fSpawnFieldMargin;		// 下端
+	boader.w = pField->GetPosition()->x - (pField->GetSize()->x * 0.5f) + m_fSpawnFieldMargin;		// 左端
 
 	// アイテムの数分サイズを確保
 	vpItem.reserve(nNumItem);
 
 	for (int nCntItem = 0; nCntItem < nNumItem; nCntItem++)
-	{
+	{ // 引数の回数分アイテム生成
 		CRand *pRand = CRand::GetInstance();		// 乱数生成機
 		Vector3 pos;		// 生成位置
 		float fRadius;		// 当たり判定の半径
 		int nLife;			// 体力
-		Vector4 boader;		// 境界線
+		int nCntTry = 0;	// 試行回数
 
-		// 境界線を計算
-		boader.x = pField->GetPosition()->x + (pField->GetSize()->x * 0.5f) - m_fSpawnFieldMargin;		// 右端
-		boader.y = pField->GetPosition()->y + (pField->GetSize()->y * 0.5f) - m_fSpawnFieldMargin;		// 上端
-		boader.z = pField->GetPosition()->y - (pField->GetSize()->y * 0.5f) + m_fSpawnFieldMargin;		// 下端
-		boader.w = pField->GetPosition()->x - (pField->GetSize()->x * 0.5f) + m_fSpawnFieldMargin;		// 左端
+		while (nCntTry > m_nTryIfFailed)
+		{ // 指定の回数失敗するまで繰り返し
+			nCntTry++;		// 試行回数増加
 
-		while (1)
-		{
 			// 境界線内のどこかにランダムで生成
 			pos.x = pRand->Generate(boader.w, boader.x);
 			pos.y = 0.0f;
@@ -76,17 +87,16 @@ std::vector<CItem*> CItemSpawner::Generate(const int nNumItem,
 
 			// フラグが降りていた場合はやり直し
 			if (bIsFarOtherItems == false) continue;
-
 			break;
 		}
 
-		// 半径 + 体力を設定
-		fRadius = m_fItemRadius;
+		// 位置の計算に失敗し続けた場合、スキップ
+		if (nCntItem > m_nTryIfFailed) continue;
 
 		// アイテムを生成
 		CItem *pItem = CItem::Create(pos,
-			fRadius,
-			nLife,
+			m_fItemRadius,
+			ITEM_LIFE,
 			nextType);
 
 		// 監視と親を設定
