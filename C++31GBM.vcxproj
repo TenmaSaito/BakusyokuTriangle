@@ -176,6 +176,7 @@
     <ClCompile Include="src\effect\modelParticle.cpp" />
     <ClCompile Include="src\effect\particle.cpp" />
     <ClCompile Include="src\effect\screenEffect.cpp" />
+    <ClCompile Include="src\game\item\eatingRule.cpp" />
     <ClCompile Include="src\game\item\item.cpp" />
     <ClCompile Include="src\game\item\itemGenerator.cpp" />
     <ClCompile Include="src\game\item\itemSpawner.cpp" />
@@ -258,6 +259,7 @@
     <ClInclude Include="include\effect\modelParticle.h" />
     <ClInclude Include="include\effect\particle.h" />
     <ClInclude Include="include\effect\screenEffect.h" />
+    <ClInclude Include="include\game\item\eatingRule.h" />
     <ClInclude Include="include\game\item\item.h" />
     <ClInclude Include="include\game\item\itemGenerator.h" />
     <ClInclude Include="include\game\item\itemSpawner.h" />
