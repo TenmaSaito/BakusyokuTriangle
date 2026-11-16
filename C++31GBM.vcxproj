@@ -183,7 +183,7 @@
     <ClCompile Include="src\game\player\speechBubble.cpp" />
     <ClCompile Include="src\game\stage\field.cpp" />
     <ClCompile Include="src\game\stage\foodBackground.cpp" />
-    <ClCompile Include="src\game\stage\mapScriptLoader.cpp" />
+    <ClCompile Include="src\game\stage\mapLoader.cpp" />
     <ClCompile Include="src\game\stage\stage.cpp" />
     <ClCompile Include="src\game\stage\wall.cpp" />
     <ClCompile Include="src\input\input.cpp" />
@@ -215,6 +215,7 @@
     <ClCompile Include="src\object\3d\shadow.cpp" />
     <ClCompile Include="src\object\base\object.cpp" />
     <ClCompile Include="src\render\camera.cpp" />
+    <ClCompile Include="src\render\cameraTransition.cpp" />
     <ClCompile Include="src\render\light.cpp" />
     <ClCompile Include="src\render\model.cpp" />
     <ClCompile Include="src\render\renderer.cpp" />
@@ -263,7 +264,7 @@
     <ClInclude Include="include\game\player\speechBubble.h" />
     <ClInclude Include="include\game\stage\field.h" />
     <ClInclude Include="include\game\stage\foodBackground.h" />
-    <ClInclude Include="include\game\stage\mapScriptLoader.h" />
+    <ClInclude Include="include\game\stage\mapLoader.h" />
     <ClInclude Include="include\game\stage\stage.h" />
     <ClInclude Include="include\game\stage\wall.h" />
     <ClInclude Include="include\input\input.h" />
@@ -301,6 +302,7 @@
     <ClInclude Include="include\object\base\object.h" />
     <ClInclude Include="include\object\base\parentable.h" />
     <ClInclude Include="include\render\camera.h" />
+    <ClInclude Include="include\render\cameraTransition.h" />
     <ClInclude Include="include\render\light.h" />
     <ClInclude Include="include\render\model.h" />
     <ClInclude Include="include\render\renderer.h" />
