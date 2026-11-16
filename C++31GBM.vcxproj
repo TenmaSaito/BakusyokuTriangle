@@ -168,6 +168,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">core/pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="src\core\resourceManager.cpp" />
+    <ClCompile Include="src\core\script.cpp" />
     <ClCompile Include="src\debug\debugproc.cpp" />
     <ClCompile Include="src\debug\Log.cpp" />
     <ClCompile Include="src\debug\memdbg.cpp" />
@@ -246,6 +247,7 @@
     <ClInclude Include="include\core\pch.h" />
     <ClInclude Include="include\core\resourceable.h" />
     <ClInclude Include="include\core\resourceManager.h" />
+    <ClInclude Include="include\core\script.h" />
     <ClInclude Include="include\core\singleton.h" />
     <ClInclude Include="include\debug\debugproc.h" />
     <ClInclude Include="include\debug\Log.h" />

@@ -11,18 +11,26 @@
 // *** インクルードファイル ***
 //**********************************************************************************
 #include "core/main.h"
+#include "core/script.h"
+
+//**********************************************************************************
+// *** 前方宣言 ***
+//**********************************************************************************
+class CTexture;
 
 //**********************************************************************************
 // *** マップスクリプト読み込みクラス ***
 //**********************************************************************************
-class CMapScriptLoader
+class CMapLoader : public CScript
 {
 public:
-	CMapScriptLoader();
-	~CMapScriptLoader();
+	CMapLoader();
+	~CMapLoader();
 
-	HRESULT Load(std::string_view path);
+	HRESULT Load(std::string_view path) override;
+	void BindTextureLoader(CTexture *pTexture) { m_pTexture = pTexture; }
 
 private:
+	CTexture *m_pTexture = nullptr;		// テクスチャ管理クラス
 };
 #endif

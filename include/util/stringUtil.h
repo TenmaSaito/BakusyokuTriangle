@@ -14,16 +14,22 @@
 #include <string_view>
 #include <vector>
 #include <optional>
+#include <span>
 
 //**********************************************************************************
 // *** 文字列の補助関数名前空間 ***
 //**********************************************************************************
 namespace StringUtil
 {
+	constexpr std::string_view SPACE = " \t";		// スペース
+
 	// 文字列検索
 	bool Contains(std::string_view source, std::string_view find);
 	std::optional<std::string_view> GetValue(std::string_view line, std::string_view key);
-	std::vector<std::string> Split(std::string_view source, const char delim);
+
+	// 文字列操作
+	std::vector<std::string> Split(std::string_view source, const char cDelim);
+	[[nodiscard]] std::string Trim(std::string_view source, std::string_view trim = SPACE);
 
 	// 数値変換 (変換できなかった場合は0を返す)
 	int ToInt(std::string_view str);

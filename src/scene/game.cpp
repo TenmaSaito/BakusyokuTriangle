@@ -121,8 +121,11 @@ void CGame::Draw(const ManagerContext::SceneContext &sceneContext)
 //==================================================================================
 void CGame::Start(const ManagerContext::SceneContext &sceneContext)
 { // マップ読み込み
-	std::unique_ptr pMapScriptLoader = std::make_unique<CMapScriptLoader>();		// マップ読み込みインスタンス
-	auto hr = pMapScriptLoader->Load("data/SCRIPT/system.ini");
+	auto pMapLoader = std::make_unique<CMapLoader>();		// マップ読み込みインスタンス
+
+	// テクスチャクラスをバインド
+	pMapLoader->BindTextureLoader(sceneContext.pRenderContext->pTexture);
+	auto hr = pMapLoader->Load("data/SCRIPT/system.ini");
 
 	// アイテム生成器起動
 	(new CItemGenerator)->Init();

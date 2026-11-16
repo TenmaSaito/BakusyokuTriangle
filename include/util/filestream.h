@@ -11,7 +11,6 @@
 //**********************************************************************************
 // *** インクルードファイル ***
 //**********************************************************************************
-#include <iostream>
 #include <fstream>
 #include <string>
 #include <string_view>
@@ -50,7 +49,7 @@ public:
 	~CFileStream();
 
 	// File Relation Function
-	bool Open(std::string_view sFilename, const MODE mode, const bool bBinary = false);
+	bool Open(std::string_view sPath, const MODE mode, const bool bBinary = false);
 	void Close(void);
 	bool IsOpen(void) const;
 	bool IsState(const STATE state) const;
