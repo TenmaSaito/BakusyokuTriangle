@@ -58,6 +58,7 @@ public:
 	float GetNear(void) const { return m_fNear; }
 	void SetFar(const float fFar) { m_fFar = fFar; }
 	float GetFar(void) const { return m_fFar; }
+	TYPE GetType(void) const { return m_type; }
 	Vector3 GetRay(void) const;
 	Vector3 GetRayToScreen(const Vector3 &screenPos);
 	void SetViewport(const D3DVIEWPORT9 &vp) { m_vp = vp; }
@@ -86,17 +87,17 @@ private:
 	inline static TYPE m_currentType = CCamera::TYPE::FREE;		// 現在設置されているカメラのタイプ
 	inline static TYPE m_focusType = CCamera::TYPE::MAX;			// フルスクリーンにフォーカスしているカメラのタイプ
 	Matrix m_mtxProjection;		// プロジェクションマトリックス
-	Matrix m_mtxView;		// ビューマトリックス
+	Matrix m_mtxView;			// ビューマトリックス
 	Vector3 m_posV = VECTOR3_NULL;			// 視点	
 	Vector3 m_posR = VECTOR3_NULL;			// 注視点
 	Vector3 m_vecU = VECTOR3_NULL;			// 上方向ベクトル
 	Vector3 m_rot = VECTOR3_NULL;			// 向き
-	D3DVIEWPORT9 m_vp = {};		// ビューポート設定
+	D3DVIEWPORT9 m_vp = {};					// ビューポート設定
 	Color m_colFog = COLOR_NULL;			// ピクセルフォグの色
 	float m_fStart = 0.0f, m_fEnd = 0.0f;	// フォグの開始・終了位置
-	float m_fFovy = 0.0f;			// 視野角
+	float m_fFovy = 0.0f;					// 視野角
 	float m_fNear = 0.0f, m_fFar = 0.0f;	// カメラの描画最小・最長距離
-	TYPE m_type;			// カメラの種類
+	TYPE m_type = TYPE::FREE;				// カメラの種類
 	bool m_bEnableOrtho = false;	// 正射影投影の有効化
 	bool m_bEnableFog = false;		// フォグの有効化
 };
