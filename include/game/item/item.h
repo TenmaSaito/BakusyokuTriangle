@@ -60,6 +60,7 @@ public:
 	void Update(void) override;
 	void Draw(void) override;
 	bool IsEqualType(const TYPE type) const { return m_type == type; }
+	static constexpr int GetTypeMax(void) { return static_cast<int>(TYPE::MAX) - 1; }
 
 private:
 	static constexpr int ITEM_PRIORITY = DEFAULT_OBJ_PRIORITY;		// ƒAƒCƒeƒ€‚Ì—Dæ‡ˆÊ
