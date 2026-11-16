@@ -18,6 +18,7 @@
 #include "input/joypad.h"
 #include "scene/transition/sceneTransition.h"
 #include "util/util.h"
+#include "util/enumUtil.h"
 
 //**********************************************************************************
 // *** マクロ定義 ***
@@ -185,7 +186,7 @@ void CPause::UpdateInput(void)
 			STICK_REPEAT_WAIT,
 			STICK_REPEAT_INTERVAL))
 	{ // ユーザーが右入力をした際、タイプを進める
-		m_type = Util::AddEnum(m_type, 1);
+		m_type = EnumUtil::AddEnum(m_type, 1);
 		if (m_type >= TYPE::MAX) m_type = TYPE::CONTINUE;
 	}
 	else if (pKeyboard->GetTrigger(DIK_A)
@@ -195,7 +196,7 @@ void CPause::UpdateInput(void)
 			STICK_REPEAT_WAIT,
 			STICK_REPEAT_INTERVAL))
 	{ // ユーザーが左入力をした際、タイプを戻す
-		m_type = Util::AddEnum(m_type, -1);
+		m_type = EnumUtil::AddEnum(m_type, -1);
 		if (m_type < TYPE::CONTINUE) m_type = TYPE::EXIT;
 	}
 	else if (pKeyboard->GetTrigger(DIK_RETURN)
