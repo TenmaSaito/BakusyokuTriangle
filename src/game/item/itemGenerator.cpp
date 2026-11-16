@@ -20,6 +20,8 @@
 #include "math/rand.h"
 #include "math/vec3math.h"
 #include "util/util.h"
+#include "render/camera.h"
+#include "render/cameraTransition.h"
 
 //**********************************************************************************
 // *** 定数宣言 ***
@@ -108,6 +110,10 @@ void CItemGenerator::Update(void)
 	// 生成済みの場合スキップ
 	if (m_bWasCreated == true) return;
 
+	CCameraTransition::Create(CCamera::GetCamera(CCamera::TYPE::PLAYER),
+		CCamera::GetCamera(CCamera::TYPE::FREE),
+		30);
+
 	const Vector3 vecOrigin = VECTOR3_NULL;		// ローカル座標の原点
 	Vector3 posPlayer = *D3DXVec3TransformCoord(&posPlayer, &vecOrigin, pPlayer->GetMatrix());
 
@@ -119,7 +125,6 @@ void CItemGenerator::Update(void)
 		Vector3 pos;		// 生成位置
 		float fRadius;		// 当たり判定の半径
 		int nLife;			// 体力
-
 		Vector4 boader;		// 境界線
 
 		// 境界線を計算

@@ -183,7 +183,7 @@
     <ClCompile Include="src\game\stage\foodBackground.cpp">
       <Filter>src\game\stage</Filter>
     </ClCompile>
-    <ClCompile Include="src\game\stage\mapScriptLoader.cpp">
+    <ClCompile Include="src\game\stage\mapLoader.cpp">
       <Filter>src\game\stage</Filter>
     </ClCompile>
     <ClCompile Include="src\game\stage\stage.cpp">
@@ -354,6 +354,9 @@
     <ClCompile Include="src\core\script.cpp">
       <Filter>src\core</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\cameraTransition.cpp">
+      <Filter>src\render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\core\Coroutine.h">
@@ -416,7 +419,7 @@
     <ClInclude Include="include\game\stage\foodBackground.h">
       <Filter>include\game\stage</Filter>
     </ClInclude>
-    <ClInclude Include="include\game\stage\mapScriptLoader.h">
+    <ClInclude Include="include\game\stage\mapLoader.h">
       <Filter>include\game\stage</Filter>
     </ClInclude>
     <ClInclude Include="include\game\stage\stage.h">
@@ -613,6 +616,9 @@
     </ClInclude>
     <ClInclude Include="include\core\script.h">
       <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\render\cameraTransition.h">
+      <Filter>include\render</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
