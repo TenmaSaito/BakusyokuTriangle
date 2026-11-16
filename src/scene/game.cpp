@@ -9,13 +9,14 @@
 // *** インクルードファイル ***
 //**********************************************************************************
 #include "scene/game.h"
-#include "game/stage/mapScriptLoader.h"
+#include "game/stage/mapLoader.h"
 #include "game/item/itemGenerator.h"
 #include "effect/screenEffect.h"
 #include "network/rankingClient.h"
 #include "ui/score.h"
 #include "sound/sound.h"
 #include "render/texture.h"
+#include "render/camera.h"
 #include "core/manager.h"
 #include "input/input.h"
 #include "input/joypad.h"
@@ -142,6 +143,9 @@ void CGame::Start(const ManagerContext::SceneContext &sceneContext)
 		SCORE_DIGIT);
 
 	CNextInfo::Create();
+
+	CCamera::Create(Vector3(0.0f, 1500.0f, -400.0f), VECTOR3_NULL);
+	CCamera::SetFocus(CCamera::TYPE::PLAYER);
 
 	CManager::GetInstance()->GetSound()->Play(CSound::LABEL::BGM_INGAME);
 }
