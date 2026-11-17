@@ -23,7 +23,7 @@ END_SETSPAWNER
 SETSCORE
 	RICE = 100			# 米のスコア
 	SIDE_DISH = 100		# おかずのスコア
-	MISO_SOUP = 100		# みそ汁のスコア
+	SOUP = 100			# みそ汁のスコア
 END_SETSCORE
 
 END_SCRIPT
