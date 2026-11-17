@@ -50,6 +50,5 @@ private:
 	CNextInfo *m_pNextInfo = nullptr;		// 次に取得するアイテムを表示するUI
 	CSound *m_pSound = nullptr;		// サウンド
 	CScore *m_pScore = nullptr;		// スコアクラス
-	CCamera *m_p
 };
 #endif
