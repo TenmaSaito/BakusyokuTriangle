@@ -48,6 +48,8 @@ private:
 
 	CScreenEffect *m_pScreenEffect = nullptr;		// 画面演出
 	CNextInfo *m_pNextInfo = nullptr;		// 次に取得するアイテムを表示するUI
+	CCamera *m_pCamPlayer = nullptr;	// プレイヤーカメラ
+	CCamera *m_pCamField = nullptr;		// フィールドカメラ
 	CSound *m_pSound = nullptr;		// サウンド
 	CScore *m_pScore = nullptr;		// スコアクラス
 };
