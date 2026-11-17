@@ -13,6 +13,11 @@
 #include "core/script.h"
 
 //**********************************************************************************
+// *** 前方宣言 ***
+//**********************************************************************************
+class CItemSpawner;
+
+//**********************************************************************************
 // *** マップスクリプト読み込みクラス ***
 //**********************************************************************************
 class CItemSpawnerLoader : public CScript
@@ -22,7 +27,9 @@ public:
 	~CItemSpawnerLoader();
 
 	HRESULT Load(std::string_view path) override;
+	void BindItemSpawner(CItemSpawner *pSpawner) { m_pSpawner = pSpawner; }
 
 private:
+	CItemSpawner *m_pSpawner = nullptr;		// アイテムスポナー
 };
 #endif
