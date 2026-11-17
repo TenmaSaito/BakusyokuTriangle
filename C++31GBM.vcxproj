@@ -181,6 +181,7 @@
     <ClCompile Include="src\game\item\item.cpp" />
     <ClCompile Include="src\game\item\itemGenerator.cpp" />
     <ClCompile Include="src\game\item\itemSpawner.cpp" />
+    <ClCompile Include="src\game\item\itemLoader.cpp" />
     <ClCompile Include="src\game\item\mealManager.cpp" />
     <ClCompile Include="src\game\player\player.cpp" />
     <ClCompile Include="src\game\player\playerCamera.cpp" />
@@ -267,6 +268,7 @@
     <ClInclude Include="include\game\item\item.h" />
     <ClInclude Include="include\game\item\itemGenerator.h" />
     <ClInclude Include="include\game\item\itemSpawner.h" />
+    <ClInclude Include="include\game\item\itemLoader.h" />
     <ClInclude Include="include\game\item\mealManager.h" />
     <ClInclude Include="include\game\player\player.h" />
     <ClInclude Include="include\game\player\playerCamera.h" />

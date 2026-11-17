@@ -372,6 +372,9 @@
     <ClCompile Include="src\game\item\mealManager.cpp">
       <Filter>src\game\item</Filter>
     </ClCompile>
+    <ClCompile Include="src\game\item\itemLoader.cpp">
+      <Filter>src\game\item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\core\Coroutine.h">
@@ -648,6 +651,9 @@
       <Filter>include\render</Filter>
     </ClInclude>
     <ClInclude Include="include\game\item\mealManager.h">
+      <Filter>include\game\item</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\item\itemLoader.h">
       <Filter>include\game\item</Filter>
     </ClInclude>
   </ItemGroup>

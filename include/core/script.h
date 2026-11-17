@@ -35,6 +35,8 @@ protected:
 	bool Open(std::string_view path);
 	void Close(void);
 	std::optional<std::string> ReadCleanLine(void);
+	bool SeekScriptBegin(void);
+	bool IsScriptEnd(std::string_view line);
 
 private:
 	std::unique_ptr<CFileStream> m_pFile;		// ファイルストリーム
