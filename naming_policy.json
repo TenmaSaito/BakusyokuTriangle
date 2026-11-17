@@ -89,7 +89,8 @@
       ],
       "enum": [
         "PascalCase",
-        "lowerCamelCase"
+        "lowerCamelCase",
+        "UPPER_CASE"
       ],
       "type_prefix_required": false
     },

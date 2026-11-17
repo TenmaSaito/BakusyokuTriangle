@@ -70,21 +70,67 @@ def pascal(name: str) -> str:
     return ''.join(p[0].upper()+p[1:] for p in parts) or 'Action'
 
 
+def strip_template_args(typ: str) -> str:
+    """Drop everything inside <...> so only top-level tokens remain."""
+    out=[]
+    depth=0
+    for ch in typ:
+        if ch=='<':
+            depth+=1
+        elif ch=='>':
+            depth=max(depth-1,0)
+        elif depth==0:
+            out.append(ch)
+    return ''.join(out)
+
+
+def first_template_arg(typ: str) -> str:
+    """`std::vector<CItem *, std::allocator<CItem *>>` -> `CItem *`."""
+    start=typ.find('<')
+    if start<0:
+        return ''
+    depth=0
+    for i in range(start+1,len(typ)):
+        ch=typ[i]
+        if ch=='<':
+            depth+=1
+        elif ch=='>':
+            if depth==0:
+                return typ[start+1:i].strip()
+            depth-=1
+        elif ch==',' and depth==0:
+            return typ[start+1:i].strip()
+    return typ[start+1:].strip()
+
+
+def pointer_prefix(typ: str) -> str:
+    """p/pp for a raw or smart pointer type at the top level, else ''."""
+    stars=strip_template_args(typ).count('*')
+    if stars>=2:
+        return 'pp'
+    if stars==1:
+        return 'p'
+    if re.match(r'(?:std::)?(?:unique_ptr|shared_ptr|weak_ptr)\s*<',typ.strip()):
+        return 'p'
+    return ''
+
+
 def expected_prefix(typ: str, policy: dict | None = None) -> str | None:
     """Prefer spelling in qualType, rather than desugaredQualType (UINT/DWORD)."""
     typ = re.sub(r'\b(const|volatile|restrict|struct|class|enum)\b','',typ)
     typ = re.sub(r'\s+',' ',typ).strip()
     # Strip references, not pointers. A const T& uses the T prefix.
     typ = re.sub(r'\s*&&?\s*$','',typ).strip()
-    if re.search(r'\[[^]]*\]$',typ):
+    if re.search(r'\[[^]]*\]$',strip_template_args(typ)):
         return 'a'
-    if '*' in typ:
-        return 'pp' if typ.count('*') >= 2 else 'p'
-    if re.search(r'\b(?:unique_ptr|shared_ptr|weak_ptr)\s*<',typ):
-        return 'p'
+    # Only pointers at the top level count: `std::vector<CItem *>` is a vector.
+    ptr=pointer_prefix(typ)
+    if ptr:
+        return ptr
     for container,prefix in CONTAINERS.items():
         if re.match(r'(?:std::)?'+re.escape(container)+r'\s*<',typ):
-            return prefix
+            # A container of pointers adds p/pp after the container prefix: vpItem.
+            return prefix+pointer_prefix(first_template_arg(typ))
     primitive = (policy or {}).get('names', {}).get('variables', {}).get('primitive_prefixes', {})
     if typ in primitive:
         return primitive[typ]
@@ -99,7 +145,9 @@ def expected_prefix(typ: str, policy: dict | None = None) -> str | None:
 def propose(name: str, expected: str, member: bool) -> str:
     original = name[2:] if name.startswith('m_') else name
     # Remove an existing Hungarian prefix BEFORE converting case.
-    candidates = sorted(set(BUILTIN_PREFIXES.values()) | set(CONTAINERS.values()) | {'pp','p'},key=len,reverse=True)
+    containers = set(CONTAINERS.values())
+    candidates = sorted(set(BUILTIN_PREFIXES.values()) | containers | {'pp','p'}
+                        | {c+p for c in containers for p in ('p','pp')},key=len,reverse=True)
     for old in candidates:
         if original.startswith(old) and len(original)>len(old) and original[len(old)].isupper():
             original=original[len(old):]
@@ -221,8 +269,9 @@ def parse_ast(ast: dict, translation_unit: Path, root: Path,
                 if kind == 'CXXRecordDecl' and not node.get('completeDefinition'):
                     # Forward declarations still count, except implicit nodes.
                     pass
-                if not TYPE_NAME.fullmatch(name):
-                    emit(node,'type','型名はPascalCaseかlowerCamelCase（アンダースコアなし）',pascal(name),path,line)
+                # enum types may also be UPPER_CASE (ACTION_TYPE, EAT_RESULT).
+                if not TYPE_NAME.fullmatch(name) and not (kind == 'EnumDecl' and UPPER.fullmatch(name)):
+                    emit(node,'type','型名はPascalCaseかlowerCamelCase（アンダースコアなし、enumはUPPER_CASEも可）',pascal(name),path,line)
             elif kind in FUNCTION_KINDS:
                 if (name not in FUNCTION_EXCEPTIONS and not name.startswith('operator')
                     and not any(child.get('kind') in ('OverrideAttr', 'FinalAttr') for child in node.get('inner',[]))
