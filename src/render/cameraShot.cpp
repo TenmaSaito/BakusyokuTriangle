@@ -20,7 +20,11 @@ CCameraShot *CCameraShot::Create(CCamera *pStart,
 	const int nTransFrameInbound,
 	const int nWaitFrame)
 {
-	return Util::Create<CCameraShot>(pStart, pEnd, nTransFrameOutbound, nTransFrameInbound, nWaitFrame);
+	return Util::Create<CCameraShot>(pStart, 
+		pEnd, 
+		nTransFrameOutbound,
+		nTransFrameInbound,
+		nWaitFrame);
 }
 
 //==================================================================================
