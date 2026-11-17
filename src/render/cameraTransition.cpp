@@ -83,15 +83,15 @@ void CCameraTransition::Uninit(void)
 //==================================================================================
 void CCameraTransition::Update(void)
 {
-	float t = static_cast<float>(m_nCounterFrame) / static_cast<float>(m_nFrame);		// 経過フレームの割合
+	float fTime = static_cast<float>(m_nCounterFrame) / static_cast<float>(m_nFrame);		// 経過フレームの割合
 
 	// 補間後の値を求める
-	Vector3 posV = Vec3::Lerp(*m_pStart->GetPosV(), *m_pEnd->GetPosV(), t);
-	Vector3 posR = Vec3::Lerp(*m_pStart->GetPosR(), *m_pEnd->GetPosR(), t);
-	Vector3 rot = Vec3::Lerp(*m_pStart->GetRotate(), *m_pEnd->GetRotate(), t);
-	Vector3 vecU = Vec3::Lerp(*m_pStart->GetVecU(), *m_pEnd->GetVecU(), t);
-	float fNear = std::lerp(m_pStart->GetNear(), m_pEnd->GetNear(), t);
-	float fFar = std::lerp(m_pStart->GetFar(), m_pEnd->GetFar(), t);
+	Vector3 posV = Vec3::Lerp(m_posVStart, *m_pEnd->GetPosV(), fTime);
+	Vector3 posR = Vec3::Lerp(m_posRStart, *m_pEnd->GetPosR(), fTime);
+	Vector3 rot = Vec3::Lerp(m_rotStart, *m_pEnd->GetRotate(), fTime);
+	Vector3 vecU = Vec3::Lerp(m_vecUStart, *m_pEnd->GetVecU(), fTime);
+	float fNear = std::lerp(m_fNearStart, m_pEnd->GetNear(), fTime);
+	float fFar = std::lerp(m_fFarStart, m_pEnd->GetFar(), fTime);
 
 	// 最初のカメラに適用
 	m_pStart->SetPosV(posV);

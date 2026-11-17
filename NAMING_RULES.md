@@ -26,6 +26,7 @@
 
 - **ポインタは `p` を優先**：`int* pCount`。`npCount` とはしない。
 - **スマートポインタも `p`**：`std::unique_ptr<CObject> pObject`。
+- **ポインタのコンテナは コンテナ接頭辞 + `p`**：`std::vector<CItem*> vpItem`、`std::vector<std::unique_ptr<CObject>> vpObject`。コンテナ自体へのポインタは `p`：`std::vector<int>* pList`。
 - クラスのフィールドは `m_` を付ける：`m_nScore`, `m_pPlayer`, `m_vObjects`。
 - `struct` の公開フィールドは `m_` 不要：`int nCount`, `Vector3 pos`。
 - class/struct/enum 型の**オブジェクト名は型接頭辞なし・小文字開始OK**：`CPlayer player`, `Vector3 pos`, `Axis axis`。
@@ -45,7 +46,7 @@
 
 ## 型・関数・ファイル
 - 関数・メソッド：`PascalCase`（`GetScore`, `SetPosition` 等）。`main`, `WinMain`, 演算子、外部APIによるオーバーライド等は除外。
-- 型名：既存の `CPlayer`, `CObject`, `Axis`, `Setting` をそのまま許容。接頭辞なし・小文字開始も許容。
+- 型名：既存の `CPlayer`, `CObject`, `Axis`, `Setting` をそのまま許容。接頭辞なし・小文字開始も許容。`enum` / `enum class` の型名は `UPPER_CASE`（`ACTION_TYPE`, `EAT_RESULT`）も許容。
 - ファイル名：ZIPでは `camera.cpp`, `objectX.cpp`, `objectXAfterImage.cpp`, `tcp_client.h` 等が混在。新規コードでは lowerCamelCase または snake_case を許容し、PascalCaseへ一斉改名しない。
 - 含めるのはユーザー作成のソースコード中心。`.vs`, `Debug`, `Release`, `.git`, 外部ライブラリ、生成物は除外。
 
