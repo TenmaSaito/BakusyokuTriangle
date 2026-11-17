@@ -16,20 +16,26 @@
 // *** 前方宣言 ***
 //**********************************************************************************
 class CItemSpawner;
+class CEatingRule;
 
 //**********************************************************************************
 // *** マップスクリプト読み込みクラス ***
 //**********************************************************************************
-class CItemSpawnerLoader : public CScript
+class CItemLoader : public CScript
 {
 public:
-	CItemSpawnerLoader();
-	~CItemSpawnerLoader();
+	CItemLoader();
+	~CItemLoader();
 
 	HRESULT Load(std::string_view path) override;
 	void BindItemSpawner(CItemSpawner *pSpawner) { m_pSpawner = pSpawner; }
+	void BindEatingRule(CEatingRule *pRule) { m_pRule = pRule; }
 
 private:
+	void LoadSpawner(void);
+	void LoadEatingRule(void);
+
 	CItemSpawner *m_pSpawner = nullptr;		// アイテムスポナー
+	CEatingRule *m_pRule = nullptr;			// ルール管理
 };
 #endif

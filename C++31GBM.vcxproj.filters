@@ -372,7 +372,7 @@
     <ClCompile Include="src\game\item\mealManager.cpp">
       <Filter>src\game\item</Filter>
     </ClCompile>
-    <ClCompile Include="src\game\item\itemSpawnerLoader.cpp">
+    <ClCompile Include="src\game\item\itemLoader.cpp">
       <Filter>src\game\item</Filter>
     </ClCompile>
   </ItemGroup>
@@ -653,7 +653,7 @@
     <ClInclude Include="include\game\item\mealManager.h">
       <Filter>include\game\item</Filter>
     </ClInclude>
-    <ClInclude Include="include\game\item\itemSpawnerLoader.h">
+    <ClInclude Include="include\game\item\itemLoader.h">
       <Filter>include\game\item</Filter>
     </ClInclude>
   </ItemGroup>
