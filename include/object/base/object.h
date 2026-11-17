@@ -51,6 +51,7 @@ public:
 		MODEL_PARTICLE,	// モデルパーティクル
 		SPEECH_BUBBLE,	// 吹き出し
 		CAMERA_TRANS,	// カメラの遷移管理
+		CAMERA_SHOT,	// カメラの往復遷移管理
 		MAX
 	};
 

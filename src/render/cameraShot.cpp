@@ -31,7 +31,8 @@ CCameraShot *CCameraShot::Create(CCamera *pStart,
 // --- コンストラクタ ---
 //==================================================================================
 CCameraShot::CCameraShot() : CObject(FIRST_PRIORITY)
-{
+{ // タイプ指定
+	SetType(TYPE::CAMERA_SHOT);
 }
 
 //==================================================================================
