@@ -37,8 +37,9 @@ public:
 		const CItem::TYPE next, 
 		const int nScore);
 	void BindSound(CSound *pSound) { m_pSound = pSound; }
-	void BindSound(CScore *pScore) { m_pScore = pScore; }
-	void BindSound(CScreenEffect *pScreenEffect) { m_pScreenEffect = pScreenEffect; }
+	void BindScore(CScore *pScore) { m_pScore = pScore; }
+	void BindScreenEffect(CScreenEffect *pScreenEffect) { m_pScreenEffect = pScreenEffect; }
+	void BindCameras(CCamera *pCamPlayer, CCamera *pCamField) { m_pCamPlayer = pCamPlayer; m_pCamField = pCamField; }
 
 private:
 	void Success(const int nScore);
@@ -48,6 +49,8 @@ private:
 
 	CScreenEffect *m_pScreenEffect = nullptr;		// 画面演出
 	CNextInfo *m_pNextInfo = nullptr;		// 次に取得するアイテムを表示するUI
+	CCamera *m_pCamPlayer = nullptr;	// プレイヤーカメラ
+	CCamera *m_pCamField = nullptr;		// フィールドカメラ
 	CSound *m_pSound = nullptr;		// サウンド
 	CScore *m_pScore = nullptr;		// スコアクラス
 };

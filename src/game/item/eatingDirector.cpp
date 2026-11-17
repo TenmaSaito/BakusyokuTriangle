@@ -10,6 +10,7 @@
 #include "game/item/eatingDirector.h"
 #include "effect/screenEffect.h"
 #include "object/2d/object2D.h"
+#include "render/cameraShot.h"
 #include "sound/sound.h"
 #include "ui/nextInfo.h"
 #include "ui/score.h"
@@ -19,6 +20,8 @@
 //**********************************************************************************
 namespace
 {
+	constexpr int CAMERA_TRANS_FRAME = 60;		// カメラの各遷移時間
+	constexpr int CAMERA_TRANS_WAIT_FRAME = 60;	// カメラの遷移後の待機時間
 	constexpr float FLASH_ALPHA = 0.5f;			// フラッシュの強さ
 	constexpr ConstColor SUCCESS_COL = ConstColor(1.0f, 1.0f, 0.0f, 1.0f);	// 成功時のフラッシュ色
 	constexpr ConstColor FAIL_COL = ConstColor(1.0f, 0.0f, 0.0f, 1.0f);		// 失敗時のフラッシュ色
@@ -72,7 +75,7 @@ void CEatingDirector::Play(const CEatingRule::EAT_RESULT result,
 		break;
 
 	default:
-		assert(!"ここを通る筈はありません。列挙型の範囲外です。");
+		assert(!"ここを通る筈ありません。列挙型の範囲外です。");
 		break;
 	}
 }
@@ -110,7 +113,12 @@ void CEatingDirector::WaveClear(const int nScore)
 { // 成功時演出を再生
 	Success(nScore);
 
-
+	// カメラを往復遷移
+	CCameraShot::Create(m_pCamPlayer,
+		m_pCamField,
+		CAMERA_TRANS_FRAME,
+		CAMERA_TRANS_FRAME,
+		CAMERA_TRANS_WAIT_FRAME);
 }
 
 //==================================================================================
