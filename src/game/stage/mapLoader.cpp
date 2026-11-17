@@ -46,30 +46,19 @@ HRESULT CMapLoader::Load(std::string_view path)
 
 	if (Open(path) == false)
 	{ // ファイルオープン失敗時
-		hr = E_FAIL;
-		return hr;
+		return E_FAIL;
 	}
 
-	while (1)
-	{ // SCRIPTキーワードを検索
-		// 文字列を一列読み込み
-		line = ReadCleanLine();
-		if (line.has_value() == false)
-		{ // 見つからないままファイルが終わった場合
-			hr = S_FALSE;
-			return hr;
-		}
-		else if (StringUtil::Contains(*line, "SCRIPT") == true)
-		{ // 見つかった場合
-			break;
-		}
+	if (SeekScriptBegin() == false)
+	{ // スクリプト開始キーワードが見つからなかった場合
+		return E_FAIL;
 	}
 
 	while (1)
 	{ // 各オブジェクトを配置
 		// 文字列を一列読み込み
 		line = ReadCleanLine();
-		if (line.has_value() == false || StringUtil::Contains(*line, "END_SCRIPT"))
+		if (line.has_value() == false || IsScriptEnd(*line))
 		{ // 読み込み終了
 			break;
 		}
@@ -233,6 +222,9 @@ HRESULT CMapLoader::Load(std::string_view path)
 			}
 		}
 	}
+
+	// ファイルを閉じる
+	Close();
 
 	if (pStage != nullptr)
 	{ // ステージがnullでなければ、各オブジェクトの親に設定
