@@ -39,6 +39,7 @@ public:
 	void BindSound(CSound *pSound) { m_pSound = pSound; }
 	void BindScore(CScore *pScore) { m_pScore = pScore; }
 	void BindScreenEffect(CScreenEffect *pScreenEffect) { m_pScreenEffect = pScreenEffect; }
+	void BindCameras(CCamera *pCamPlayer, CCamera *pCamField) { m_pCamPlayer = pCamPlayer; m_pCamField = pCamField; }
 
 private:
 	void Success(const int nScore);
