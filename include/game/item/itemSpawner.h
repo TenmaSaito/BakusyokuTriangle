@@ -39,7 +39,7 @@ public:
 private:
 	float m_fSpawnFieldMargin = 0.0f;			// ステージの端から離す距離
 	float m_fDistanceFromPlayer = 0.0f;			// アイテムとプレイヤーの最短距離
-	float m_fDistanceFromOtherItem = 0.0f;		// アイテム動詞の最短距離
+	float m_fDistanceFromOtherItem = 0.0f;		// アイテム同士の最短距離
 	float m_fItemRadius = 0.0f;					// アイテムの当たり判定の半径
 	int m_nTryIfFailed = 0;		// 距離制限による設置失敗時に行う試行回数の最大
 };
