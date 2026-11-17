@@ -37,8 +37,8 @@ public:
 		const CItem::TYPE next, 
 		const int nScore);
 	void BindSound(CSound *pSound) { m_pSound = pSound; }
-	void BindSound(CScore *pScore) { m_pScore = pScore; }
-	void BindSound(CScreenEffect *pScreenEffect) { m_pScreenEffect = pScreenEffect; }
+	void BindScore(CScore *pScore) { m_pScore = pScore; }
+	void BindScreenEffect(CScreenEffect *pScreenEffect) { m_pScreenEffect = pScreenEffect; }
 
 private:
 	void Success(const int nScore);
