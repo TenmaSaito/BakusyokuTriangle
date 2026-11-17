@@ -35,6 +35,10 @@ public:
 	void Update(void) override;
 
 private:
+	void MakeSpawner(void);
+	void MakeRule(void);
+	void MakeDirector(void);
+
 	static constexpr int MEAL_MANAGER_PRIORITY = FIRST_PRIORITY;		// このクラスの優先順位
 	std::unique_ptr<CItemSpawner> m_pItemSpawner;			// アイテムスポナー
 	std::unique_ptr<CEatingRule> m_pEatingRule;				// 取得ルール

@@ -57,3 +57,36 @@ void CMealManager::Update(void)
 {
 
 }
+
+//==================================================================================
+// --- アイテム生成クラスの生成処理 ---
+//==================================================================================
+void CMealManager::MakeSpawner(void)
+{
+	m_pItemSpawner = std::make_unique<CItemSpawner>();		// インスタンス生成
+
+#if 0
+	// 各ステータス設定
+	m_pItemSpawner->SetDistanceFromPlayer();
+	m_pItemSpawner->SetDistanceFromOtherItem();
+	m_pItemSpawner->SetItemRadius();
+	m_pItemSpawner->SetSpawnFieldMargin();
+	m_pItemSpawner->SetTryIfFailed();
+#endif
+}
+
+//==================================================================================
+// --- アイテムの取得順ルールクラスの生成処理 ---
+//==================================================================================
+void CMealManager::MakeRule(void)
+{
+
+}
+
+//==================================================================================
+// --- アイテムの演出クラスの生成処理 ---
+//==================================================================================
+void CMealManager::MakeDirector(void)
+{
+
+}
