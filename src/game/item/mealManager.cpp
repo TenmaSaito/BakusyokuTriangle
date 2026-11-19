@@ -1,8 +1,8 @@
 //==================================================================================
-// 
+//
 // アイテム関連処理の管理クラスのソースファイル [mealManager.cpp]
 // Author : TENMA SAITO
-// 
+//
 //==================================================================================
 //**********************************************************************************
 // *** インクルードファイル ***
@@ -11,11 +11,20 @@
 #include "game/item/itemSpawner.h"
 #include "game/item/eatingRule.h"
 #include "game/item/eatingDirector.h"
+#include "game/item/itemLoader.h"
+#include "game/item/item.h"
+#include "game/player/player.h"
+#include "game/stage/stage.h"
+#include "render/camera.h"
+#include "core/manager.h"
+#include "sound/sound.h"
+#include "ui/score.h"
+#include "effect/screenEffect.h"
 
 //==================================================================================
 // --- コンストラクタ ---
 //==================================================================================
-CMealManager::CMealManager() : CObject(FIRST_PRIORITY)
+CMealManager::CMealManager() : CObject(MEAL_MANAGER_PRIORITY)
 { // タイプ指定
 	SetType(TYPE::CAMERA_SHOT);
 }
@@ -30,63 +39,128 @@ CMealManager::~CMealManager()
 //==================================================================================
 // --- 初期化処理 ---
 //==================================================================================
-HRESULT CMealManager::Init(CPlayer *pPlayer, CStage *pStage)
-{ // 引数代入
+HRESULT CMealManager::Init(std::string_view sPath,
+	CPlayer *pPlayer,
+	CStage *pStage)
+{ // null参照防止
+	if (pPlayer == nullptr || pStage == nullptr) return E_POINTER;
+
+	// 引数代入
 	m_pPlayer = pPlayer;
 	m_pStage = pStage;
 
-	// null参照防止
-	if (pPlayer == nullptr || pStage == nullptr) return E_POINTER;
-
-	// 各アイテム処理クラスを生成
+	// 各アイテム処理インスタンスを生成
 	m_pItemSpawner = std::make_unique<CItemSpawner>();
+	m_pEatingRule = std::make_unique<CEatingRule>();
+	m_pEatingDirector = std::make_unique<CEatingDirector>();
+
+	// スクリプトを読み込み、スポナーとルールに反映
+	CItemLoader loader;
+	loader.BindItemSpawner(m_pItemSpawner.get());
+	loader.BindEatingRule(m_pEatingRule.get());
+	if (FAILED(loader.Load(sPath))) return E_FAIL;
+
+	// ディレクターを設定
+	SetupDirector();
+
+	// 最初のウェーブのアイテムを生成
+	SpawnItems(m_pEatingRule->GetMaxItem());
+	return S_OK;
 }
 
 //==================================================================================
 // --- 終了処理 ---
 //==================================================================================
 void CMealManager::Uninit(void)
-{
+{ // 残っているアイテムから監視を解除 (解放後に通知が来るのを防ぐ)
+	for (CItem *pItem : m_vpItem)
+	{
+		pItem->RemoveObserver(this);
+	}
+	m_vpItem.clear();
 
+	// 親クラスの解放
+	CObject::Release();
 }
 
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
 void CMealManager::Update(void)
-{
+{ // 生成要求が無い場合スキップ
+	if (m_bSpawnRequest == false) return;
 
+	// 次のウェーブのアイテムを生成
+	m_bSpawnRequest = false;
+	SpawnItems(m_pEatingRule->GetMaxItem());
 }
 
 //==================================================================================
-// --- アイテム生成クラスの生成処理 ---
+// --- 通知処理 ---
 //==================================================================================
-void CMealManager::MakeSpawner(void)
-{
-	m_pItemSpawner = std::make_unique<CItemSpawner>();		// インスタンス生成
+void CMealManager::Notified(CObject *pObject,
+	std::string_view message,
+	const std::any &args)
+{ // アイテムの死亡通知以外はスキップ
+	if (pObject->GetType() != TYPE::ITEM) return;
+	if (message != NOTIFY_WHEN_DEATH) return;
 
-#if 0
-	// 各ステータス設定
-	m_pItemSpawner->SetDistanceFromPlayer();
-	m_pItemSpawner->SetDistanceFromOtherItem();
-	m_pItemSpawner->SetItemRadius();
-	m_pItemSpawner->SetSpawnFieldMargin();
-	m_pItemSpawner->SetTryIfFailed();
-#endif
+	CItem *pItem = static_cast<CItem*>(pObject);		// アイテムへキャスト
+
+	// 管理配列から削除
+	std::erase(m_vpItem, pItem);
+
+	// 取得結果を判定し、演出担当に渡す
+	const CEatingRule::EAT_RESULT result = m_pEatingRule->OnEat(pItem->GetItemType());
+	m_pEatingDirector->Play(result,
+		m_pEatingRule->GetNext(),
+		m_pEatingRule->GetCurrentScore());
+
+	if (result == CEatingRule::EAT_RESULT::WRONG)
+	{ // 誤食時、残りのアイテムを全て消して、次のUpdateで最初から生成し直す
+		DestroyAllItems();
+		m_bSpawnRequest = true;
+	}
+	else if (result == CEatingRule::EAT_RESULT::WAVE_CLEAR)
+	{ // ウェーブクリア時、次のUpdateで生成する
+		m_bSpawnRequest = true;
+	}
 }
 
 //==================================================================================
-// --- アイテムの取得順ルールクラスの生成処理 ---
+// --- 残りのアイテムの全破棄処理 ---
 //==================================================================================
-void CMealManager::MakeRule(void)
+void CMealManager::DestroyAllItems(void)
 {
-
+	for (CItem *pItem : m_vpItem)
+	{ // 監視を解除してから破棄 (取得扱いの通知が来ないようにする)
+		pItem->RemoveObserver(this);
+		pItem->Uninit();
+	}
+	m_vpItem.clear();
 }
 
 //==================================================================================
-// --- アイテムの演出クラスの生成処理 ---
+// --- アイテムの演出クラスの設定処理 ---
 //==================================================================================
-void CMealManager::MakeDirector(void)
-{
+void CMealManager::SetupDirector(void)
+{ // 各インスタンス割り当て
+	m_pEatingDirector->BindCameras(CCamera::GetCamera(CCamera::TYPE::PLAYER),
+		CCamera::GetCamera(CCamera::TYPE::FREE));
+	m_pEatingDirector->BindScore(CObject::FindAnyObjectByType<CScore>());
+	m_pEatingDirector->BindScreenEffect(CObject::FindAnyObjectByType<CScreenEffect>());
+	m_pEatingDirector->BindSound(CManager::GetInstance()->GetSound());
+}
 
+//==================================================================================
+// --- アイテムの生成・監視登録処理 ---
+//==================================================================================
+void CMealManager::SpawnItems(const int nNumItem)
+{ // アイテムを生成
+	m_vpItem = m_pItemSpawner->Generate(nNumItem, m_pStage, *m_pPlayer->GetPosition());
+
+	for (CItem *pItem : m_vpItem)
+	{ // 死亡通知を受け取るため、オブザーバーに登録
+		pItem->AddObserver(this);
+	}
 }

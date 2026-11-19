@@ -10,6 +10,14 @@
 #include "game/item/eatingRule.h"
 #include "util/enumUtil.h"
 
+//**********************************************************************************
+// *** 定数宣言 ***
+//**********************************************************************************
+namespace
+{
+	constexpr int MAX_ITEM_NUM = 15;		// 一度に出現するアイテムの総数
+}
+
 //==================================================================================
 // --- コンストラクタ ---
 //==================================================================================
@@ -29,15 +37,26 @@ CEatingRule::~CEatingRule()
 //==================================================================================
 CEatingRule::EAT_RESULT CEatingRule::OnEat(CItem::TYPE eat)
 { // 次に取得するべきアイテムと今回取得したアイテムが間違っているなら、失敗
-	if (m_nextType != eat) return EAT_RESULT::WRONG;
+	m_nCurrentScore = 0;		// 直前のスコアをリセット
+	if (m_nextType != eat)
+	{ // 食べるべき物以外を食べた場合、フェーズを最初からやり直す
+		m_nextType = CItem::TYPE::RICE;	// 次の種類をリセット
+		m_nMaxItem = 1;				// 生成数を1にリセット
+		m_nNumEatItem = 0;			// 取得したアイテム数をリセット
+		m_nCombo = 0;				// コンボ数をリセット
+		return EAT_RESULT::WRONG;
+	}
 
 	m_nNumEatItem++;		// 取得したアイテム数増加
-	m_nScore += m_aItemScore[CItem::ConvertToArrayIndex(eat)];		// アイテムに登録された点数をスコアに加算
-	m_nextType = EnumUtil::AddEnum(m_nextType, 1);			// 次に取得すべきアイテムの種類を進める
+	m_nCurrentScore = m_aItemScore[CItem::ConvertToArrayIndex(eat)];	// アイテムに登録された点数
+	m_nScore += m_nCurrentScore;		// スコアに加算
+	m_nextType = EnumUtil::AddEnum(m_nextType, 1);	// 次に取得すべきアイテムの種類を進める
 
 	if (m_nNumEatItem == m_nMaxItem)
 	{ // 全てのアイテムを取得し終わった場合、タイプを米に指定し、ウェーブクリア判定を返す
 		m_nextType = CItem::TYPE::RICE;
+		m_nMaxItem = (std::min)(m_nMaxItem + 1, MAX_ITEM_NUM);		// 総数変更 (上限あり)
+		m_nNumEatItem = 0;			// 取得したアイテム数をリセット
 		return EAT_RESULT::WAVE_CLEAR;
 	}
 	else if(m_nextType == CItem::TYPE::MAX)

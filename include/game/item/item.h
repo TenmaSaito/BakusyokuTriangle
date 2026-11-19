@@ -60,6 +60,7 @@ public:
 	void Update(void) override;
 	void Draw(void) override;
 	bool IsEqualType(const TYPE type) const { return m_type == type; }
+	TYPE GetItemType(void) const { return m_type; }		// CObject::GetType ‚ð‰B‚³‚È‚¢‚æ‚¤•Ê–¼‚É‚·‚é
 	static constexpr int GetTypeMax(void) { return static_cast<int>(TYPE::MAX) - 1; }
 	static constexpr int ConvertToArrayIndex(const CItem::TYPE type) { return static_cast<int>(type) - 1; }
 

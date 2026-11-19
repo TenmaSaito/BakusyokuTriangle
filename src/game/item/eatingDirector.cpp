@@ -20,8 +20,8 @@
 //**********************************************************************************
 namespace
 {
-	constexpr int CAMERA_TRANS_FRAME = 60;		// カメラの各遷移時間
-	constexpr int CAMERA_TRANS_WAIT_FRAME = 60;	// カメラの遷移後の待機時間
+	constexpr int CAMERA_TRANS_FRAME = 10;		// カメラの各遷移時間
+	constexpr int CAMERA_TRANS_WAIT_FRAME = 20;	// カメラの遷移後の待機時間
 	constexpr float FLASH_ALPHA = 0.5f;			// フラッシュの強さ
 	constexpr ConstColor SUCCESS_COL = ConstColor(1.0f, 1.0f, 0.0f, 1.0f);	// 成功時のフラッシュ色
 	constexpr ConstColor FAIL_COL = ConstColor(1.0f, 0.0f, 0.0f, 1.0f);		// 失敗時のフラッシュ色
