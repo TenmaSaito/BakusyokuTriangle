@@ -25,6 +25,11 @@
 #include "render/cameraShot.h"
 
 //**********************************************************************************
+// *** マクロ定義 ***
+//**********************************************************************************
+#define ENABLE_CAM_TRANS
+
+//**********************************************************************************
 // *** 定数宣言 ***
 //**********************************************************************************
 namespace
@@ -111,12 +116,13 @@ void CItemGenerator::Update(void)
 	// 生成済みの場合スキップ
 	if (m_bWasCreated == true) return;
 
+#ifdef ENABLE_CAM_TRANS
 	CCameraShot::Create(CCamera::GetCamera(CCamera::TYPE::PLAYER),
 		CCamera::GetCamera(CCamera::TYPE::FREE),
-		30,
-		30,
-		60);
-
+		15,
+		15,
+		25);
+#endif
 	const Vector3 vecOrigin = VECTOR3_NULL;		// ローカル座標の原点
 	Vector3 posPlayer = *D3DXVec3TransformCoord(&posPlayer, &vecOrigin, pPlayer->GetMatrix());
 
