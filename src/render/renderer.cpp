@@ -322,9 +322,9 @@ void CRenderer::Draw(void)
 	CDebugProc *pDebugProc = pManager->GetDebugProc();	// デバッグ表示へのポインタ
 	CSceneTransition *pTransition = pManager->GetTransition();		// 遷移演出
 
-	// 画面クリア(バックバッファとZバッファのクリア)
+	// 画面クリア(バックバッファとZバッファとステンシルバッファのクリア)
 	m_pD3DDevice->Clear(0, NULL,
-		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL),
 		D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
 
 	// 描画開始
