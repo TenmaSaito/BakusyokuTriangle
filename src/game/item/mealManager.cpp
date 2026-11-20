@@ -20,6 +20,17 @@
 #include "sound/sound.h"
 #include "ui/score.h"
 #include "effect/screenEffect.h"
+#include "util/util.h"
+
+//==================================================================================
+// --- 生成処理 ---
+//==================================================================================
+CMealManager *CMealManager::Create(std::string_view sPath,
+	CPlayer *pPlayer,
+	CStage *pStage)
+{
+	return Util::Create<CMealManager>(sPath, pPlayer, pStage);
+}
 
 //==================================================================================
 // --- コンストラクタ ---
@@ -65,6 +76,12 @@ HRESULT CMealManager::Init(std::string_view sPath,
 
 	// 最初のウェーブのアイテムを生成
 	SpawnItems(m_pEatingRule->GetMaxItem());
+
+	// 予告ポリゴンの生成
+	m_pEatingDirector->Play(CEatingRule::EAT_RESULT::INIT,
+		m_pEatingRule->GetNext(),
+		0);
+
 	return S_OK;
 }
 
