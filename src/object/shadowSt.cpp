@@ -36,7 +36,7 @@ CShadowSt *CShadowSt::Create(const Matrix *pTarget,
 //==================================================================================
 // --- コンストラクタ ---
 //==================================================================================
-CShadowSt::CShadowSt() : CObjectX(DEFAULT_3DUI_PRIORITY)
+CShadowSt::CShadowSt() : CObjectX(DEFAULT_SHADOW_PRIORITY)
 {
 }
 
