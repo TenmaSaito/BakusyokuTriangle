@@ -64,7 +64,7 @@ std::vector<CItem*> CItemSpawner::Generate(const int nNumItem,
 		int nLife;			// ‘Ì—Í
 		int nCntTry = 0;	// ŽŽs‰ñ”
 
-		while (nCntTry > m_nTryIfFailed)
+		while (nCntTry < m_nTryIfFailed)
 		{ // Žw’è‚Ì‰ñ”Ž¸”s‚·‚é‚Ü‚ÅŒJ‚è•Ô‚µ
 			nCntTry++;		// ŽŽs‰ñ”‘‰Á
 
