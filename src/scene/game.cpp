@@ -11,6 +11,9 @@
 #include "scene/game.h"
 #include "game/stage/mapLoader.h"
 #include "game/item/itemGenerator.h"
+#include "game/item/mealManager.h"
+#include "game/player/player.h"
+#include "game/stage/stage.h"
 #include "effect/screenEffect.h"
 #include "network/rankingClient.h"
 #include "ui/score.h"
@@ -128,21 +131,22 @@ void CGame::Start(const ManagerContext::SceneContext &sceneContext)
 	pMapLoader->BindTextureLoader(sceneContext.pRenderContext->pTexture);
 	auto hr = pMapLoader->Load("data/SCRIPT/system.ini");
 
-	// アイテム生成器起動
-	(new CItemGenerator)->Init();
-
-	// バックの食べ物出現
-	CFoodBackground::Create();
-
 	// スクリーンエフェクト生成
 	CScreenEffect::Create(DAMAGE_FLASH_COLOR, DAMAGE_FLASH_FRAME);
 
+	// スコア表示生成
 	CScore::Create(CTexture::GetInstance()->Register(NUMBER_TEXTURE),
 		SCORE_POS,
 		SCORE_SIZE,
 		SCORE_DIGIT);
 
-	CNextInfo::Create();
+	// アイテム生成器起動
+	CMealManager::Create("data/SCRIPT/itemSetting.txt", 
+		CObject::FindAnyObjectByType<CPlayer>(),
+		CObject::FindAnyObjectByType<CStage>());
+
+	// バックの食べ物出現
+	CFoodBackground::Create();
 
 	CCamera::Create(Vector3(0.0f, 1500.0f, -400.0f), VECTOR3_NULL);
 	CCamera::SetFocus(CCamera::TYPE::PLAYER);
