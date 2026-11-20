@@ -24,6 +24,7 @@ public:
 		SUCCESS = 0,		// 取得成功
 		WRONG,				// 取得失敗
 		WAVE_CLEAR,			// ウェーブクリア
+		INIT,				// 初期化時生成
 		MAX
 	};
 
