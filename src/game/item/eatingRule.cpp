@@ -48,7 +48,7 @@ CEatingRule::EAT_RESULT CEatingRule::OnEat(CItem::TYPE eat)
 	}
 
 	m_nNumEatItem++;		// 取得したアイテム数増加
-	m_nCurrentScore = m_aItemScore[CItem::ConvertToArrayIndex(eat)];	// アイテムに登録された点数
+	m_nCurrentScore = (float)m_aItemScore[CItem::ConvertToArrayIndex(eat)] * (1.0f + ((float)m_nCombo * 0.1f));	// アイテムに登録された点数
 	m_nScore += m_nCurrentScore;						// スコアに加算
 	m_nextType = EnumUtil::AddEnum(m_nextType, 1);		// 次に取得すべきアイテムの種類を進める
 
