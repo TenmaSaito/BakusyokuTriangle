@@ -26,6 +26,7 @@
 #include "math/ray.h"
 #include "object/3d/objectXAfterImage.h"
 #include "object/3d/objectBillboard3D.h"
+#include "game/player/speechBubble.h"
 #include "object/shadowSt.h"
 #include <bitset>
 
@@ -41,7 +42,7 @@ namespace
 	constexpr float MODEL_RADIUS = 10.0f;			// モデルの半径
 	constexpr float VALUE_ROT = 0.005f;				// 回転速度
 	constexpr float MAX_ROT_VALUE = 0.85f;			// 最大回転速度
-	constexpr float RESIST_ROT = 0.017f;			// 減速速度
+	constexpr float RESIST_ROT = 0.027f;			// 減速速度
 	constexpr float SCALE_VALUE = 1.0f;				// 拡大倍率
 	constexpr float RAY_LENGTH = 50.0f;				// レイの長さ
 	constexpr ConstVector3 VEC_QUAT = ConstVector3(1, 0, 0);		// 初期任意軸
@@ -146,22 +147,21 @@ HRESULT CPlayer::Init(const std::string_view pFilename,
 	Mtx::Identity(&m_mtxRot);
 
 	// 吹き出し生成
-	CObjectBillboard3D *pBill = CObjectBillboard3D::Create(ConstVector3(100.0f, 0.0f, 100.0f), 
-		VECTOR3_NULL,
+	CSpeechBubble *pBubble = CSpeechBubble::Create(ConstVector3(100.0f, 0.0f, 100.0f),
 		ConstVector2(150.0f, 185.0f));
-	pBill->SetParent(GetMatrix());
-	pBill->BindTexture(CTexture::GetInstance()->Register("data/TEXTURE/next.png"));
+	pBubble->SetParent(GetMatrix());
+	pBubble->BindTexture(CTexture::GetInstance()->Register("data/TEXTURE/next.png"));
 
 	// レンダーステートの各種設定
-	pBill->AddRenderState({ D3DRS_ZFUNC, D3DCMP_ALWAYS }, false);
-	pBill->AddRenderState({ D3DRS_ZENABLE, FALSE }, false);
-	pBill->AddRenderState({ D3DRS_ZWRITEENABLE, FALSE }, false);
-	pBill->AddRenderState({ D3DRS_LIGHTING, FALSE }, false);
+	pBubble->AddRenderState({ D3DRS_ZFUNC, D3DCMP_ALWAYS }, false);
+	pBubble->AddRenderState({ D3DRS_ZENABLE, FALSE }, false);
+	pBubble->AddRenderState({ D3DRS_ZWRITEENABLE, FALSE }, false);
+	pBubble->AddRenderState({ D3DRS_LIGHTING, FALSE }, false);
 
-	pBill->AddRenderState({ D3DRS_ZFUNC, D3DCMP_LESSEQUAL }, true);
-	pBill->AddRenderState({ D3DRS_ZENABLE, TRUE }, true);
-	pBill->AddRenderState({ D3DRS_ZWRITEENABLE, TRUE }, true);
-	pBill->AddRenderState({ D3DRS_LIGHTING, TRUE }, true);
+	pBubble->AddRenderState({ D3DRS_ZFUNC, D3DCMP_LESSEQUAL }, true);
+	pBubble->AddRenderState({ D3DRS_ZENABLE, TRUE }, true);
+	pBubble->AddRenderState({ D3DRS_ZWRITEENABLE, TRUE }, true);
+	pBubble->AddRenderState({ D3DRS_LIGHTING, TRUE }, true);
 
 	// 影生成
 	m_pShadowSt = CShadowSt::Create(GetMatrix());
@@ -260,24 +260,26 @@ void CPlayer::Update(void)
 	boader.w = m_pStage->GetPosition()->x - (m_pStage->GetSize()->x * 0.5f) + GetRadius();		// 左端
 
 	// X軸の判定
-	if (pos.x > boader.x) pos.x = boader.x;
-	else if (pos.x < boader.w) pos.x = boader.w;
+	if (pos.x > boader.x) { pos.x = boader.x; }
+	else if (pos.x < boader.w) { pos.x = boader.w; }
 
 	// Z軸の判定
-	if (pos.z > boader.y) pos.z = boader.y;
-	else if (pos.z < boader.z) pos.z = boader.z;
+	if (pos.z > boader.y) { pos.z = boader.y; }
+	else if (pos.z < boader.z) { pos.z = boader.z; }
 
 	// 強制後の位置を反映
 	SetPosition(pos);
 
-	// 残像生成
-	CObjectXAfterImage *pAfterImage = CObjectXAfterImage::Create(GetFileName(),
-		*GetMatrix(),
-		AFTERIMAGE_LIFE,
-		AFTERIMAGE_START_ALPHA);
+	if (fPower > FLT_MIN || fPower < -FLT_MIN)
+	{ // 動いているなら残像生成
+		CObjectXAfterImage *pAfterImage = CObjectXAfterImage::Create(GetFileName(),
+			*GetMatrix(),
+			AFTERIMAGE_LIFE,
+			AFTERIMAGE_START_ALPHA);
 
-	pAfterImage->AddRenderState({ D3DRS_ZWRITEENABLE, FALSE }, false);
-	pAfterImage->AddRenderState({ D3DRS_ZWRITEENABLE, TRUE }, true);
+		pAfterImage->AddRenderState({ D3DRS_ZWRITEENABLE, FALSE }, false);
+		pAfterImage->AddRenderState({ D3DRS_ZWRITEENABLE, TRUE }, true);
+	}
 
 #ifdef _DEBUG
 	// デバッグ用ライン表示
