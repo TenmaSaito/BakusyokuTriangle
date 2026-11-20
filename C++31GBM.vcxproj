@@ -219,6 +219,7 @@
     <ClCompile Include="src\object\3d\objectXAfterImage.cpp" />
     <ClCompile Include="src\object\3d\shadow.cpp" />
     <ClCompile Include="src\object\base\object.cpp" />
+    <ClCompile Include="src\object\shadowSt.cpp" />
     <ClCompile Include="src\render\camera.cpp" />
     <ClCompile Include="src\render\cameraShot.cpp" />
     <ClCompile Include="src\render\cameraTransition.cpp" />
@@ -312,6 +313,7 @@
     <ClInclude Include="include\object\3d\shadows.h" />
     <ClInclude Include="include\object\base\object.h" />
     <ClInclude Include="include\object\base\parentable.h" />
+    <ClInclude Include="include\object\shadowSt.h" />
     <ClInclude Include="include\render\camera.h" />
     <ClInclude Include="include\render\cameraShot.h" />
     <ClInclude Include="include\render\cameraTransition.h" />
