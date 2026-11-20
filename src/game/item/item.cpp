@@ -20,6 +20,7 @@
 #include "render/texture.h"
 #include "ui/score.h"
 #include "object/3d/objectBillboard3D.h"
+#include "object/shadowSt.h"
 #include "effect/itemBiteEffect.h"
 #include "effect/modelParticle.h"
 
@@ -131,6 +132,11 @@ HRESULT CItem::Init(const Vector3 &pos,
 	m_pIcon->AddRenderState({ D3DRS_ZFUNC, D3DCMP_LESSEQUAL }, false);
 	m_pIcon->AddRenderState({ D3DRS_ZWRITEENABLE, TRUE }, false);
 	m_pIcon->AddRenderState({ D3DRS_ZENABLE, TRUE }, false);
+
+	// 影生成
+	m_pShadowSt = CShadowSt::Create(GetMatrix());
+	m_pShadowSt->SetScale(ConstVector3(10.0f, 10.0f, 10.0f));
+	m_pShadowSt->SetOffset(ConstVector3(0.0f, 50.0f, 0.0f));
 	return S_OK;
 }
 
@@ -143,6 +149,12 @@ void CItem::Uninit(void)
 	{ // アイコンを破棄
 		m_pIcon->Uninit();
 		m_pIcon = nullptr;
+	}
+
+	if (m_pShadowSt != nullptr)
+	{ // 影を削除
+		m_pShadowSt->Uninit();
+		m_pShadowSt = nullptr;
 	}
 
 	// 親クラスの終了
@@ -168,6 +180,14 @@ void CItem::Update(void)
 	{ // プレイヤーがnullの場合スキップ
 		return;
 	}
+
+	m_fRotate += 0.01f;
+	Vector3 pos = *GetPosition();
+	Vector3 rot = *GetRotation();
+	pos.y += sinf(m_fRotate * 3.0f) * 0.5f;
+	rot.y = m_fRotate;
+	SetPosition(pos);
+	SetRotation(rot);
 
 	float fLength = Vec3::Length(*m_pPlayer->GetPosition(), *GetPosition());
 	if (fLength <= m_fRadius + m_pPlayer->GetRadius())
@@ -250,19 +270,4 @@ void CItem::Draw(void)
 	
 	// 描画
 	CObjectX::Draw();
-
-	Vector3 nor = Vector3(0.0f, 1.0f, 0.0f);		// 床の法線
-
-	// 法線を親マトリックスで計算
-	D3DXVec3TransformNormal(&nor, &nor, GetParent());
-
-	// 床のシャドウマトリックスを生成
-	Mtx::CreateShadow(GetMatrix(),
-		SHADOW_PLANE_POS,
-		nor,
-		*pManager->GetLight()->GetLight(0),
-		&mtxShadow);
-
-	// 影を描画
-	CObjectX::DrawShadow(mtxShadow);
 }

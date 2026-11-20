@@ -26,6 +26,7 @@
 #include "math/ray.h"
 #include "object/3d/objectXAfterImage.h"
 #include "object/3d/objectBillboard3D.h"
+#include "object/shadowSt.h"
 #include <bitset>
 
 //**********************************************************************************
@@ -62,6 +63,28 @@ namespace
 	constexpr int DEBUG_REPEAT_INTERVAL = 1;		// リピート入力の間隔
 	constexpr float DEBUG_SCALE_STEP = 0.1f;		// 拡大倍率の変更量
 	constexpr float DEBUG_ROT_SPEED_STEP = 0.005f;	// 回転速度の変更量
+}
+
+void Set(WORD *pIdx, int nBlockH, int nBlockV)
+{
+	for (int nCntV = 0; nCntV < nBlockV; nCntV++)
+	{
+		for (int nCntH = 0; nCntH < nBlockH + 1; nCntH++)
+		{
+			pIdx[0] = ((nBlockH + 1) * (nCntV + 1)) + nCntH;
+			pIdx[1] = ((nBlockH + 1) * nCntV) + nCntH;
+
+			pIdx += 2;
+		}
+
+		if (nCntV == nBlockV - 1)
+		{
+			pIdx[0] = ((nBlockH + 1) * nCntV) + nBlockH;
+			pIdx[1] = (nBlockH + 1) * (nCntV + 2);
+
+			pIdx += 2;
+		}
+	}
 }
 
 //==================================================================================
@@ -139,6 +162,10 @@ HRESULT CPlayer::Init(const std::string_view pFilename,
 	pBill->AddRenderState({ D3DRS_ZENABLE, TRUE }, true);
 	pBill->AddRenderState({ D3DRS_ZWRITEENABLE, TRUE }, true);
 	pBill->AddRenderState({ D3DRS_LIGHTING, TRUE }, true);
+
+	// 影生成
+	m_pShadowSt = CShadowSt::Create(GetMatrix());
+	m_pShadowSt->SetScale(ConstVector3(3.0f, 20.0f, 3.0f));
 	return S_OK;
 }
 
@@ -146,7 +173,14 @@ HRESULT CPlayer::Init(const std::string_view pFilename,
 // --- 終了処理 ---
 //==================================================================================
 void CPlayer::Uninit(void)
-{ // 親クラスの終了処理
+{ 
+	if (m_pShadowSt != nullptr)
+	{ // 影を削除
+		m_pShadowSt->Uninit();
+		m_pShadowSt = nullptr;
+	}
+
+	// 親クラスの終了処理
 	CObjectX::Uninit();
 }
 
@@ -191,6 +225,17 @@ void CPlayer::Update(void)
 	float fPower = 0.0f;				// 移動量
 	fCircumference = DOUBLE_PI * GetRadius();				// 円周の長さを求める
 	fPower = (m_fValueRot / DOUBLE_PI) * fCircumference;	// 移動量を求める
+
+	// ジャンプ機能
+	if (CManager::GetInstance()->GetInputKeyboard()->GetTrigger(DIK_SPACE))
+	{
+		m_move.y = 15.0f;
+	}
+	else
+	{
+		m_move.y -= 0.3f;
+	}
+
 
 	// 移動量を適用する為、加速度を更新
 	Vector2 move = Vec2::Direction(Util::FixedRotation(-GetRotation()->y)) * fPower;
@@ -305,46 +350,6 @@ void CPlayer::Draw(void)
 
 	// 描画
 	CObjectX::Draw(mtxWorld);
-
-	Vector3 nor = Vector3(0.0f, 1.0f, 0.0f);		// 床の法線
-
-	// 法線を親マトリックスで計算
-	D3DXVec3TransformNormal(&nor, &nor, GetParent());
-
-	// 床のシャドウマトリックスを生成
-	Mtx::CreateShadow(&mtxWorld,
-		SHADOW_PLANE_POS,
-		nor,
-		*pManager->GetLight()->GetLight(0),
-		&mtxShadow);
-
-	// 影を描画
-	CObjectX::DrawShadow(mtxShadow);
-#if FALSE
-	std::vector vpWall = CWall::FindAll();
-	for (auto &pWall : vpWall)
-	{
-		Vector3 nor = VECTOR3_NULL;
-
-		// 法線を計算
-		Vector2 vec = Vec2::Direction(pWall->GetRotation()->y);
-		nor.x = -vec.x;
-		nor.z = -vec.y;
-
-		// 壁のシャドウマトリックスを生成
-		Mtx::CreateShadow(&mtxWorld,
-			Vector3(pWall->GetPosition()->x + nor.x, pWall->GetPosition()->y, pWall->GetPosition()->z + nor.z),
-			nor,
-			*pManager->GetLight()->GetLight(0),
-			&mtxShadow);
-
-		// 親マトリックスと乗算
-		Mtx::CalcParent(&mtxShadow, GetParent());
-
-		// 影を描画
-		CObjectX::DrawShadow(mtxShadow);
-	}
-#endif
 
 	// 法線ベクトルの再正規化を無効化
 	pDevice->SetRenderState(D3DRS_NORMALIZENORMALS, FALSE);
