@@ -37,6 +37,7 @@ public:
 	int GetCurrentScore(void) const { return m_nCurrentScore; }
 	int GetMaxItem(void) const { return m_nMaxItem; }
 	CItem::TYPE GetNext(void) const { return m_nextType; }
+	void FixMaxItem(const int nMaxItem) { m_nMaxItem = nMaxItem; }
 
 private:
 	std::array<int, CItem::GetTypeMax()> m_aItemScore = {};		// 各アイテムのスコア
