@@ -37,7 +37,8 @@ namespace
 // --- コンストラクタ ---
 //==================================================================================
 CEatingDirector::CEatingDirector()
-{
+{ // 次回予告用インスタンス生成
+	m_pNextInfo = CNextInfo::Create();
 }
 
 //==================================================================================
@@ -72,6 +73,9 @@ void CEatingDirector::Play(const CEatingRule::EAT_RESULT result,
 
 	case CEatingRule::EAT_RESULT::WAVE_CLEAR:		// ウェーブクリア時
 		WaveClear(nScore);
+		break;
+
+	case CEatingRule::EAT_RESULT::INIT:				// 初期化時
 		break;
 
 	default:

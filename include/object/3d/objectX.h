@@ -38,6 +38,8 @@ public:
 	const Vector3 *GetPosition(void) const { return &m_pos; }
 	void SetRotation(const Vector3 &rotation) { m_rot = rotation; }
 	const Vector3 *GetRotation(void) const { return &m_rot; }
+	void SetScale(const Vector3 &scale) { m_scale = scale; }
+	const Vector3 *GetScale(void) const { return &m_scale; }
 	const Matrix *GetMatrix(void);
 	const Vector3 *GetVtxMin(void) const { return &m_vtxMin; }
 	const Vector3 *GetVtxMax(void) const { return &m_vtxMax; }
@@ -67,6 +69,7 @@ private:
 	const Matrix *m_pMtxParent = nullptr;	// 親マトリックスへのポインタ
 	Vector3 m_pos = VECTOR3_NULL;			// 位置
 	Vector3 m_rot = VECTOR3_NULL;			// 角度
+	Vector3 m_scale = VECTOR3_NULL;			// スケーリング倍率
 	std::string m_sFilename;				// ファイル名
 	bool m_bMtxInitialize = false;			// マトリックスの計算フラグ
 };

@@ -31,6 +31,10 @@ public:
 	CMealManager();
 	~CMealManager();
 
+	static CMealManager *Create(std::string_view sPath,
+		CPlayer *pPlayer,
+		CStage *pStage);
+
 	HRESULT Init(std::string_view sPath, 
 		CPlayer *pPlayer,
 		CStage *pStage);

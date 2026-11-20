@@ -48,9 +48,9 @@ CEatingRule::EAT_RESULT CEatingRule::OnEat(CItem::TYPE eat)
 	}
 
 	m_nNumEatItem++;		// 取得したアイテム数増加
-	m_nCurrentScore = m_aItemScore[CItem::ConvertToArrayIndex(eat)];	// アイテムに登録された点数
-	m_nScore += m_nCurrentScore;		// スコアに加算
-	m_nextType = EnumUtil::AddEnum(m_nextType, 1);	// 次に取得すべきアイテムの種類を進める
+	m_nCurrentScore = (float)m_aItemScore[CItem::ConvertToArrayIndex(eat)] * (1.0f + ((float)m_nCombo * 0.1f));	// アイテムに登録された点数
+	m_nScore += m_nCurrentScore;						// スコアに加算
+	m_nextType = EnumUtil::AddEnum(m_nextType, 1);		// 次に取得すべきアイテムの種類を進める
 
 	if (m_nNumEatItem == m_nMaxItem)
 	{ // 全てのアイテムを取得し終わった場合、タイプを米に指定し、ウェーブクリア判定を返す

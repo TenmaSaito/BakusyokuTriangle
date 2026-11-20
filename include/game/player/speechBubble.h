@@ -26,5 +26,8 @@ public:
 
 	HRESULT Init(const Vector3 &offset,
 		const Vector2 &size);
+	void Uninit(void) override;
+	void Update(void) override;
+	void Draw(void) override;
 };
 #endif

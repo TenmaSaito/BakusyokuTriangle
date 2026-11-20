@@ -20,6 +20,17 @@
 #include "sound/sound.h"
 #include "ui/score.h"
 #include "effect/screenEffect.h"
+#include "util/util.h"
+
+//==================================================================================
+// --- 生成処理 ---
+//==================================================================================
+CMealManager *CMealManager::Create(std::string_view sPath,
+	CPlayer *pPlayer,
+	CStage *pStage)
+{
+	return Util::Create<CMealManager>(sPath, pPlayer, pStage);
+}
 
 //==================================================================================
 // --- コンストラクタ ---
@@ -65,6 +76,12 @@ HRESULT CMealManager::Init(std::string_view sPath,
 
 	// 最初のウェーブのアイテムを生成
 	SpawnItems(m_pEatingRule->GetMaxItem());
+
+	// 予告ポリゴンの生成
+	m_pEatingDirector->Play(CEatingRule::EAT_RESULT::INIT,
+		m_pEatingRule->GetNext(),
+		0);
+
 	return S_OK;
 }
 
@@ -158,6 +175,10 @@ void CMealManager::SetupDirector(void)
 void CMealManager::SpawnItems(const int nNumItem)
 { // アイテムを生成
 	m_vpItem = m_pItemSpawner->Generate(nNumItem, m_pStage, *m_pPlayer->GetPosition());
+	if (m_vpItem.size() != nNumItem)
+	{ // 生成数が異なっていた場合、詰み防止のため総数を修正
+		m_pEatingRule->FixMaxItem(m_vpItem.size());
+	}
 
 	for (CItem *pItem : m_vpItem)
 	{ // 死亡通知を受け取るため、オブザーバーに登録

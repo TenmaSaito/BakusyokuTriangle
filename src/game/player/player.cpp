@@ -26,6 +26,8 @@
 #include "math/ray.h"
 #include "object/3d/objectXAfterImage.h"
 #include "object/3d/objectBillboard3D.h"
+#include "game/player/speechBubble.h"
+#include "object/shadowSt.h"
 #include <bitset>
 
 //**********************************************************************************
@@ -40,7 +42,7 @@ namespace
 	constexpr float MODEL_RADIUS = 10.0f;			// モデルの半径
 	constexpr float VALUE_ROT = 0.005f;				// 回転速度
 	constexpr float MAX_ROT_VALUE = 0.85f;			// 最大回転速度
-	constexpr float RESIST_ROT = 0.017f;			// 減速速度
+	constexpr float RESIST_ROT = 0.027f;			// 減速速度
 	constexpr float SCALE_VALUE = 1.0f;				// 拡大倍率
 	constexpr float RAY_LENGTH = 50.0f;				// レイの長さ
 	constexpr ConstVector3 VEC_QUAT = ConstVector3(1, 0, 0);		// 初期任意軸
@@ -62,6 +64,28 @@ namespace
 	constexpr int DEBUG_REPEAT_INTERVAL = 1;		// リピート入力の間隔
 	constexpr float DEBUG_SCALE_STEP = 0.1f;		// 拡大倍率の変更量
 	constexpr float DEBUG_ROT_SPEED_STEP = 0.005f;	// 回転速度の変更量
+}
+
+void Set(WORD *pIdx, int nBlockH, int nBlockV)
+{
+	for (int nCntV = 0; nCntV < nBlockV; nCntV++)
+	{
+		for (int nCntH = 0; nCntH < nBlockH + 1; nCntH++)
+		{
+			pIdx[0] = ((nBlockH + 1) * (nCntV + 1)) + nCntH;
+			pIdx[1] = ((nBlockH + 1) * nCntV) + nCntH;
+
+			pIdx += 2;
+		}
+
+		if (nCntV == nBlockV - 1)
+		{
+			pIdx[0] = ((nBlockH + 1) * nCntV) + nBlockH;
+			pIdx[1] = (nBlockH + 1) * (nCntV + 2);
+
+			pIdx += 2;
+		}
+	}
 }
 
 //==================================================================================
@@ -123,22 +147,25 @@ HRESULT CPlayer::Init(const std::string_view pFilename,
 	Mtx::Identity(&m_mtxRot);
 
 	// 吹き出し生成
-	CObjectBillboard3D *pBill = CObjectBillboard3D::Create(ConstVector3(100.0f, 0.0f, 100.0f), 
-		VECTOR3_NULL,
+	CSpeechBubble *pBubble = CSpeechBubble::Create(ConstVector3(100.0f, 0.0f, 100.0f),
 		ConstVector2(150.0f, 185.0f));
-	pBill->SetParent(GetMatrix());
-	pBill->BindTexture(CTexture::GetInstance()->Register("data/TEXTURE/next.png"));
+	pBubble->SetParent(GetMatrix());
+	pBubble->BindTexture(CTexture::GetInstance()->Register("data/TEXTURE/next.png"));
 
 	// レンダーステートの各種設定
-	pBill->AddRenderState({ D3DRS_ZFUNC, D3DCMP_ALWAYS }, false);
-	pBill->AddRenderState({ D3DRS_ZENABLE, FALSE }, false);
-	pBill->AddRenderState({ D3DRS_ZWRITEENABLE, FALSE }, false);
-	pBill->AddRenderState({ D3DRS_LIGHTING, FALSE }, false);
+	pBubble->AddRenderState({ D3DRS_ZFUNC, D3DCMP_ALWAYS }, false);
+	pBubble->AddRenderState({ D3DRS_ZENABLE, FALSE }, false);
+	pBubble->AddRenderState({ D3DRS_ZWRITEENABLE, FALSE }, false);
+	pBubble->AddRenderState({ D3DRS_LIGHTING, FALSE }, false);
 
-	pBill->AddRenderState({ D3DRS_ZFUNC, D3DCMP_LESSEQUAL }, true);
-	pBill->AddRenderState({ D3DRS_ZENABLE, TRUE }, true);
-	pBill->AddRenderState({ D3DRS_ZWRITEENABLE, TRUE }, true);
-	pBill->AddRenderState({ D3DRS_LIGHTING, TRUE }, true);
+	pBubble->AddRenderState({ D3DRS_ZFUNC, D3DCMP_LESSEQUAL }, true);
+	pBubble->AddRenderState({ D3DRS_ZENABLE, TRUE }, true);
+	pBubble->AddRenderState({ D3DRS_ZWRITEENABLE, TRUE }, true);
+	pBubble->AddRenderState({ D3DRS_LIGHTING, TRUE }, true);
+
+	// 影生成
+	m_pShadowSt = CShadowSt::Create(GetMatrix());
+	m_pShadowSt->SetScale(ConstVector3(3.0f, 20.0f, 3.0f));
 	return S_OK;
 }
 
@@ -146,7 +173,14 @@ HRESULT CPlayer::Init(const std::string_view pFilename,
 // --- 終了処理 ---
 //==================================================================================
 void CPlayer::Uninit(void)
-{ // 親クラスの終了処理
+{ 
+	if (m_pShadowSt != nullptr)
+	{ // 影を削除
+		m_pShadowSt->Uninit();
+		m_pShadowSt = nullptr;
+	}
+
+	// 親クラスの終了処理
 	CObjectX::Uninit();
 }
 
@@ -192,6 +226,17 @@ void CPlayer::Update(void)
 	fCircumference = DOUBLE_PI * GetRadius();				// 円周の長さを求める
 	fPower = (m_fValueRot / DOUBLE_PI) * fCircumference;	// 移動量を求める
 
+	// ジャンプ機能
+	if (CManager::GetInstance()->GetInputKeyboard()->GetTrigger(DIK_SPACE))
+	{
+		m_move.y = 15.0f;
+	}
+	else
+	{
+		m_move.y -= 0.3f;
+	}
+
+
 	// 移動量を適用する為、加速度を更新
 	Vector2 move = Vec2::Direction(Util::FixedRotation(-GetRotation()->y)) * fPower;
 	m_move.x = move.x;
@@ -215,24 +260,26 @@ void CPlayer::Update(void)
 	boader.w = m_pStage->GetPosition()->x - (m_pStage->GetSize()->x * 0.5f) + GetRadius();		// 左端
 
 	// X軸の判定
-	if (pos.x > boader.x) pos.x = boader.x;
-	else if (pos.x < boader.w) pos.x = boader.w;
+	if (pos.x > boader.x) { pos.x = boader.x; }
+	else if (pos.x < boader.w) { pos.x = boader.w; }
 
 	// Z軸の判定
-	if (pos.z > boader.y) pos.z = boader.y;
-	else if (pos.z < boader.z) pos.z = boader.z;
+	if (pos.z > boader.y) { pos.z = boader.y; }
+	else if (pos.z < boader.z) { pos.z = boader.z; }
 
 	// 強制後の位置を反映
 	SetPosition(pos);
 
-	// 残像生成
-	CObjectXAfterImage *pAfterImage = CObjectXAfterImage::Create(GetFileName(),
-		*GetMatrix(),
-		AFTERIMAGE_LIFE,
-		AFTERIMAGE_START_ALPHA);
+	if (fPower > FLT_MIN || fPower < -FLT_MIN)
+	{ // 動いているなら残像生成
+		CObjectXAfterImage *pAfterImage = CObjectXAfterImage::Create(GetFileName(),
+			*GetMatrix(),
+			AFTERIMAGE_LIFE,
+			AFTERIMAGE_START_ALPHA);
 
-	pAfterImage->AddRenderState({ D3DRS_ZWRITEENABLE, FALSE }, false);
-	pAfterImage->AddRenderState({ D3DRS_ZWRITEENABLE, TRUE }, true);
+		pAfterImage->AddRenderState({ D3DRS_ZWRITEENABLE, FALSE }, false);
+		pAfterImage->AddRenderState({ D3DRS_ZWRITEENABLE, TRUE }, true);
+	}
 
 #ifdef _DEBUG
 	// デバッグ用ライン表示
@@ -305,46 +352,6 @@ void CPlayer::Draw(void)
 
 	// 描画
 	CObjectX::Draw(mtxWorld);
-
-	Vector3 nor = Vector3(0.0f, 1.0f, 0.0f);		// 床の法線
-
-	// 法線を親マトリックスで計算
-	D3DXVec3TransformNormal(&nor, &nor, GetParent());
-
-	// 床のシャドウマトリックスを生成
-	Mtx::CreateShadow(&mtxWorld,
-		SHADOW_PLANE_POS,
-		nor,
-		*pManager->GetLight()->GetLight(0),
-		&mtxShadow);
-
-	// 影を描画
-	CObjectX::DrawShadow(mtxShadow);
-#if FALSE
-	std::vector vpWall = CWall::FindAll();
-	for (auto &pWall : vpWall)
-	{
-		Vector3 nor = VECTOR3_NULL;
-
-		// 法線を計算
-		Vector2 vec = Vec2::Direction(pWall->GetRotation()->y);
-		nor.x = -vec.x;
-		nor.z = -vec.y;
-
-		// 壁のシャドウマトリックスを生成
-		Mtx::CreateShadow(&mtxWorld,
-			Vector3(pWall->GetPosition()->x + nor.x, pWall->GetPosition()->y, pWall->GetPosition()->z + nor.z),
-			nor,
-			*pManager->GetLight()->GetLight(0),
-			&mtxShadow);
-
-		// 親マトリックスと乗算
-		Mtx::CalcParent(&mtxShadow, GetParent());
-
-		// 影を描画
-		CObjectX::DrawShadow(mtxShadow);
-	}
-#endif
 
 	// 法線ベクトルの再正規化を無効化
 	pDevice->SetRenderState(D3DRS_NORMALIZENORMALS, FALSE);

@@ -24,7 +24,7 @@ namespace
 	constexpr std::string_view SET_DISTANCE_FROM_PLAYER = "DISTANCE_FROM_PLAYER = ";			// アイテムとプレイヤーの最短距離
 	constexpr std::string_view SET_DISTANCE_FROM_OTHER_ITEM = "DISTANCE_FROM_OTHER_ITEM = ";	// アイテム動詞の最短距離
 	constexpr std::string_view SET_ITEM_RADIUS = "ITEM_RADIUS = ";				// アイテムの当たり判定の半径
-	constexpr std::string_view SET_TRY_IF_FAILED = "SPAWN_FIELD_MARGIN = ";		// 距離制限による設置失敗時に行う試行回数の最大
+	constexpr std::string_view SET_TRY_IF_FAILED = "TRY_IF_FAILED = ";			// 距離制限による設置失敗時に行う試行回数の最大
 
 	constexpr std::string_view SCORE_START = "SETSCORE";	// スコア用データの開始位置
 	constexpr std::string_view SCORE_END = "END_SETSCORE";	// スコア用データの終了位置

@@ -16,6 +16,7 @@
 // *** 前方宣言 ***
 //**********************************************************************************
 class CStage;
+class CShadowSt;
 
 //**********************************************************************************
 // *** プレイヤークラス ***
@@ -52,6 +53,7 @@ private:
 	void StatusChange(void);
 
 	CStage *m_pStage = nullptr;			// ステージへのポインタ
+	CShadowSt *m_pShadowSt = nullptr;	// ステンシルシャドウへのポインタ
 	Vector3 m_posOld = VECTOR3_NULL;	// 過去の位置
 	Vector3 m_move = VECTOR3_NULL;		// 移動量
 	Vector3 m_rotDest = VECTOR3_NULL;	// 目標角度

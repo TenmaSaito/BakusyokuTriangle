@@ -8,6 +8,7 @@
 // *** インクルードファイル ***
 //**********************************************************************************
 #include "game/player/speechBubble.h"
+#include "util/util.h"
 
 //==================================================================================
 // --- 生成処理 ---
@@ -15,14 +16,7 @@
 CSpeechBubble *CSpeechBubble::Create(const Vector3 &offset,
 	const Vector2 &size)
 {
-	CSpeechBubble *pSpeech = new CSpeechBubble;
-	if (pSpeech != nullptr && FAILED(pSpeech->Init(offset, size)))
-	{ // 吹き出し初期化失敗時、nullを返す
-		pSpeech->Uninit();
-		return nullptr;
-	}
-
-	return pSpeech;
+	return Util::Create<CSpeechBubble>(offset, size);
 }
 
 //==================================================================================
@@ -46,5 +40,29 @@ CSpeechBubble::~CSpeechBubble()
 HRESULT CSpeechBubble::Init(const Vector3 &offset,
 	const Vector2 &size)
 {
-	return S_OK;
+	return CObjectBillboard3D::Init(offset, VECTOR3_NULL, size, INT_MAX);
+}
+
+//==================================================================================
+// --- 終了処理 ---
+//==================================================================================
+void CSpeechBubble::Uninit(void)
+{ // 基底クラスの破棄
+	CObjectBillboard3D::Uninit();
+}
+
+//==================================================================================
+// --- 更新処理 ---
+//==================================================================================
+void CSpeechBubble::Update(void)
+{
+
+}
+
+//==================================================================================
+// --- 描画処理 ---
+//==================================================================================
+void CSpeechBubble::Draw(void)
+{ // 描画
+	CObjectBillboard3D::Draw();
 }

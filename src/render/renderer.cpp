@@ -140,7 +140,7 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindow)
 	// Zバッファ作成
 	if (FAILED(m_pD3DDevice->CreateDepthStencilSurface(SCREEN_WIDTH,
 		SCREEN_HEIGHT,
-		D3DFMT_D16,
+		D3DFMT_D24S8,
 		D3DMULTISAMPLE_NONE,
 		0,
 		TRUE,
@@ -322,9 +322,9 @@ void CRenderer::Draw(void)
 	CDebugProc *pDebugProc = pManager->GetDebugProc();	// デバッグ表示へのポインタ
 	CSceneTransition *pTransition = pManager->GetTransition();		// 遷移演出
 
-	// 画面クリア(バックバッファとZバッファのクリア)
+	// 画面クリア(バックバッファとZバッファとステンシルバッファのクリア)
 	m_pD3DDevice->Clear(0, NULL,
-		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL),
 		D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
 
 	// 描画開始
@@ -340,7 +340,7 @@ void CRenderer::Draw(void)
 
 		// 画面クリア(バックバッファとZバッファのクリア)
 		m_pD3DDevice->Clear(0, NULL,
-			(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+			(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL),
 			CLEAR_COLOR, 1.0f, 0);
 
 		// 全てのオブジェクトを描画

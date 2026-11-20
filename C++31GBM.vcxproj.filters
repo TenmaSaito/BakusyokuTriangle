@@ -375,6 +375,9 @@
     <ClCompile Include="src\game\item\itemLoader.cpp">
       <Filter>src\game\item</Filter>
     </ClCompile>
+    <ClCompile Include="src\object\shadowSt.cpp">
+      <Filter>src\object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\core\Coroutine.h">
@@ -655,6 +658,9 @@
     </ClInclude>
     <ClInclude Include="include\game\item\itemLoader.h">
       <Filter>include\game\item</Filter>
+    </ClInclude>
+    <ClInclude Include="include\object\shadowSt.h">
+      <Filter>include\object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

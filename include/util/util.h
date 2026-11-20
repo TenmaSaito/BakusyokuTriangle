@@ -50,12 +50,12 @@ namespace Util
 	concept AnyOf = (std::same_as<T, Types> || ...);
 
 	//******************************************************************************
-	// *** Initによる初期化が可能であり、判定が取れることを要求するコンセプト ***
+	// *** Initによる初期化が可能であることを要求するコンセプト ***
 	//******************************************************************************
 	template<class T, typename... Args>
 	concept HasInit = requires(T & t, Args... args)
 	{
-		{ t.Init(args...) } -> AnyOf<HRESULT, bool>;
+		{ t.Init(args...) } -> AnyOf<HRESULT, bool, void>;
 	};
 
 	//******************************************************************************
@@ -99,8 +99,9 @@ namespace Util
 			}
 		}
 		else
-		{
-			static_assert(false, "Couldn't use this method.");
+		{ // 返り値がない場合
+			if (pCreate == nullptr) return nullptr;
+			pCreate->Init(args...);
 		}
 
 		return pCreate;
