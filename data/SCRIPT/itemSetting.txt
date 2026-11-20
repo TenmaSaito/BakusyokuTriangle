@@ -11,7 +11,7 @@ SCRIPT
 #******************************************************************************
 SETSPAWNER
 	SPAWN_FIELD_MARGIN = 70.0 			# ステージの端から離す距離 (float)
-	DISTANCE_FROM_PLAYER = 300.0 		# アイテムとプレイヤーの最短距離 (float)
+	DISTANCE_FROM_PLAYER = 500.0 		# アイテムとプレイヤーの最短距離 (float)
 	DISTANCE_FROM_OTHER_ITEM = 200.0 	# アイテム同士の最短距離 (float)
 	ITEM_RADIUS = 100.0 				# アイテムの当たり判定の半径 (float)
 	TRY_IF_FAILED = 30 					# 距離制限による設置失敗時に行う試行回数の最大 (int)
