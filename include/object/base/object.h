@@ -102,7 +102,8 @@ protected:
 	static constexpr int DEFAULT_BG_PRIORITY = 1;		// 背景の優先順位
 	static constexpr int DEFAULT_OBJ_PRIORITY = 2;		// オブジェクトの優先順位
 	static constexpr int DEFAULT_EFFECT_PRIORITY = 3;	// エフェクト関連の優先順位
-	static constexpr int DEFAULT_ADD_PRIORITY = 4;		// 加算合成関連の優先順位
+	static constexpr int DEFAULT_ADD_PRIORITY = 3;		// 加算合成関連の優先順位
+	static constexpr int DEFAULT_SHADOW_PRIORITY = 4;	// 加算合成関連の優先順位
 	static constexpr int DEFAULT_3DUI_PRIORITY = 5;		// 3DUI関連の優先順位
 	static constexpr int DEFAULT_2DUI_PRIORITY = 6;		// 2DUI関連の優先順位
 	static constexpr int FINALLY_PRIORITY = 7;			// 全てのオブジェクトが更新・描画された後の最終優先順位
