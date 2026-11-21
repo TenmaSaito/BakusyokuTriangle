@@ -209,6 +209,7 @@
     <ClCompile Include="src\object\2d\number.cpp" />
     <ClCompile Include="src\object\2d\object2D.cpp" />
     <ClCompile Include="src\object\2d\polygon2D.cpp" />
+    <ClCompile Include="src\object\3d\meshRing.cpp" />
     <ClCompile Include="src\object\3d\number3D.cpp" />
     <ClCompile Include="src\object\3d\number3DBillboard.cpp" />
     <ClCompile Include="src\object\3d\object3D.cpp" />
@@ -301,6 +302,7 @@
     <ClInclude Include="include\object\2d\number.h" />
     <ClInclude Include="include\object\2d\object2D.h" />
     <ClInclude Include="include\object\2d\polygon2D.h" />
+    <ClInclude Include="include\object\3d\meshRing.h" />
     <ClInclude Include="include\object\3d\number3D.h" />
     <ClInclude Include="include\object\3d\number3DBillboard.h" />
     <ClInclude Include="include\object\3d\object3D.h" />
