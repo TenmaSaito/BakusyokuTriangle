@@ -101,7 +101,7 @@ HRESULT CModelParticle::Init(const Setting &setting)
 		}
 	}
 
-	Update();		// 最初の描画に備えてマトリックスを計算
+	UpdateParticle();		// 最初の描画に備えてマトリックスを計算
 
 	return S_OK;
 }
@@ -124,7 +124,15 @@ void CModelParticle::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CModelParticle::Update(void)
+void CModelParticle::Update(const ManagerContext::RenderContext &context)
+{
+	UpdateParticle();
+}
+
+//==================================================================================
+// --- 各モデルの更新処理 ---
+//==================================================================================
+void CModelParticle::UpdateParticle(void)
 {
 	if (IsDeath() == true) return;
 
@@ -203,13 +211,13 @@ void CModelParticle::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CModelParticle::Draw(void)
+void CModelParticle::Draw(const ManagerContext::RenderContext &context)
 {
 	if (IsDeath() == true) return;
 
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();		// デバイス
-	CTexture *pTexture = CTexture::GetInstance();		// テクスチャ管理
-	CXInfo *pModel = CXFile::GetInstance()->GetAddress(m_uModelId);		// 描画するモデル
+	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイス
+	CTexture *pTexture = context.pTexture;		// テクスチャ管理
+	CXInfo *pModel = context.pXFile->GetAddress(m_uModelId);		// 描画するモデル
 	D3DMATERIAL9 matDef;		// 現在のマテリアル保存用
 
 	if (pModel == nullptr) return;

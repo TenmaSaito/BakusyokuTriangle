@@ -13,6 +13,11 @@
 //**********************************************************************************
 #include "core/main.h"
 
+namespace ManagerContext
+{
+	struct RenderContext;
+}
+
 //**********************************************************************************
 // *** 数値表示クラス ***
 //**********************************************************************************
@@ -31,7 +36,7 @@ public:
 		const int nValue);
 	void Uninit(void);
 	void Update(void);
-	void Draw(void);
+	void Draw(const ManagerContext::RenderContext &context);
 	void SetPosition(const Vector3 &position);
 	const Vector3 *GetPosition(void) const { return &m_pos; }
 	void SetRotation(const Vector3 &rotation);

@@ -27,10 +27,12 @@ public:
 	static CFoodBackground *Create(void);
 	HRESULT Init(void) override;
 	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	void Update(const ManagerContext::RenderContext &context) override;
+	void Draw(const ManagerContext::RenderContext &context) override;
 
 private:
+	void UpdateLayout(void);				// 配置の更新 (Init からも呼ぶ)
+
 	static constexpr int FOOD_BACKGROUND_PRIORITY = DEFAULT_BG_PRIORITY;	// 描画・更新順位
 	static constexpr int FOOD_BACKGROUND_COLUMN = 7;						// 横の配置数
 	static constexpr int FOOD_BACKGROUND_ROW = 4;							// 縦の配置数

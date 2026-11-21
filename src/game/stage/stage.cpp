@@ -97,7 +97,7 @@ void CStage::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CStage::Update(void)
+void CStage::Update(const ManagerContext::RenderContext &context)
 {
 	Vector3 rot = *GetRotation();		// 現在の角度
 	bool bPush = false;			// 入力されたか
@@ -129,9 +129,9 @@ void CStage::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CStage::Draw(void)
+void CStage::Draw(const ManagerContext::RenderContext &context)
 { // 親クラスの描画処理
-	CField::Draw();
+	CField::Draw(context);
 }
 
 //==================================================================================

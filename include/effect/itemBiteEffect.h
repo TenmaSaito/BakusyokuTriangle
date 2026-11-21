@@ -29,7 +29,7 @@ public:
 	static CItemBiteEffect *Create(const Vector3 &pos, const float fWidth, const int nTime, const Matrix *pMtxParent);
 	HRESULT Init(const Vector3 &pos, const float fWidth, const int nTime, const Matrix *pMtxParent);
 	void Uninit(void) override;
-	void Update(void) override;
+	void Update(const ManagerContext::RenderContext &context) override;
 
 private:
 	static constexpr int ITEM_BITE_EFFECT_PRIORITY = DEFAULT_EFFECT_PRIORITY;	// ï`âÊÅEçXêVèáà 

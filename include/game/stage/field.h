@@ -30,8 +30,8 @@ public:
 		const Vector3 &rot,
 		const Vector2 &size);
 	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	void Update(const ManagerContext::RenderContext &context) override;
+	void Draw(const ManagerContext::RenderContext &context) override;
 
 	static CField *Find(void);	// シーン上のインスタンスを検索
 

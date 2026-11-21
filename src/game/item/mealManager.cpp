@@ -103,7 +103,7 @@ void CMealManager::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CMealManager::Update(void)
+void CMealManager::Update(const ManagerContext::RenderContext &context)
 { // 生成要求が無い場合スキップ
 	if (m_bSpawnRequest == false) return;
 

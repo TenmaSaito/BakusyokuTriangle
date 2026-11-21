@@ -111,7 +111,7 @@ HRESULT CFoodBackground::Init(void)
 	}
 
 	m_bReady = true;
-	Update();		// 最初の描画に備えて配置を計算
+	UpdateLayout();		// 最初の描画に備えて配置を計算
 
 	return S_OK;
 }
@@ -132,7 +132,15 @@ void CFoodBackground::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CFoodBackground::Update(void)
+void CFoodBackground::Update(const ManagerContext::RenderContext &context)
+{
+	UpdateLayout();
+}
+
+//==================================================================================
+// --- 配置の更新処理 ---
+//==================================================================================
+void CFoodBackground::UpdateLayout(void)
 {
 	if (!m_bReady || m_bEnded) return;
 
@@ -212,13 +220,13 @@ void CFoodBackground::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CFoodBackground::Draw(void)
+void CFoodBackground::Draw(const ManagerContext::RenderContext &context)
 {
 	if (!m_bReady || !m_bPoseValid || m_bEnded) return;
 
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();		// デバイス
-	CXFile *pXFile = CXFile::GetInstance();			// モデル管理
-	CTexture *pTexture = CTexture::GetInstance();	// テクスチャ管理
+	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイス
+	CXFile *pXFile = context.pXFile;			// モデル管理
+	CTexture *pTexture = context.pTexture;	// テクスチャ管理
 	D3DMATERIAL9 matDef;		// 現在のマテリアル保存用
 
 	// 現在のマテリアルを取得

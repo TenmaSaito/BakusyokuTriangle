@@ -87,19 +87,17 @@ void CObjectX::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CObjectX::Update(void)
+void CObjectX::Update(const ManagerContext::RenderContext &context)
 {
 }
 
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CObjectX::Draw(void)
+void CObjectX::Draw(const ManagerContext::RenderContext &context)
 {
-	CManager *pManager = CManager::GetInstance();			// マネージャーへのポインタ
-	CRenderer *pRenderer = pManager->GetRenderer();			// レンダラーへのポインタ
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
-	CTexture *pTexture = CTexture::GetInstance();			// テクスチャへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイスへのポインタ
+	CTexture *pTexture = context.pTexture;			// テクスチャへのポインタ
 	D3DMATERIAL9 matDef;				// 現在のマテリアル保存用
 	D3DXMATERIAL *pMat = nullptr;		// マテリアルデータへのポインタ
 
@@ -139,12 +137,10 @@ void CObjectX::Draw(void)
 //==================================================================================
 // --- 描画処理 (マトリックス外部計算) ---
 //==================================================================================
-void CObjectX::Draw(const Matrix &mtx)
+void CObjectX::Draw(const Matrix &mtx, const ManagerContext::RenderContext &context)
 {
-	CManager *pManager = CManager::GetInstance();			// マネージャーへのポインタ
-	CRenderer *pRenderer = pManager->GetRenderer();			// レンダラーへのポインタ
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
-	CTexture *pTexture = CTexture::GetInstance();			// テクスチャへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイスへのポインタ
+	CTexture *pTexture = context.pTexture;			// テクスチャへのポインタ
 	D3DMATERIAL9 matDef;				// 現在のマテリアル保存用
 	D3DXMATERIAL *pMat = nullptr;		// マテリアルデータへのポインタ
 
@@ -180,12 +176,10 @@ void CObjectX::Draw(const Matrix &mtx)
 //==================================================================================
 // --- 描画処理 (影) ---
 //==================================================================================
-void CObjectX::DrawShadow(const Matrix &mtxShadow)
+void CObjectX::DrawShadow(const Matrix &mtxShadow, const ManagerContext::RenderContext &context)
 {
-	CManager *pManager = CManager::GetInstance();			// マネージャーへのポインタ
-	CRenderer *pRenderer = pManager->GetRenderer();			// レンダラーへのポインタ
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
-	CTexture *pTexture = CTexture::GetInstance();			// テクスチャへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイスへのポインタ
+	CTexture *pTexture = context.pTexture;			// テクスチャへのポインタ
 	D3DMATERIAL9 matDef;				// 現在のマテリアル保存用
 	D3DXMATERIAL *pMat = nullptr;		// マテリアルデータへのポインタ
 

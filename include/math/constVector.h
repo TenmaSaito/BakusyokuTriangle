@@ -1234,6 +1234,7 @@ struct ConstColor
 
 	// D3DX‚ÌŒ^‚Ö•ÏŠ·
 	operator D3DXCOLOR() const { return D3DXCOLOR(r, g, b, a); }
+	operator D3DCOLOR() const { return D3DXCOLOR(r, g, b, a); }
 
 	// ƒ¿’l‚¾‚¯‚ğ•Ï‚¦‚½F‚ğ•Ô‚·
 	constexpr ConstColor WithAlpha(const float fAlpha) const noexcept { return { r, g, b, fAlpha }; }

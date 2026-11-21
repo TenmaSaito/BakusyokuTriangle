@@ -68,7 +68,7 @@ void CObjectBillboard3DScaling::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CObjectBillboard3DScaling::Update(void)
+void CObjectBillboard3DScaling::Update(const ManagerContext::RenderContext &context)
 { // ビルボードの拡縮を行う
 	SetSize(m_defSize * (1.0f + (m_fScalingVal * m_nCounterFrame)));
 	if ((1.0f + (m_fScalingVal * m_nCounterFrame)) <= 0.0f)
@@ -81,7 +81,7 @@ void CObjectBillboard3DScaling::Update(void)
 		SetColor(Color(pCol->r, pCol->g, pCol->b, static_cast<float>(m_nDefLife - m_nCounterFrame) / static_cast<float>(m_nDefLife)));
 
 		// 親クラスの更新
-		CObjectBillboard3D::Update();
+		CObjectBillboard3D::Update(context);
 	}
 
 	m_nCounterFrame++;		// フレームカウンタを増加
@@ -90,7 +90,7 @@ void CObjectBillboard3DScaling::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CObjectBillboard3DScaling::Draw(void)
+void CObjectBillboard3DScaling::Draw(const ManagerContext::RenderContext &context)
 { // ビルボード描画
-	CObjectBillboard3D::Draw();
+	CObjectBillboard3D::Draw(context);
 }

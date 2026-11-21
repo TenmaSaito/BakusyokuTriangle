@@ -31,8 +31,8 @@ public:
 
 	HRESULT Init(void);
 	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	void Update(const ManagerContext::RenderContext &context) override;
+	void Draw(const ManagerContext::RenderContext &context) override;
 	void Notified(CObject *pObject, std::string_view message, const std::any &args) override;
 
 private:

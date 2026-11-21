@@ -8,6 +8,7 @@
 // *** インクルードファイル ***
 //**********************************************************************************
 #include "ui/nextInfo.h"
+#include "core/manager.h"
 #include "object/2d/object2D.h"
 #include "render/texture.h"
 
@@ -108,7 +109,7 @@ void CNextInfo::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CNextInfo::Update(void)
+void CNextInfo::Update(const ManagerContext::RenderContext &context)
 {
 	if (m_nCountWaitAlphaDecrease < 0)
 	{ // 待機フレーム無し
@@ -134,7 +135,7 @@ void CNextInfo::Update(void)
 	if (m_pNext != nullptr) m_pNext->SetDisp(true);
 
 	// 通常のテクスチャに変更
-	m_pBase->BindTexture(CTexture::GetInstance()->Register(NORMAL_BASE));
+	m_pBase->BindTexture(context.pTexture->Register(NORMAL_BASE));
 }
 
 //==================================================================================

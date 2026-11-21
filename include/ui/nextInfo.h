@@ -30,7 +30,7 @@ public:
 
 	HRESULT Init(void);
 	void Uninit(void) override;
-	void Update(void) override;
+	void Update(const ManagerContext::RenderContext &context) override;
 	void SetNext(CObject2D *pNext);
 	void Angry(const int nAngryFrame = ANGRY_FRAME);
 

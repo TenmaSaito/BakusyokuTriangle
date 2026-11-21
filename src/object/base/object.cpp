@@ -111,7 +111,7 @@ void CObject::ReleaseAll(void)
 //==================================================================================
 // --- 全オブジェクトの更新処理 ---
 //==================================================================================
-void CObject::UpdateAll(void)
+void CObject::UpdateAll(const ManagerContext::RenderContext &context)
 {
 	for (int nCntPriority = 0; nCntPriority < MAX_OBJPRIORITY; nCntPriority++)
 	{ // 優先順位分回す
@@ -130,7 +130,7 @@ void CObject::UpdateAll(void)
 #endif
 #endif
 			// オブジェクトの更新
-			pObject->Update();
+			pObject->Update(context);
 
 			pObject = pObjectNext;		// ポインタを次のオブジェクトへのポインタに変更
 		}
@@ -143,7 +143,7 @@ void CObject::UpdateAll(void)
 //==================================================================================
 // --- 全オブジェクトの描画処理 ---
 //==================================================================================
-void CObject::DrawAll(void)
+void CObject::DrawAll(const ManagerContext::RenderContext &context)
 {
 	for (int nCntPriority = 0; nCntPriority < MAX_OBJPRIORITY; nCntPriority++)
 	{ // 優先順位分回す
@@ -155,7 +155,7 @@ void CObject::DrawAll(void)
 			CObject* pObjectNext = pObject->m_pNext;	// 次のオブジェクトへのポインタ
 
 			// オブジェクトの描画
-			pObject->Draw();
+			pObject->Draw(context);
 
 			pObject = pObjectNext;		// ポインタを次のオブジェクトへのポインタに変更
 		}

@@ -124,7 +124,7 @@ void CItemBiteEffect::Uninit(void)
 //==================================================================================
 // --- çXêVèàóù ---
 //==================================================================================
-void CItemBiteEffect::Update(void)
+void CItemBiteEffect::Update(const ManagerContext::RenderContext &context)
 {
 	if (m_bEnded) return;
 

@@ -225,7 +225,7 @@ void CTimer::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CTimer::Update(void)
+void CTimer::Update(const ManagerContext::RenderContext &context)
 {
 	if (m_nTime > 0 && m_nCounter % COUNTDOWN_FRAME == 0 && m_bUpdate == true)
 	{ // 0秒より大きい且つ60秒経ったらカウントダウン
@@ -247,11 +247,9 @@ void CTimer::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CTimer::Draw(void)
+void CTimer::Draw(const ManagerContext::RenderContext &context)
 {
-	CManager *pManager = CManager::GetInstance();		// マネージャへのポインタ
-	CRenderer *pRenderer = pManager->GetRenderer();	// レンダラーへのポインタ
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイスへのポインタ
 
 	// αテストを有効化
 	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
@@ -263,7 +261,7 @@ void CTimer::Draw(void)
 	{ // タイマーが生成した数値オブジェクトを描画
 		if (pNumber != nullptr)
 		{ // NULLではなかった場合、描画処理
-			pNumber->Draw();
+			pNumber->Draw(context);
 		}
 	}
 

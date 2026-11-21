@@ -644,28 +644,27 @@ void CObject2D::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CObject2D::Update(void)
+void CObject2D::Update(const ManagerContext::RenderContext &context)
 {
 }
 
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CObject2D::Draw(void)
+void CObject2D::Draw(const ManagerContext::RenderContext &context)
 {
 	if (m_bDisp != true)
 	{ // 描画する場合のみ処理実行
 		return;
 	}
 
-	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();			// レンダラーへのポインタ
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイスへのポインタ
 
 	// 頂点バッファをストリームに設定
 	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
 
 	// テクスチャ設定
-	pDevice->SetTexture(0, CTexture::GetInstance()->GetAddress(m_nIdxTexture));
+	pDevice->SetTexture(0, context.pTexture->GetAddress(m_nIdxTexture));
 
 	// 頂点フォーマット設定
 	pDevice->SetFVF(FVF_VERTEX_2D);

@@ -34,8 +34,8 @@ public:
 	HRESULT Init(const int nIdxTexture, const D3DXVECTOR3 &pos, const D3DXVECTOR2 &size, const int nNumNumber);
 	HRESULT Init(const int nIdxTexture, const D3DXVECTOR3 &pos, const D3DXVECTOR2 &size, const int nNumNumber, const int nScore);
 	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	void Update(const ManagerContext::RenderContext &context) override;
+	void Draw(const ManagerContext::RenderContext &context) override;
 	void SetScore(const int nScore);
 	void AddScore(const int nValue);
 	int GetScore(void) const;

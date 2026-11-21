@@ -34,8 +34,8 @@ public:
 		const Vector2 &size,
 		const int nLife);
 	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	void Update(const ManagerContext::RenderContext &context) override;
+	void Draw(const ManagerContext::RenderContext &context) override;
 	void BindTexture(const int nIdxTexture) { m_nIdxTexture = nIdxTexture; }
 	void SetPosition(const Vector3 &position) { m_pos = position; }
 	const Vector3 *GetPosition(void) const { return &m_pos; }

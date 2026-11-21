@@ -35,8 +35,8 @@ public:
 		const Vector3 &pos,
 		const float fRadius);
 	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	void Update(const ManagerContext::RenderContext &context) override;
+	void Draw(const ManagerContext::RenderContext &context) override;
 	void Notified(CObject *pObject, std::string_view message, const std::any &args) override;
 	void AddForce(const float fRotDest, const float fValueRot);
 	const Vector3 *GetPositionOld(void) const { return &m_posOld; }

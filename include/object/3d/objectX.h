@@ -30,10 +30,10 @@ public:
 		const Vector3 &pos,
 		const Vector3 &rot);
 	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
-	void Draw(const Matrix &mtx);
-	void DrawShadow(const Matrix &mtxShadow);
+	void Update(const ManagerContext::RenderContext &context) override;
+	void Draw(const ManagerContext::RenderContext &context) override;
+	void Draw(const Matrix &mtx, const ManagerContext::RenderContext &context);
+	void DrawShadow(const Matrix &mtxShadow, const ManagerContext::RenderContext &context);
 	void SetPosition(const Vector3 &position) { m_pos = position; }
 	const Vector3 *GetPosition(void) const { return &m_pos; }
 	void SetRotation(const Vector3 &rotation) { m_rot = rotation; }

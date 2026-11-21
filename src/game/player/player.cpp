@@ -187,7 +187,7 @@ void CPlayer::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CPlayer::Update(void)
+void CPlayer::Update(const ManagerContext::RenderContext &context)
 {
 	if (m_pStage == nullptr)
 	{ // ステージを取得していなかったら取得
@@ -319,11 +319,9 @@ void CPlayer::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CPlayer::Draw(void)
+void CPlayer::Draw(const ManagerContext::RenderContext &context)
 { // 親クラスの描画処理
-	CManager *pManager = CManager::GetInstance();			// マネージャーへのポインタ
-	CRenderer *pRenderer = pManager->GetRenderer();			// レンダラーへのポインタ
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイスへのポインタ
 	Matrix *pMtx = GetMatrixPtr();		// マトリックスへのポインタ
 	Matrix mtxWorld;		// ワールドマトリックス
 	Matrix mtxShadow;		// シャドウマトリックス
@@ -351,7 +349,7 @@ void CPlayer::Draw(void)
 	pDevice->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
 
 	// 描画
-	CObjectX::Draw(mtxWorld);
+	CObjectX::Draw(mtxWorld, context);
 
 	// 法線ベクトルの再正規化を無効化
 	pDevice->SetRenderState(D3DRS_NORMALIZENORMALS, FALSE);

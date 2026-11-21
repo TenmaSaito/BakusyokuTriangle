@@ -64,18 +64,16 @@ void CShadow::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CShadow::Update(void)
+void CShadow::Update(const ManagerContext::RenderContext &context)
 {
 }
 
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CShadow::Draw(void)
+void CShadow::Draw(const ManagerContext::RenderContext &context)
 { // 影用に減算合成を掛ける
-	CManager *pManager = CManager::GetInstance();			// マネージャへのポインタ
-	CRenderer *pRenderer = pManager->GetRenderer();			// レンダラーへのポインタ
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイスへのポインタ
 
 	// Zテストを無効にする
 	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
@@ -88,7 +86,7 @@ void CShadow::Draw(void)
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 	
 	// 親クラスの描画処理
-	CObject3D::Draw();
+	CObject3D::Draw(context);
 
 	// 減算合成を無効にする
 	pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);

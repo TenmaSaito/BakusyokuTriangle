@@ -346,22 +346,15 @@ void CManager::Update(void)
 		CCamera::UpdateAll();
 
 		// レンダラーの更新処理
-		m_pRenderer->Update();
+		m_pRenderer->Update(CreateRenderContext());
 	}
 	else
 	{ // ポーズ中なら、デバッグ表示
 		m_pDebugProc->Print("[現在ポーズ中！]\n");
 	}
 
-	ManagerContext::RenderContext renderContext;
+	ManagerContext::RenderContext renderContext = CreateRenderContext();		// 描画コンテキスト
 	ManagerContext::SceneContext sceneContext = { .TRANSITION_FRAME = TRANSITION_FRAME };			// シーンコンテキスト
-
-	// 描画コンテキストを作成
-	renderContext.pDevice = m_pRenderer->GetDevice();
-	renderContext.pFocus = CCamera::GetCamera(CCamera::GetFocus());
-	renderContext.pLight = m_pLight.get();
-	renderContext.pTexture = CTexture::GetInstance();
-	renderContext.pXFile = CXFile::GetInstance();
 
 	// シーンコンテキストを作成
 	sceneContext.pRenderContext = &renderContext;
@@ -384,7 +377,23 @@ void CManager::Update(void)
 //==================================================================================
 void CManager::Draw(void)
 { // レンダラーの描画
-	m_pRenderer->Draw();
+	m_pRenderer->Draw(CreateRenderContext());
+}
+
+//==================================================================================
+// --- 描画コンテキストの作成処理 ---
+//==================================================================================
+ManagerContext::RenderContext CManager::CreateRenderContext(void) const
+{
+	ManagerContext::RenderContext renderContext;		// 描画コンテキスト
+
+	renderContext.pDevice = m_pRenderer->GetDevice();
+	renderContext.pFocus = CCamera::GetCamera(CCamera::GetFocus());
+	renderContext.pLight = m_pLight.get();
+	renderContext.pTexture = CTexture::GetInstance();
+	renderContext.pXFile = CXFile::GetInstance();
+
+	return renderContext;
 }
 
 //==================================================================================

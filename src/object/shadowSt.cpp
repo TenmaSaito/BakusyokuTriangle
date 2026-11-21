@@ -80,16 +80,16 @@ void CShadowSt::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CShadowSt::Update(void)
+void CShadowSt::Update(const ManagerContext::RenderContext &context)
 {
 }
 
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CShadowSt::Draw(void)
+void CShadowSt::Draw(const ManagerContext::RenderContext &context)
 {
-	LPDIRECT3DDEVICE9 pDev = CManager::GetInstance()->GetRenderer()->GetDevice();		// デバイス
+	LPDIRECT3DDEVICE9 pDev = context.pDevice;		// デバイス
 	Vector3 posWorld = *D3DXVec3TransformCoord(&posWorld, &m_offset, GetParent());		// 絶対座標
 	Matrix mtxWorld;
 
@@ -117,7 +117,7 @@ void CShadowSt::Draw(void)
 
 	// 表面カリングに切り替える
 	pDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
-	CObjectX::Draw(mtxWorld);
+	CObjectX::Draw(mtxWorld, context);
 
 	// ステンシルバッファの参照値を1に設定
 	pDev->SetRenderState(D3DRS_STENCILREF, 0x01);
@@ -130,7 +130,7 @@ void CShadowSt::Draw(void)
 
 	// 裏面カリングに切り替える
 	pDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-	CObjectX::Draw(mtxWorld);
+	CObjectX::Draw(mtxWorld, context);
 
 	// カラーバッファへの書き込みを有効にする
 	pDev->SetRenderState(D3DRS_COLORWRITEENABLE, 0x0000000F);

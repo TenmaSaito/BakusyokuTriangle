@@ -24,6 +24,11 @@
 //**********************************************************************************
 class CCamera;
 
+namespace ManagerContext
+{
+	struct RenderContext;
+}
+
 //**********************************************************************************
 // *** レンダラークラス ***
 //**********************************************************************************
@@ -35,8 +40,8 @@ public:
 
 	HRESULT Init(const HWND hWnd, const BOOL bWindow);
 	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	void Update(const ManagerContext::RenderContext &context);
+	void Draw(const ManagerContext::RenderContext &context);
 	LPDIRECT3D9 GetD3DObject(void) const;
 	LPDIRECT3DDEVICE9 GetDevice(void) const;
 	void SetDefaultTarget(void);

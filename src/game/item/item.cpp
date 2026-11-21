@@ -164,7 +164,7 @@ void CItem::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CItem::Update(void)
+void CItem::Update(const ManagerContext::RenderContext &context)
 {
 	if (m_pPlayer == nullptr)
 	{ // プレイヤーへのポインタが未取得の場合、取得
@@ -208,7 +208,7 @@ void CItem::Update(void)
 			setting.bEnableAlphaBlending = true;
 
 			m_pParticle = CParticle::Create(setting);
-			m_pParticle->BindTexture(CTexture::GetInstance()->Register("data/TEXTURE/effect000.jpg"));
+			m_pParticle->BindTexture(context.pTexture->Register("data/TEXTURE/effect000.jpg"));
 		}
 
 		// パーティクルを有効化
@@ -263,11 +263,10 @@ void CItem::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CItem::Draw(void)
+void CItem::Draw(const ManagerContext::RenderContext &context)
 { 
-	CManager *pManager = CManager::GetInstance();			// マネージャーへのポインタ
 	Matrix mtxShadow;		// シャドウマトリックス
 	
 	// 描画
-	CObjectX::Draw();
+	CObjectX::Draw(context);
 }

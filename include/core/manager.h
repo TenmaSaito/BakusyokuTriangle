@@ -115,6 +115,8 @@ public:
 	static constexpr float RatioToFrame(const float fT) { return 1.0f / fT ; }
 
 private:
+	ManagerContext::RenderContext CreateRenderContext(void) const;		// 描画コンテキストの作成
+
 	static constexpr int DEFAULT_APPLICATION_UPDATE_PER_SECOND = 60;		// 一秒間にUpdateする回数
 
 	CManager();

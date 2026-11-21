@@ -20,6 +20,11 @@
 //**********************************************************************************
 #define DEBUG_ASSERT_TYPE_NONE				// オブジェクトにタイプが指定されていなかった場合、アサーション
 
+namespace ManagerContext
+{
+	struct RenderContext;
+}
+
 //**********************************************************************************
 // *** オブジェクトクラス ***
 //**********************************************************************************
@@ -66,8 +71,8 @@ public:
 
 	virtual HRESULT Init(void) { return S_OK; }
 	virtual void Uninit(void) {}
-	virtual void Update(void) {}
-	virtual void Draw(void) {}
+	virtual void Update(const ManagerContext::RenderContext &context) {}
+	virtual void Draw(const ManagerContext::RenderContext &context) {}
 	virtual void Notified(CObject *pObject, std::string_view message, const std::any &args = {}) {}
 
 	void AddRenderState(const std::pair<D3DRENDERSTATETYPE, DWORD> state, const bool bAfter);
@@ -83,8 +88,8 @@ public:
 	CObject *GetNext(void) const { return m_pNext; }
 	static int GetNumAll(void) { return m_nNumAll; }
 	static void ReleaseAll(void);
-	static void UpdateAll(void);
-	static void DrawAll(void);
+	static void UpdateAll(const ManagerContext::RenderContext &context);
+	static void DrawAll(const ManagerContext::RenderContext &context);
 	static void FlagCheckAll(void);
 	static CObject *FindAnyObjectByType(const TYPE type);
 	static CObject *FindAnyObjectByType(const int nPriority, const TYPE type);

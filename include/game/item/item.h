@@ -58,8 +58,8 @@ public:
 		const int nLife,
 		const TYPE type);
 	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	void Update(const ManagerContext::RenderContext &context) override;
+	void Draw(const ManagerContext::RenderContext &context) override;
 	bool IsEqualType(const TYPE type) const { return m_type == type; }
 	TYPE GetItemType(void) const { return m_type; }		// CObject::GetType ‚ð‰B‚³‚È‚¢‚æ‚¤•Ê–¼‚É‚·‚é
 	static constexpr int GetTypeMax(void) { return static_cast<int>(TYPE::MAX) - 1; }

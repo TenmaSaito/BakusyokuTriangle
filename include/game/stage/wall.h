@@ -29,8 +29,8 @@ public:
 		const Vector3 &rot,
 		const Vector2 &size);
 	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	void Update(const ManagerContext::RenderContext &context) override;
+	void Draw(const ManagerContext::RenderContext &context) override;
 
 	static std::vector<CWall*> FindAll(void);	// シーン上のインスタンスをすべて検索
 

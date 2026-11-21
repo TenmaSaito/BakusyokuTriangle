@@ -164,7 +164,7 @@ void CObjectBillboard3D::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CObjectBillboard3D::Update(void)
+void CObjectBillboard3D::Update(const ManagerContext::RenderContext &context)
 {
 	m_pos += m_move;	// 位置更新
 
@@ -178,12 +178,10 @@ void CObjectBillboard3D::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CObjectBillboard3D::Draw(void)
+void CObjectBillboard3D::Draw(const ManagerContext::RenderContext &context)
 { 
-	CManager *pManager = CManager::GetInstance();			// マネージャへのポインタ
-	CRenderer *pRenderer = pManager->GetRenderer();			// レンダラーへのポインタ
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
-	CTexture *pTexture = CTexture::GetInstance();			// テクスチャへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイスへのポインタ
+	CTexture *pTexture = context.pTexture;			// テクスチャへのポインタ
 	Matrix mtxView;		// ビューマトリックス
 
 	// カメラのビューマトリックスを取得 

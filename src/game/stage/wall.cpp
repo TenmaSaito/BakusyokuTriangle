@@ -69,14 +69,14 @@ void CWall::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CWall::Update(void)
+void CWall::Update(const ManagerContext::RenderContext &context)
 {
 }
 
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CWall::Draw(void)
+void CWall::Draw(const ManagerContext::RenderContext &context)
 { // 親クラスの描画処理
-	CObject3D::Draw();
+	CObject3D::Draw(context);
 }

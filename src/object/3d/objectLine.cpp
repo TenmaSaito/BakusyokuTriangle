@@ -100,7 +100,7 @@ void CObjectLine::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CObjectLine::Update(void)
+void CObjectLine::Update(const ManagerContext::RenderContext &context)
 { // 頂点座標更新
 	UpdateVertex();
 
@@ -115,9 +115,9 @@ void CObjectLine::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CObjectLine::Draw(void)
+void CObjectLine::Draw(const ManagerContext::RenderContext &context)
 {
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();		// デバイスの取得
+	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイスの取得
 	Matrix mtxWorld;		// ワールドマトリックス
 
 	if (m_bDisp)

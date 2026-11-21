@@ -158,19 +158,17 @@ void CObject3D::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CObject3D::Update(void)
+void CObject3D::Update(const ManagerContext::RenderContext &context)
 {
 }
 
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CObject3D::Draw(void)
+void CObject3D::Draw(const ManagerContext::RenderContext &context)
 {
-	CManager *pManager = CManager::GetInstance();			// マネージャへのポインタ
-	CRenderer *pRenderer = pManager->GetRenderer();			// レンダラーへのポインタ
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
-	CTexture *pTexture = CTexture::GetInstance();		// テクスチャへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイスへのポインタ
+	CTexture *pTexture = context.pTexture;		// テクスチャへのポインタ
 
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);

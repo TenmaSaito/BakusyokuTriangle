@@ -90,7 +90,7 @@ void CItemGenerator::Uninit(void)
 //==================================================================================
 // --- çXêVèàóù ---
 //==================================================================================
-void CItemGenerator::Update(void)
+void CItemGenerator::Update(const ManagerContext::RenderContext &context)
 { 
 	CPlayer *pPlayer = CPlayer::Find();
 
@@ -199,7 +199,7 @@ void CItemGenerator::Update(void)
 //==================================================================================
 // --- ï`âÊèàóù ---
 //==================================================================================
-void CItemGenerator::Draw(void)
+void CItemGenerator::Draw(const ManagerContext::RenderContext &context)
 {
 }
 

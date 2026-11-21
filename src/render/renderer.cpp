@@ -308,15 +308,15 @@ void CRenderer::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CRenderer::Update(void)
+void CRenderer::Update(const ManagerContext::RenderContext &context)
 { // 全てのオブジェクトを更新
-	CObject::UpdateAll();
+	CObject::UpdateAll(context);
 }
 
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CRenderer::Draw(void)
+void CRenderer::Draw(const ManagerContext::RenderContext &context)
 {
 	CManager *pManager = CManager::GetInstance();		// マネージャへのポインタ
 	CDebugProc *pDebugProc = pManager->GetDebugProc();	// デバッグ表示へのポインタ
@@ -344,7 +344,7 @@ void CRenderer::Draw(void)
 			CLEAR_COLOR, 1.0f, 0);
 
 		// 全てのオブジェクトを描画
-		CObject::DrawAll();
+		CObject::DrawAll(context);
 
 		// カメラの設置終了
 		CCamera::End();

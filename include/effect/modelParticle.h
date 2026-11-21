@@ -51,11 +51,13 @@ public:
 
 	HRESULT Init(const Setting &setting);
 	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	void Update(const ManagerContext::RenderContext &context) override;
+	void Draw(const ManagerContext::RenderContext &context) override;
 	void Notified(CObject *pObject, std::string_view message, const std::any &args) override;
 
 private:
+	void UpdateParticle(void);				// 各モデルの更新 (Init からも呼ぶ)
+
 	static constexpr int MODEL_PARTICLE_PRIORITY = DEFAULT_EFFECT_PRIORITY;	// 描画・更新順位
 
 	//**********************************************************************************
