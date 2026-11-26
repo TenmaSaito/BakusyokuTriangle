@@ -13,6 +13,7 @@
 #include "math/vec3math.h"
 #include "math/matrix.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "sound/sound.h"
 #include "render/renderer.h"
 #include "render/light.h"
@@ -23,6 +24,7 @@
 #include "object/shadowSt.h"
 #include "effect/itemBiteEffect.h"
 #include "effect/modelParticle.h"
+#include "object/3d/meshRing.h"
 
 //**********************************************************************************
 // *** 定数宣言 ***
@@ -30,6 +32,7 @@
 namespace
 {
 	constexpr int ADD_SCORE = 10;		// スコアの加算値
+#if defined(ENABLE_LOOP) || defined(ENABLE_ALL)
 	constexpr std::string_view MODEL_PATHS[static_cast<UINT>(CItem::TYPE::MAX)] =		// 各アイテムのモデルパス
 	{
 		"",
@@ -37,6 +40,22 @@ namespace
 		"data/MODEL/humbarg.x",
 		"data/MODEL/miso_soup.x",
 	};
+#elif defined(ENABLE_ORDER)
+	constexpr std::string_view MODEL_PATHS[static_cast<UINT>(CItem::TYPE::MAX)] =		// 各アイテムのモデルパス
+	{
+		"",
+		"data/MODEL/number/0.x",
+		"data/MODEL/number/1.x",
+		"data/MODEL/number/2.x",
+		"data/MODEL/number/3.x",
+		"data/MODEL/number/4.x",
+		"data/MODEL/number/5.x",
+		"data/MODEL/number/6.x",
+		"data/MODEL/number/7.x",
+		"data/MODEL/number/8.x",
+		"data/MODEL/number/9.x",
+	};
+#endif
 
 	const UINT PARTICLE_XFILE_IDS[static_cast<UINT>(CItem::TYPE::MAX)] =
 	{
@@ -115,28 +134,16 @@ HRESULT CItem::Init(const Vector3 &pos,
 	m_nLife = nLife;			// 体力保存
 	m_type = type;		// タイプ保存
 
-	// 引数のタイプのアイコンを生成
-	m_pIcon = CObjectBillboard3D::Create(ICON_OFFSET,
-		VECTOR3_NULL,
-		ICON_SIZE);
-
-	// 親を登録
-	m_pIcon->SetParent(GetMatrix());
-
-	// 描画前設定を追加
-	m_pIcon->AddRenderState({ D3DRS_ZFUNC, D3DCMP_ALWAYS }, false);
-	m_pIcon->AddRenderState({ D3DRS_ZWRITEENABLE, FALSE }, false);
-	m_pIcon->AddRenderState({ D3DRS_ZENABLE, FALSE }, false);
-
-	// 描画後設定を追加
-	m_pIcon->AddRenderState({ D3DRS_ZFUNC, D3DCMP_LESSEQUAL }, false);
-	m_pIcon->AddRenderState({ D3DRS_ZWRITEENABLE, TRUE }, false);
-	m_pIcon->AddRenderState({ D3DRS_ZENABLE, TRUE }, false);
-
+#if defined(ENABLE_LOOP) || defined(ENABLE_ALL)
 	// 影生成
 	m_pShadowSt = CShadowSt::Create(GetMatrix());
 	m_pShadowSt->SetScale(ConstVector3(10.0f, 10.0f, 10.0f));
 	m_pShadowSt->SetOffset(ConstVector3(0.0f, 50.0f, 0.0f));
+#endif
+
+	// メッシュリング生成
+	m_pRing = CMeshRing::Create(VECTOR3_NULL, VECTOR3_NULL, 100.0f, 50.0f, 10);
+	m_pRing->SetParent(GetMatrix());
 	return S_OK;
 }
 
@@ -144,18 +151,9 @@ HRESULT CItem::Init(const Vector3 &pos,
 // --- 終了処理 ---
 //==================================================================================
 void CItem::Uninit(void)
-{ 
-	if (m_pIcon)
-	{ // アイコンを破棄
-		m_pIcon->Uninit();
-		m_pIcon = nullptr;
-	}
-
-	if (m_pShadowSt != nullptr)
-	{ // 影を削除
-		m_pShadowSt->Uninit();
-		m_pShadowSt = nullptr;
-	}
+{ // 紐づけられたオブジェクトのインスタンス破棄
+	SafeUninit(m_pShadowSt);
+	SafeUninit(m_pRing);
 
 	// 親クラスの終了
 	CObjectX::Uninit();
@@ -164,19 +162,14 @@ void CItem::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CItem::Update(void)
+void CItem::Update(const ManagerContext::RenderContext &context)
 {
 	if (m_pPlayer == nullptr)
 	{ // プレイヤーへのポインタが未取得の場合、取得
 		m_pPlayer = CPlayer::Find();
 	}
 
-	if (m_pScore == nullptr)
-	{ // スコア表示へのポインタが未取得の場合、取得
-		m_pScore = CScore::Find();
-	}
-
-	if (m_pPlayer == nullptr || m_pScore == nullptr)
+	if (m_pPlayer == nullptr)
 	{ // プレイヤーがnullの場合スキップ
 		return;
 	}
@@ -193,7 +186,6 @@ void CItem::Update(void)
 	if (fLength <= m_fRadius + m_pPlayer->GetRadius())
 	{ // 獲得半径内にいるかつプレイヤーが回転していれば、獲得ゲージを減らすため体力減少
 		m_nLife--;
-		m_pScore->AddScore(ADD_SCORE);
 		
 		if (m_pParticle == nullptr)
 		{ // パーティクルを生成していないなら、新規生成
@@ -208,7 +200,7 @@ void CItem::Update(void)
 			setting.bEnableAlphaBlending = true;
 
 			m_pParticle = CParticle::Create(setting);
-			m_pParticle->BindTexture(CTexture::GetInstance()->Register("data/TEXTURE/effect000.jpg"));
+			m_pParticle->BindTexture(context.pTexture->Register("data/TEXTURE/effect000.jpg"));
 		}
 
 		// パーティクルを有効化
@@ -225,7 +217,7 @@ void CItem::Update(void)
 		Vector3 posWorld = *D3DXVec3TransformCoord(&posWorld, &vecOrigin, GetMatrix());
 		m_pPlayer->Eat();
 		CItemBiteEffect::Create(*GetPosition(), BITE_EFFECT_WIDTH, BITE_EFFECT_TIME, GetParent());
-		CManager::GetInstance()->GetSound()->Play(CSound::LABEL::SE_BITE);
+		CServiceLocator::GetSound()->Play(CSound::LABEL::SE_BITE);
 
 		CModelParticle::Setting setting = {};
 		setting.pos = *GetPosition();
@@ -235,8 +227,8 @@ void CItem::Update(void)
 		setting.nNum = FOOD_PARTICLE_NUM;
 		setting.fGravity = FOOD_PARTICLE_GRAVITY;
 		setting.fBounce = FOOD_PARTICLE_BOUNCE;
+#if defined(ENABLE_LOOP) || defined(ENABLE_ALL)
 		setting.sModelPath = "data/MODEL/food_particle_";
-		
 		// 種類によってパスを変える
 		switch (m_type)
 		{
@@ -252,6 +244,9 @@ void CItem::Update(void)
 		default:
 			break;
 		}
+#elif defined(ENABLE_ORDER)
+		setting.sModelPath += "rice.x";
+#endif
 
 		// パーティクル生成
 		CModelParticle::Create(setting);
@@ -263,11 +258,10 @@ void CItem::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CItem::Draw(void)
+void CItem::Draw(const ManagerContext::RenderContext &context)
 { 
-	CManager *pManager = CManager::GetInstance();			// マネージャーへのポインタ
 	Matrix mtxShadow;		// シャドウマトリックス
 	
 	// 描画
-	CObjectX::Draw();
+	CObjectX::Draw(context);
 }

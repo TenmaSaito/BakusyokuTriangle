@@ -32,8 +32,8 @@ public:
 		const int nLife,
 		const float fStartAlpha);
 	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	void Update(const ManagerContext::RenderContext &context) override;
+	void Draw(const ManagerContext::RenderContext &context) override;
 	void SetParent(const Matrix *pMtxParent) { m_pMtxParent = pMtxParent; }
 	const Matrix *GetParent(void) const { return m_pMtxParent; }
 

@@ -10,6 +10,7 @@
 #include "game/player/playerCamera.h"
 #include "game/player/player.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "input/input.h"
 #include "debug/debugproc.h"
 #include "math/vec2math.h"
@@ -109,8 +110,7 @@ void CPlayerCamera::Update(void)
 	Vector3 posR = *CCamera::GetPosR();		// 注視点座標
 	Vector3 rot = *CCamera::GetRotate();	// 角度
 	Vector3 vecU = *CCamera::GetVecU();		// 上方向ベクトル
-	CManager *pManager = CManager::GetInstance();		// マネージャへのポインタ
-	CInputKeyboard *pKeyboard = pManager->GetInputKeyboard();		// キーボードへのポインタ
+	CInputKeyboard *pKeyboard = CServiceLocator::GetInputKeyboard();		// キーボードへのポインタ
 
 	// プレイヤーへのポインタが存在するなら
 	if (m_pPlayer != nullptr)
@@ -134,7 +134,7 @@ void CPlayerCamera::Update(void)
 
 //#ifdef _DEBUG
 	// プレイヤーの位置を表示
-	CDebugProc *pProc = CManager::GetInstance()->GetDebugProc();		// デバッグ表示へのポインタ
+	CDebugProc *pProc = CServiceLocator::GetDebugProc();		// デバッグ表示へのポインタ
 	pProc->ForcePrint("====== カメラ ======\n");
 	pProc->ForcePrint("視点   ({:.2f}/{:.2f}/{:.2f}) [Q/E]\n", PRINT_VECTOR3(*GetPosV()));
 	pProc->ForcePrint("注視点 ({:.2f}/{:.2f}/{:.2f})\n", PRINT_VECTOR3(*GetPosR()));

@@ -34,7 +34,7 @@ public:
 		CCamera *pEnd, 
 		const int nFrame);
 	void Uninit(void);
-	void Update(void);
+	void Update(const ManagerContext::RenderContext &context) override;
 
 private:
 	static constexpr int CAMERA_TRANS_PRIORITY = FIRST_PRIORITY;		// ‘JˆÚ‚Ì—Dæ‡ˆÊ

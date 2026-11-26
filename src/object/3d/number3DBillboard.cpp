@@ -9,6 +9,7 @@
 //**********************************************************************************
 #include "object/3d/number3DBillboard.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "math/matrix.h"
 
@@ -73,8 +74,7 @@ void CNumber3DBillboard::Update(void)
 //==================================================================================
 void CNumber3DBillboard::Draw(void)
 { // マトリックスを計算し、描画
-	CManager *pManager = CManager::GetInstance();			// マネージャへのポインタ
-	CRenderer *pRenderer = pManager->GetRenderer();			// レンダラーへのポインタ
+	CRenderer *pRenderer = CServiceLocator::GetRenderer();			// レンダラーへのポインタ
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
 	Matrix mtxView;		// ビューマトリックス
 	Matrix mtxWorld;	// ワールドマトリックス

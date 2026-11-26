@@ -21,11 +21,13 @@
 #include "render/texture.h"
 #include "render/camera.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "input/input.h"
 #include "input/joypad.h"
 #include "ui/nextInfo.h"
 #include "ui/timer.h"
 #include "game/stage/foodBackground.h"
+#include "game/spring.h"
 #include "util/filestream.h"
 
 //**********************************************************************************
@@ -80,8 +82,8 @@ void CGame::Uninit(void)
 void CGame::Update(const ManagerContext::SceneContext &sceneContext)
 {
 	CManager *pManager = CManager::GetInstance();
-	CInputKeyboard *pKeyboard = pManager->GetInputKeyboard();
-	CJoypad *pJoypad = pManager->GetJoypad();
+	CInputKeyboard *pKeyboard = CServiceLocator::GetInputKeyboard();
+	CJoypad *pJoypad = CServiceLocator::GetJoypad();
 
 	if ((pKeyboard->GetTrigger(DIK_P)
 		|| pJoypad->GetTrigger(CJoypad::KEY::START))
@@ -89,6 +91,17 @@ void CGame::Update(const ManagerContext::SceneContext &sceneContext)
 	{
 		pManager->SetEnablePause(!pManager->GetEnablePause());
 	}
+
+#ifdef _DEBUG
+	if (pKeyboard->GetTrigger(DIK_NUMPAD1))
+	{
+		CCamera::SetFocus(CCamera::TYPE::FREE);
+	}
+	else if (pKeyboard->GetTrigger(DIK_NUMPAD2))
+	{
+		CCamera::SetFocus(CCamera::TYPE::PLAYER);
+	}
+#endif
 
 	if (CTimer::Find()->GetTimer() <= 0
 		&& CManager::GetInstance()->IsTransition() == false)
@@ -124,7 +137,11 @@ void CGame::Draw(const ManagerContext::SceneContext &sceneContext)
 // --- 開始時処理 ---
 //==================================================================================
 void CGame::Start(const ManagerContext::SceneContext &sceneContext)
-{ // マップ読み込み
+{ // カメラを設置
+	CCamera::Create(Vector3(0.0f, 1500.0f, -400.0f), VECTOR3_NULL);
+	CCamera::SetFocus(CCamera::TYPE::PLAYER);
+
+	// マップ読み込み
 	auto pMapLoader = std::make_unique<CMapLoader>();		// マップ読み込みインスタンス
 
 	// テクスチャクラスをバインド
@@ -135,7 +152,7 @@ void CGame::Start(const ManagerContext::SceneContext &sceneContext)
 	CScreenEffect::Create(DAMAGE_FLASH_COLOR, DAMAGE_FLASH_FRAME);
 
 	// スコア表示生成
-	CScore::Create(CTexture::GetInstance()->Register(NUMBER_TEXTURE),
+	CScore::Create(CServiceLocator::GetTexture()->Register(NUMBER_TEXTURE),
 		SCORE_POS,
 		SCORE_SIZE,
 		SCORE_DIGIT);
@@ -148,8 +165,10 @@ void CGame::Start(const ManagerContext::SceneContext &sceneContext)
 	// バックの食べ物出現
 	CFoodBackground::Create();
 
-	CCamera::Create(Vector3(0.0f, 1500.0f, -400.0f), VECTOR3_NULL);
-	CCamera::SetFocus(CCamera::TYPE::PLAYER);
+	CServiceLocator::GetSound()->Play(CSound::LABEL::BGM_INGAME);
 
-	CManager::GetInstance()->GetSound()->Play(CSound::LABEL::BGM_INGAME);
+	CSpring::Create(Vector3(100.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), 1.0f, 75.0f)->SetParent(CObject::FindAnyObjectByType<CStage>()->GetMatrix());
+	CSpring::Create(Vector3(100.0f, 1500.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), 1.5f, 100.0f)->SetParent(CObject::FindAnyObjectByType<CStage>()->GetMatrix());
+	CSpring::Create(Vector3(300.0f, 0.0f, 0.0f), Vector3(0.5f, 0.0f, 0.5f), 1.0f, 100.0f)->SetParent(CObject::FindAnyObjectByType<CStage>()->GetMatrix());
+	CSpring::Create(Vector3(400.0f, 0.0f, 0.0f), Vector3(0.5f, 0.0f, 0.5f), 1.0f, 100.0f)->SetParent(CObject::FindAnyObjectByType<CStage>()->GetMatrix());
 }

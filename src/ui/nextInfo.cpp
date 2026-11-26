@@ -8,6 +8,8 @@
 // *** インクルードファイル ***
 //**********************************************************************************
 #include "ui/nextInfo.h"
+#include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "object/2d/object2D.h"
 #include "render/texture.h"
 
@@ -108,7 +110,7 @@ void CNextInfo::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CNextInfo::Update(void)
+void CNextInfo::Update(const ManagerContext::RenderContext &context)
 {
 	if (m_nCountWaitAlphaDecrease < 0)
 	{ // 待機フレーム無し
@@ -134,7 +136,7 @@ void CNextInfo::Update(void)
 	if (m_pNext != nullptr) m_pNext->SetDisp(true);
 
 	// 通常のテクスチャに変更
-	m_pBase->BindTexture(CTexture::GetInstance()->Register(NORMAL_BASE));
+	m_pBase->BindTexture(context.pTexture->Register(NORMAL_BASE));
 }
 
 //==================================================================================
@@ -180,7 +182,7 @@ void CNextInfo::Angry(const int nAngryFrame)
 	}
 
 	// 怒り表示のテクスチャに切り替える
-	m_pBase->BindTexture(CTexture::GetInstance()->Register(ANGRY_BASE));
+	m_pBase->BindTexture(CServiceLocator::GetTexture()->Register(ANGRY_BASE));
 	m_fAlpha = 1.0f;	// α値を元に戻す
 	m_nCountWaitAlphaDecrease = WAIT_ALPHA_DECREASE_FRAME;		// 待機フレーム設定
 

@@ -9,6 +9,7 @@
 //**********************************************************************************
 #include "game/item/itemGenerator.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "sound/sound.h"
 #include "effect/screenEffect.h"
 #include "ui/nextInfo.h"
@@ -90,7 +91,7 @@ void CItemGenerator::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CItemGenerator::Update(void)
+void CItemGenerator::Update(const ManagerContext::RenderContext &context)
 { 
 	CPlayer *pPlayer = CPlayer::Find();
 
@@ -199,7 +200,7 @@ void CItemGenerator::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CItemGenerator::Draw(void)
+void CItemGenerator::Draw(const ManagerContext::RenderContext &context)
 {
 }
 
@@ -266,7 +267,7 @@ void CItemGenerator::Notified(CObject *pObject, std::string_view message, const 
 			m_vpItem.erase(std::ranges::find(m_vpItem, pItem));
 		}
 
-		CManager::GetInstance()->GetSound()->Play(CSound::LABEL::SE_SUCCESS);
+		CServiceLocator::GetSound()->Play(CSound::LABEL::SE_SUCCESS);
 		m_bWillSetNext = true;
 		m_nCombo++;
 		return;
@@ -300,6 +301,6 @@ void CItemGenerator::Notified(CObject *pObject, std::string_view message, const 
 
 	// 怒らせる
 	CNextInfo::Find()->Angry();
-	CManager::GetInstance()->GetSound()->Play(CSound::LABEL::SE_FAIL);
+	CServiceLocator::GetSound()->Play(CSound::LABEL::SE_FAIL);
 	m_bWillSetNext = true;		// 次の食べ物の表示を行うフラグを立てる
 }

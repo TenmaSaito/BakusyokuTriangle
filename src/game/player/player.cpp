@@ -10,6 +10,7 @@
 //**********************************************************************************
 #include "game/player/player.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "input/input.h"
 #include "input/joypad.h"
@@ -51,13 +52,14 @@ namespace
 	constexpr std::string_view SHADOW_PATH = "data/TEXTURE/effect001.jpg";		// 影のテクスチャパス
 
 	constexpr float DEFAULT_ANGLE_ADD = 0.1f;			// 自動回転時の角度の増加値
-	constexpr float INSTANT_TURN_ANGLE = D3DX_PI * 0.75f;	// これ以上向きが変わると即時に振り向く角度
-	constexpr float DIAGONAL_FRONT_ANGLE = D3DX_PI * 1.25f;	// 斜め前方向の入力時の角度 (カメラ基準)
+	constexpr float INSTANT_TURN_ANGLE = PI * 0.75f;	// これ以上向きが変わると即時に振り向く角度
+	constexpr float DIAGONAL_FRONT_ANGLE = PI * 1.25f;	// 斜め前方向の入力時の角度 (カメラ基準)
 	constexpr int AFTERIMAGE_LIFE = 15;				// 残像の寿命
 	constexpr float AFTERIMAGE_START_ALPHA = 0.5f;		// 残像の開始α値
 	constexpr float EAT_SCALE_RATE = 1.01f;			// アイテムを食べた時の拡大率
 	constexpr float EAT_ROT_SPEED_RATE = 0.99f;		// アイテムを食べた時の回転速度の倍率
 	constexpr float STICK_DEADZONE = 0.05f;				// 動いたと感知するデッドゾーン
+	constexpr float GRAVITY = 0.25f;		// 重力
 
 	// デバッグ用ステータス変更
 	constexpr int DEBUG_REPEAT_WAIT = 5;			// リピート入力の待機時間
@@ -137,20 +139,18 @@ HRESULT CPlayer::Init(const std::string_view pFilename,
 	CObjectX::Init(pFilename, pos, VECTOR3_NULL);
 
 	// 各メンバ変数を初期化
-	m_bAutoRotating = false;
 	m_fRadius = fRadius;
 	m_vecAxis = VEC_QUAT;
 	m_fValueRot = 0.0f;
 	m_fRotSpeed = VALUE_ROT;
 	m_fScaling = SCALE_VALUE;
-	m_fAngleAdd = DEFAULT_ANGLE_ADD;
 	Mtx::Identity(&m_mtxRot);
 
 	// 吹き出し生成
 	CSpeechBubble *pBubble = CSpeechBubble::Create(ConstVector3(100.0f, 0.0f, 100.0f),
 		ConstVector2(150.0f, 185.0f));
 	pBubble->SetParent(GetMatrix());
-	pBubble->BindTexture(CTexture::GetInstance()->Register("data/TEXTURE/next.png"));
+	pBubble->BindTexture(CServiceLocator::GetTexture()->Register("data/TEXTURE/next.png"));
 
 	// レンダーステートの各種設定
 	pBubble->AddRenderState({ D3DRS_ZFUNC, D3DCMP_ALWAYS }, false);
@@ -165,7 +165,7 @@ HRESULT CPlayer::Init(const std::string_view pFilename,
 
 	// 影生成
 	m_pShadowSt = CShadowSt::Create(GetMatrix());
-	m_pShadowSt->SetScale(ConstVector3(3.0f, 20.0f, 3.0f));
+	m_pShadowSt->SetScale(ConstVector3(3.0f, 50.0f, 3.0f));
 	return S_OK;
 }
 
@@ -187,7 +187,7 @@ void CPlayer::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CPlayer::Update(void)
+void CPlayer::Update(const ManagerContext::RenderContext &context)
 {
 	if (m_pStage == nullptr)
 	{ // ステージを取得していなかったら取得
@@ -197,12 +197,12 @@ void CPlayer::Update(void)
 		if (m_pStage == nullptr) return;
 	}
 
-	// 過去の座標を保存
-	m_posOld = *GetPosition();
+	if (m_nFrameUnclamp > 0)
+	{
+		m_nFrameUnclamp--;
+	}
 
-	// 自動回転フラグが立っていれば、傾いていないため角度を加算し回転
-	if(m_bAutoRotating == true) AddForce(m_fAngle + m_fAngleAdd, m_fRotSpeed);
-	if (m_fValueRot > MAX_ROT_VALUE)
+	if (m_fValueRot > MAX_ROT_VALUE && m_nFrameUnclamp <= 0)
 	{ // 最大速度を超えていたら、修正
 		m_fValueRot = MAX_ROT_VALUE;
 	}
@@ -213,6 +213,11 @@ void CPlayer::Update(void)
 		{ // 0.0f以下になった場合は、0.0fに戻す
 			m_fValueRot = 0.0f;
 		}
+	}
+	else if (m_fValueRot < 0.0f)
+	{
+		m_fValueRot += RESIST_ROT;
+		if (m_fValueRot > 0.0f) m_fValueRot = 0.0f;
 	}
 
 	// 回転軸を求める
@@ -226,21 +231,12 @@ void CPlayer::Update(void)
 	fCircumference = DOUBLE_PI * GetRadius();				// 円周の長さを求める
 	fPower = (m_fValueRot / DOUBLE_PI) * fCircumference;	// 移動量を求める
 
-	// ジャンプ機能
-	if (CManager::GetInstance()->GetInputKeyboard()->GetTrigger(DIK_SPACE))
-	{
-		m_move.y = 15.0f;
-	}
-	else
-	{
-		m_move.y -= 0.3f;
-	}
-
-
 	// 移動量を適用する為、加速度を更新
 	Vector2 move = Vec2::Direction(Util::FixedRotation(-GetRotation()->y)) * fPower;
 	m_move.x = move.x;
 	m_move.z = -move.y;
+
+	m_move.y -= GRAVITY;
 
 	// 加速度を適用し、位置を更新
 	SetPosition(*GetPosition() + m_move);
@@ -304,7 +300,7 @@ void CPlayer::Update(void)
 	vecPlayer.Draw();
 
 	// デバッグ情報表示
-	CDebugProc *pProc = CManager::GetInstance()->GetDebugProc();		// デバッグ表示へのポインタ
+	CDebugProc *pProc = CServiceLocator::GetDebugProc();		// デバッグ表示へのポインタ
 	pProc->Print("====== プレイヤー ======\n");
 	pProc->Print("座標     ({:.2f}/{:.2f}/{:.2f})\n", PRINT_VECTOR3(*GetPosition()));
 	pProc->Print("角度     ({:.2f}/{:.2f}/{:.2f})\n", PRINT_VECTOR3(*GetRotation()));
@@ -319,11 +315,9 @@ void CPlayer::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CPlayer::Draw(void)
+void CPlayer::Draw(const ManagerContext::RenderContext &context)
 { // 親クラスの描画処理
-	CManager *pManager = CManager::GetInstance();			// マネージャーへのポインタ
-	CRenderer *pRenderer = pManager->GetRenderer();			// レンダラーへのポインタ
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイスへのポインタ
 	Matrix *pMtx = GetMatrixPtr();		// マトリックスへのポインタ
 	Matrix mtxWorld;		// ワールドマトリックス
 	Matrix mtxShadow;		// シャドウマトリックス
@@ -351,7 +345,7 @@ void CPlayer::Draw(void)
 	pDevice->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
 
 	// 描画
-	CObjectX::Draw(mtxWorld);
+	CObjectX::Draw(mtxWorld, context);
 
 	// 法線ベクトルの再正規化を無効化
 	pDevice->SetRenderState(D3DRS_NORMALIZENORMALS, FALSE);
@@ -370,6 +364,7 @@ void CPlayer::Notified(CObject *pObject, std::string_view message, const std::an
 void CPlayer::AddForce(const float fRotDest, const float fValueRot)
 { // 回転角が負の値だとアサーション
 	assert(fValueRot >= 0.0f);
+	if (GetPosition()->y > GetRadius()) return;
 
 	// 角度を保存
 	m_rotDest.y = Util::FixedRotation(fRotDest);
@@ -404,6 +399,32 @@ void CPlayer::AddForce(const float fRotDest, const float fValueRot)
 }
 
 //==================================================================================
+// --- 上方向への力追加処理 ---
+//==================================================================================
+void CPlayer::AddForceUp(const float fValue)
+{
+	m_move.y = fValue;
+}
+
+//==================================================================================
+// --- 回転追加処理 (角度の差による反転無し) ---
+//==================================================================================
+void CPlayer::AddForceUnreverse(const float fRotDest, const float fValueRot, const int nFrameUnclamp)
+{// 回転角が負の値だとアサーション
+	assert(fValueRot >= 0.0f);
+
+	// 角度を保存
+	m_rotDest.y = Util::FixedRotation(fRotDest);
+	m_fAngle = m_rotDest.y;
+
+	// 角度を目標角度に強制
+	SetRotation(Vector3(0.0f, Util::FixedRotation(m_rotDest.y), 0.0f));
+	
+	m_fValueRot = fValueRot;
+	m_nFrameUnclamp = nFrameUnclamp;
+}
+
+//==================================================================================
 // --- アイテム取得による拡大処理 ---
 //==================================================================================
 void CPlayer::Eat(void)
@@ -417,12 +438,11 @@ void CPlayer::Eat(void)
 //==================================================================================
 void CPlayer::CharactorMovable(void)
 {
-	CManager *pManager = CManager::GetInstance();		// マネージャへのポインタ
-	CInputKeyboard *pKeyboard = pManager->GetInputKeyboard();		// キーボードへのポインタ
-	CJoypad *pJoypad = pManager->GetJoypad();			// ジョイパッドへのポインタ
+	CInputKeyboard *pKeyboard = CServiceLocator::GetInputKeyboard();		// キーボードへのポインタ
+	CJoypad *pJoypad = CServiceLocator::GetJoypad();			// ジョイパッドへのポインタ
 	Vector3 stick = VECTOR3_NULL;						// ジョイパッドのスティック入力
 	float fRotDest = GetRotation()->y;					// 目標角度
-	CDebugProc *pProc = pManager->GetDebugProc();		// デバッグ表示へのポインタ
+	CDebugProc *pProc = CServiceLocator::GetDebugProc();		// デバッグ表示へのポインタ
 	CCamera *pPlayerCam = CCamera::GetCamera(CCamera::TYPE::PLAYER);		// プレイヤーカメラへのポインタ
 	const Vector3 *pCamRotate = pPlayerCam->GetRotate();				// カメラの角度
 
@@ -559,8 +579,7 @@ void CPlayer::CharactorMovable(void)
 //==================================================================================
 void CPlayer::StatusChange(void)
 {
-	CManager *pManager = CManager::GetInstance();		// マネージャへのポインタ
-	CInputKeyboard *pKeyboard = pManager->GetInputKeyboard();		// キーボードへのポインタ
+	CInputKeyboard *pKeyboard = CServiceLocator::GetInputKeyboard();		// キーボードへのポインタ
 	const int nRepeatWait = DEBUG_REPEAT_WAIT;		// リピートの待機時間
 
 	// 拡大倍率

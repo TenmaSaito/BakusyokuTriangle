@@ -17,6 +17,7 @@
 
 namespace ManagerContext
 {
+	struct RenderContext;
 	struct SceneContext;
 }
 

@@ -225,7 +225,7 @@ void CScore::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CScore::Update(void)
+void CScore::Update(const ManagerContext::RenderContext &context)
 {
 	if (m_nAdditionalScore > 0)
 	{ // 追加予定スコアがまだ残っていたら5足す
@@ -249,13 +249,13 @@ void CScore::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CScore::Draw(void)
+void CScore::Draw(const ManagerContext::RenderContext &context)
 {
 	for (int nCntNumber = 0; nCntNumber < MAX_SCORENUM; nCntNumber++)
 	{ // スコアが生成した数値オブジェクトを更新
 		if (m_apNumber[nCntNumber] != nullptr)
 		{ // NULLではなかった場合、破棄 + 終了処理
-			m_apNumber[nCntNumber]->Draw();
+			m_apNumber[nCntNumber]->Draw(context);
 		}
 	}
 }

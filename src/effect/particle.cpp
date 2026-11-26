@@ -82,7 +82,7 @@ void CParticle::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CParticle::Update(void)
+void CParticle::Update(const ManagerContext::RenderContext &context)
 {
 	CRand *pRand = CRand::GetInstance();		// 乱数生成インスタンス
 	int nNumEffectVariation = 0;		// 生成数のぶれ
@@ -193,11 +193,9 @@ void CParticle::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CParticle::Draw(void)
+void CParticle::Draw(const ManagerContext::RenderContext &context)
 {
-	CManager *pManager = CManager::GetInstance();			// マネージャへのポインタ
-	CRenderer *pRenderer = pManager->GetRenderer();			// レンダラーへのポインタ
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイスへのポインタ
 	D3DXMATRIX mtxTrans;		// 計算用マトリックス
 	D3DXMATRIX mtxView;			// ビューマトリックスの取得用
 

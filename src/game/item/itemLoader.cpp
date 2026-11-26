@@ -82,7 +82,9 @@ HRESULT CItemLoader::Load(std::string_view path)
 		}
 		else if (StringUtil::Contains(sLine, SCORE_START))
 		{ // ÉXÉRÉAèÓïÒ
+#if defined(ENABLE_LOOP) || defined(ENABLE_ALL)
 			LoadEatingRule();
+#endif
 		}
 	}
 
@@ -140,6 +142,7 @@ void CItemLoader::LoadSpawner(void)
 //==================================================================================
 void CItemLoader::LoadEatingRule(void)
 {
+#if defined(ENABLE_LOOP) || defined(ENABLE_ALL)
 	std::optional<std::string> line;		// ì«Ç›çûÇÒÇæï∂éöóÒ
 
 	while (1)
@@ -168,4 +171,5 @@ void CItemLoader::LoadEatingRule(void)
 			m_pRule->SetItemScore(CItem::TYPE::SOUP, StringUtil::ToInt(*value));
 		}
 	}
+#endif
 }

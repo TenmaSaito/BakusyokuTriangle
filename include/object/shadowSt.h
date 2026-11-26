@@ -32,8 +32,8 @@ public:
 	HRESULT Init(const Matrix *pTarget,
 		std::string_view sModelPath);
 	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	void Update(const ManagerContext::RenderContext &context) override;
+	void Draw(const ManagerContext::RenderContext &context) override;
 	void SetOffset(const Vector3 &offset) { m_offset = offset; }
 
 private:

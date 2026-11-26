@@ -81,7 +81,7 @@ void CCameraTransition::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CCameraTransition::Update(void)
+void CCameraTransition::Update(const ManagerContext::RenderContext &context)
 {
 	float fTime = static_cast<float>(m_nCounterFrame) / static_cast<float>(m_nFrame);		// 経過フレームの割合
 

@@ -10,6 +10,7 @@
 //**********************************************************************************
 #include "debug/debugproc.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include <stdio.h>
 
@@ -45,7 +46,7 @@ HRESULT CDebugProc::Init(const UINT &rHeight, const char *pFontname)
 	HRESULT hr = S_OK;		// 処理の結果
 
 	// デバイスの取得
-	pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
+	pDevice = CServiceLocator::GetDevice();
 
 	if (m_pFont == NULL)
 	{ // フォントが作成されていなければ作成

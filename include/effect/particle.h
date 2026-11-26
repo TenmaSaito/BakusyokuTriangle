@@ -46,8 +46,8 @@ public:
 
 	HRESULT Init(const Setting &setting);
 	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	void Update(const ManagerContext::RenderContext &context) override;
+	void Draw(const ManagerContext::RenderContext &context) override;
 	void SetParent(const Matrix *pMtxParent) { m_pMtxParent = pMtxParent; }
 	const Matrix *GetParent(void) const { return &m_mtxWorld; }
 	void BindTexture(const int nIdxTexture) { m_nIdxTexture = nIdxTexture; }

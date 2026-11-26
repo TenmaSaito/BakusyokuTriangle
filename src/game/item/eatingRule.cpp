@@ -40,7 +40,11 @@ CEatingRule::EAT_RESULT CEatingRule::OnEat(CItem::TYPE eat)
 	m_nCurrentScore = 0;		// 直前のスコアをリセット
 	if (m_nextType != eat)
 	{ // 食べるべき物以外を食べた場合、フェーズを最初からやり直す
+#if defined(ENABLE_LOOP) || defined(ENABLE_ALL)
 		m_nextType = CItem::TYPE::RICE;	// 次の種類をリセット
+#elif defined(ENABLE_ORDER)
+		m_nextType = CItem::TYPE::T_0;	// 次の種類をリセット
+#endif
 		m_nMaxItem = 1;				// 生成数を1にリセット
 		m_nNumEatItem = 0;			// 取得したアイテム数をリセット
 		m_nCombo = 0;				// コンボ数をリセット
@@ -54,14 +58,22 @@ CEatingRule::EAT_RESULT CEatingRule::OnEat(CItem::TYPE eat)
 
 	if (m_nNumEatItem == m_nMaxItem)
 	{ // 全てのアイテムを取得し終わった場合、タイプを米に指定し、ウェーブクリア判定を返す
+#if defined(ENABLE_LOOP) || defined(ENABLE_ALL)
 		m_nextType = CItem::TYPE::RICE;
+#elif defined(ENABLE_ORDER)
+		m_nextType = CItem::TYPE::T_0;
+#endif
 		m_nMaxItem = (std::min)(m_nMaxItem + 1, MAX_ITEM_NUM);		// 総数変更 (上限あり)
 		m_nNumEatItem = 0;			// 取得したアイテム数をリセット
 		return EAT_RESULT::WAVE_CLEAR;
 	}
 	else if(m_nextType == CItem::TYPE::MAX)
 	{ // タイプが一周した場合、タイプを米に戻す
+#if defined(ENABLE_LOOP) || defined(ENABLE_ALL)
 		m_nextType = CItem::TYPE::RICE;
+#elif defined(ENABLE_ORDER)
+		m_nextType = CItem::TYPE::T_0;
+#endif
 	}
 
 	return EAT_RESULT::SUCCESS;		// 成功判定を返す

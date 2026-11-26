@@ -10,6 +10,7 @@
 //**********************************************************************************
 #include "render/model.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "render/texture.h"
 #include "math/matrix.h"
@@ -52,9 +53,8 @@ CModel::~CModel()
 //==================================================================================
 HRESULT CModel::Init(const char *pXFileName, const Vector3 &pos, const Vector3 &rot)
 {
-	CManager *pManager = CManager::GetInstance();			// マネージャーへのポインタ
-	CRenderer *pRenderer = pManager->GetRenderer();			// レンダラーへのポインタ
-	CTexture *pTexture = CTexture::GetInstance();			// テクスチャへのポインタ
+	CRenderer *pRenderer = CServiceLocator::GetRenderer();			// レンダラーへのポインタ
+	CTexture *pTexture = CServiceLocator::GetTexture();			// テクスチャへのポインタ
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
 	D3DXMATERIAL *pMat = NULL;		// マテリアルへのポインタ
 	HRESULT hr = S_OK;				// モデル読み込み結果
@@ -121,9 +121,8 @@ void CModel::Update(void)
 //==================================================================================
 void CModel::Draw(void)
 {
-	CManager *pManager = CManager::GetInstance();			// マネージャーへのポインタ
-	CRenderer *pRenderer = pManager->GetRenderer();			// レンダラーへのポインタ
-	CTexture *pTexture = CTexture::GetInstance();			// テクスチャへのポインタ
+	CRenderer *pRenderer = CServiceLocator::GetRenderer();			// レンダラーへのポインタ
+	CTexture *pTexture = CServiceLocator::GetTexture();			// テクスチャへのポインタ
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
 	D3DXMATERIAL *pMat = nullptr;	// マテリアルへのポインタ
 	D3DMATERIAL9 matDef;			// 現在のマテリアル保存用
@@ -145,7 +144,7 @@ void CModel::Draw(void)
 	Mtx::CreateShadow(&m_mtxWorld,
 		SHADOW_PLANE_POS,
 		Vector3(0.0f, 1.0f, 0.0f),
-		*pManager->GetLight()->GetLight(0),
+		*CServiceLocator::GetLight()->GetLight(0),
 		&mtxShadow);
 
 	// シャドウマトリックスの設定
@@ -188,7 +187,7 @@ void CModel::Draw(void)
 		Mtx::CreateShadow(&m_mtxWorld,
 			Vector3(pWall->GetPosition()->x + nor.x, pWall->GetPosition()->y, pWall->GetPosition()->z + nor.z),
 			nor,
-			*pManager->GetLight()->GetLight(0),
+			*CServiceLocator::GetLight()->GetLight(0),
 			&mtxShadow);
 
 		// シャドウマトリックスの設定

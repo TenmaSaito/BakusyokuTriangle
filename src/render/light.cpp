@@ -10,6 +10,7 @@
 //**********************************************************************************
 #include "render/light.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "input/input.h"
 #include "input/joypad.h"
@@ -68,7 +69,7 @@ void CLight::Init(void)
 	static_assert(std::size(LIGHT_DIFFUSE) == DEFAULT_LIGHT_NUM);
 	static_assert(std::size(LIGHT_DIRECTION) == DEFAULT_LIGHT_NUM);
 
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();		// デバイスへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = CServiceLocator::GetDevice();		// デバイスへのポインタ
 	Vector3 vecDir[DEFAULT_LIGHT_NUM];			// ライトの方向ベクトル
 
 	// ライトの情報を初期化
@@ -123,10 +124,9 @@ void CLight::Uninit(void)
 //==================================================================================
 void CLight::Update(void)
 {
-	CManager *pManager = CManager::GetInstance();			// マネージャーへのポインタ
 #ifdef LIGHT_OPERABLE
-	LPDIRECT3DDEVICE9 pDevice = pManager->GetRenderer()->GetDevice();		// デバイスへのポインタ
-	auto pKeyboard = pManager->GetInputKeyboard();			// キーボードへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = CServiceLocator::GetDevice();		// デバイスへのポインタ
+	auto pKeyboard = CServiceLocator::GetInputKeyboard();			// キーボードへのポインタ
 	Vector3 vecDir = m_aLight[m_nIdxLight].Direction;	// ライトの向き 
 
 	// 縦回転
@@ -161,7 +161,7 @@ void CLight::Update(void)
 #endif
 
 #ifdef _DEBUG
-	auto pProc = CManager::GetInstance()->GetDebugProc();		// デバッグ表示へのポインタ
+	auto pProc = CServiceLocator::GetDebugProc();		// デバッグ表示へのポインタ
 	pProc->Print("====== ライト ======\n");
 	pProc->Print("垂直回転 ({:.2f}) [I/K]\n", m_rot.z);
 	pProc->Print("水平回転 ({:.2f}) [J/L]\n\n", m_rot.y);

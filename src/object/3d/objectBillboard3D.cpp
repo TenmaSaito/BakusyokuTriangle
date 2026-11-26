@@ -10,6 +10,7 @@
 //**********************************************************************************
 #include "object/3d/objectBillboard3D.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "render/texture.h"
 #include "math/matrix.h"
@@ -71,7 +72,7 @@ HRESULT CObjectBillboard3D::Init(const Vector3 &pos,
 	const Vector2 &size, 
 	const int nLife)
 {
-	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();			// レンダラーへのポインタ
+	CRenderer *pRenderer = CServiceLocator::GetRenderer();			// レンダラーへのポインタ
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();			// デバイスへのポインタ
 	HRESULT hr;					// テクスチャ読み込みの判定
 	VERTEX_3D *pVtx = NULL;		// 頂点情報へのポインタ
@@ -164,7 +165,7 @@ void CObjectBillboard3D::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CObjectBillboard3D::Update(void)
+void CObjectBillboard3D::Update(const ManagerContext::RenderContext &context)
 {
 	m_pos += m_move;	// 位置更新
 
@@ -178,12 +179,10 @@ void CObjectBillboard3D::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CObjectBillboard3D::Draw(void)
+void CObjectBillboard3D::Draw(const ManagerContext::RenderContext &context)
 { 
-	CManager *pManager = CManager::GetInstance();			// マネージャへのポインタ
-	CRenderer *pRenderer = pManager->GetRenderer();			// レンダラーへのポインタ
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
-	CTexture *pTexture = CTexture::GetInstance();			// テクスチャへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイスへのポインタ
+	CTexture *pTexture = context.pTexture;			// テクスチャへのポインタ
 	Matrix mtxView;		// ビューマトリックス
 
 	// カメラのビューマトリックスを取得 

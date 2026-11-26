@@ -9,6 +9,7 @@
 // *** インクルードファイル ***
 //**********************************************************************************
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "input/input.h"
 #include "input/joypad.h"
@@ -79,6 +80,7 @@ HRESULT CManager::Init(const HINSTANCE hInstance, const HWND hWnd, const BOOL bW
 
 	// ウィンドウハンドルを保存
 	m_hWnd = hWnd;
+	CServiceLocator::Provide(m_hWnd);
 
 	// レンダラーの生成
 	if (m_pRenderer == nullptr)
@@ -98,6 +100,9 @@ HRESULT CManager::Init(const HINSTANCE hInstance, const HWND hWnd, const BOOL bW
 			MessageBox(hWnd, "レンダラーの初期化に失敗しました！", "Failed", MB_ICONERROR);
 			return E_FAIL;
 		}
+
+		// サービスロケーターに登録
+		CServiceLocator::Provide(m_pRenderer.get());
 	}
 #ifndef ENABLE_INPUT_SYSTEM
 	// キーボードの生成
@@ -188,6 +193,11 @@ HRESULT CManager::Init(const HINSTANCE hInstance, const HWND hWnd, const BOOL bW
 	pVertical->AddBinding(CInputBinding::CreateStick1D(MakePathJoypadAxis(EnumUtil::ToUnderlying(CJoypad::AXIS::LEFT_Y))));
 #endif
 
+	// 入力デバイスをサービスロケーターに登録
+	CServiceLocator::Provide(GetInputKeyboard());
+	CServiceLocator::Provide(GetInputMouse());
+	CServiceLocator::Provide(GetJoypad());
+
 	// デバッグ表示の生成
 	if (m_pDebugProc == nullptr)
 	{ // もしまだ生成されていないなら
@@ -206,6 +216,9 @@ HRESULT CManager::Init(const HINSTANCE hInstance, const HWND hWnd, const BOOL bW
 			MessageBox(hWnd, "デバッグ表示の初期化に失敗しました！", "Failed", MB_ICONERROR);
 			return E_FAIL;
 		}
+
+		// サービスロケーターに登録
+		CServiceLocator::Provide(m_pDebugProc.get());
 	}
 
 	// 音声の生成
@@ -226,7 +239,14 @@ HRESULT CManager::Init(const HINSTANCE hInstance, const HWND hWnd, const BOOL bW
 			MessageBox(hWnd, "サウンドの初期化に失敗しました！", "Failed", MB_ICONERROR);
 			return E_FAIL;
 		}
+
+		// サービスロケーターに登録
+		CServiceLocator::Provide(m_pSound.get());
 	}
+
+	// リソース管理をサービスロケーターに登録
+	CServiceLocator::Provide(CTexture::GetInstance());
+	CServiceLocator::Provide(CXFile::GetInstance());
 
 	// リソースの読み込み
 	CResourceManager::GetInstance()->LoadAll();
@@ -234,12 +254,19 @@ HRESULT CManager::Init(const HINSTANCE hInstance, const HWND hWnd, const BOOL bW
 	// ライトの生成
 	m_pLight = std::make_unique<CLight>();
 	m_pLight->Init();
+	CServiceLocator::Provide(m_pLight.get());
 
 	// 遷移演出の作成
 	m_pTransition.reset(CSceneTransition::Create(CSceneTransition::TYPE::MOUTH));
+	CServiceLocator::Provide(m_pTransition.get());
 
 	// ポーズ画面の作成
 	m_pPause.reset(CBitePause::Create());
+	CServiceLocator::Provide(m_pPause.get());
+
+	// シーンマネージャの作成
+	m_pSceneManager = std::make_unique<CSceneManager>();
+	m_pSceneManager->Init(m_pRenderer.get(), m_pLight.get(), m_pSound.get(), m_pTransition.get(), TRANSITION_FRAME);
 
 	// モード作成
 	SetMode(CScene::MODE::TITLE);
@@ -253,6 +280,9 @@ HRESULT CManager::Init(const HINSTANCE hInstance, const HWND hWnd, const BOOL bW
 //==================================================================================
 void CManager::Uninit(void)
 {
+	// シーンマネージャの破棄 (シーンの終了はオブジェクト破棄より先)
+	SafeUniqueUninit(m_pSceneManager);
+
 	// 全オブジェクトの破棄, 終了処理
 	CObject::ReleaseAll();
 
@@ -293,6 +323,9 @@ void CManager::Uninit(void)
 
 	// レンダラーオブジェクトの破棄
 	SafeUniqueUninit(m_pRenderer);
+
+	// サービスロケーターの登録解除 (以降の取得はアサーション)
+	CServiceLocator::Clear();
 }
 
 //==================================================================================
@@ -346,31 +379,15 @@ void CManager::Update(void)
 		CCamera::UpdateAll();
 
 		// レンダラーの更新処理
-		m_pRenderer->Update();
+		m_pRenderer->Update(CreateRenderContext());
 	}
 	else
 	{ // ポーズ中なら、デバッグ表示
 		m_pDebugProc->Print("[現在ポーズ中！]\n");
 	}
 
-	ManagerContext::RenderContext renderContext;
-	ManagerContext::SceneContext sceneContext = { .TRANSITION_FRAME = TRANSITION_FRAME };			// シーンコンテキスト
-
-	// 描画コンテキストを作成
-	renderContext.pDevice = m_pRenderer->GetDevice();
-	renderContext.pFocus = CCamera::GetCamera(CCamera::GetFocus());
-	renderContext.pLight = m_pLight.get();
-	renderContext.pTexture = CTexture::GetInstance();
-	renderContext.pXFile = CXFile::GetInstance();
-
-	// シーンコンテキストを作成
-	sceneContext.pRenderContext = &renderContext;
-	sceneContext.pInputSystem = CInputSystem::GetInstance();
-	sceneContext.pSound = m_pSound.get();
-	sceneContext.pTransition = m_pTransition.get();
-
 	// シーンの更新
-	m_pScene->Update(sceneContext);
+	m_pSceneManager->Update();
 
 	// トランジション更新
 	m_pTransition->Update();
@@ -384,7 +401,15 @@ void CManager::Update(void)
 //==================================================================================
 void CManager::Draw(void)
 { // レンダラーの描画
-	m_pRenderer->Draw();
+	m_pRenderer->Draw(CreateRenderContext());
+}
+
+//==================================================================================
+// --- 描画コンテキストの作成処理 ---
+//==================================================================================
+ManagerContext::RenderContext CManager::CreateRenderContext(void) const
+{ // シーンマネージャに委譲
+	return m_pSceneManager->CreateRenderContext();
 }
 
 //==================================================================================
@@ -411,41 +436,13 @@ HRESULT CManager::SetMode(const CScene::MODE modeNext)
 	// 全音源の再生の停止
 	m_pSound->Stop();
 
-	if (m_pScene != nullptr)
-	{ // シーンが生成されていれば終了処理
-		m_pScene->Uninit();
-		m_pScene.reset();
-	}
-
-	// 全オブジェクトの破棄
-	CObject::ReleaseAll();
-
-	// カメラの破棄
-	CCamera::ReleaseAll();
-
 	// ポーズの解除
 	m_bPause = false;
 
-	ManagerContext::RenderContext renderContext;		// 描画コンテキスト
-	ManagerContext::SceneContext sceneContext;			// シーンコンテキスト
-
-	// 描画コンテキストを作成
-	renderContext.pDevice = m_pRenderer->GetDevice();
-	renderContext.pFocus = CCamera::GetCamera(CCamera::GetFocus());
-	renderContext.pLight = m_pLight.get();
-	renderContext.pTexture = CTexture::GetInstance();
-	renderContext.pXFile = CXFile::GetInstance();
-
-	// シーンコンテキストを作成
-	sceneContext.pRenderContext = &renderContext;
-	sceneContext.pInputSystem = CInputSystem::GetInstance();
-	sceneContext.pSound = m_pSound.get();
-	sceneContext.pTransition = m_pTransition.get();
-
-	// シーンの生成
-	CScene::Create(sceneContext, modeNext, m_pScene);
+	// シーンの切り替え (シーン終了 → 全オブジェクト破棄 → カメラ破棄 → シーン生成)
+	HRESULT hr = m_pSceneManager->ChangeScene(modeNext);
 	m_pPause->SetDisp(false);
-	return (m_pScene == nullptr) ? E_FAIL : S_OK;
+	return hr;
 }
 
 //==================================================================================

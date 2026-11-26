@@ -32,8 +32,8 @@ public:
 	HRESULT Init(const Vector3 &p1, const Vector3 &p2);
 	HRESULT Init(const Vector3 &origin, const Vector3 &vec, const float fLength);
 	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	void Update(const ManagerContext::RenderContext &context) override;
+	void Draw(const ManagerContext::RenderContext &context) override;
 	void SetPoint(const Vector3 &start, const Vector3 &end);
 	const Vector3 *GetStart(void) const { return &m_start; }
 	const Vector3 *GetEnd(void) const { return &m_end; }

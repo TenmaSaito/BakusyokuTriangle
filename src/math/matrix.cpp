@@ -201,6 +201,37 @@ Matrix *Mtx::CalcWorld(Matrix *pMtx,
 }
 
 //==================================================================================
+// --- 親マトリックスを持つワールドマトリックスの計算処理 ---
+//==================================================================================
+Matrix *Mtx::CalcWorld(Matrix *pMtx,
+	const Matrix *pParent,
+	const Vector3 &scale,
+	const Vector3 &position,
+	const Vector3 &rotation)
+{
+	// 出力先がnullptrならnullptrを返す
+	if (pMtx == nullptr) return nullptr;
+
+	// スケーリングのマトリックス計算
+	CalcScale(pMtx, scale);
+
+	// 角度のマトリックス計算
+	CalcRotation(pMtx, rotation);
+
+	// 位置のマトリックス計算
+	CalcPosition(pMtx, position);
+
+	if (pParent != nullptr)
+	{ // 親マトリックスへのポインタがnullptrではない場合
+		// 親マトリックスと掛け合わせる
+		D3DXMatrixMultiply(pMtx, pMtx, pParent);
+	}
+
+	// 計算後のマトリックスへのポインタを返す
+	return pMtx;
+}
+
+//==================================================================================
 // --- 親マトリックスを持つワールドマトリックスの計算処理 (Scaling + Quaternion) ---
 //==================================================================================
 Matrix *Mtx::CalcWorld(Matrix *pMtx,

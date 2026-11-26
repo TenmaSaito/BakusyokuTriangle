@@ -484,6 +484,21 @@ Vector3 Vec3::ToDegree(const Vector3 &radian, const bool bFixed)
 }
 
 //==================================================================================
+// --- ベクトルの角度変換処理 ---
+//==================================================================================
+Vector3 Vec3::VectorToRotation(const Vector3 &vec)
+{
+	Vector3 rot = VECTOR3_NULL;		// 角度
+	const Vector2 vecXZ = Vec3::ToVector2(vec, Vec3::Axis::Y);		// XZ平面のベクトル
+	const Vector2 vecYZ = Vec3::ToVector2(vec, Vec3::Axis::X);		// YZ平面のベクトル
+	const float fHorizontal = sqrtf(vec.x * vec.x + vec.z * vec.z);		// XZ平面のベクトルの長さ
+
+	rot.y = atan2f(vecXZ.x, vecXZ.y);		// 角度を直してY軸回転に代入
+	rot.x = atan2f(fHorizontal, vec.y);		// 角度を直してY軸回転に代入
+	return rot;
+}
+
+//==================================================================================
 // --- VECTOR2への変換処理処理 ---
 //==================================================================================
 Vector2 Vec3::ToVector2(const Vector3 &vec, const Axis less)

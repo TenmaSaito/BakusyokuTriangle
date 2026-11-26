@@ -44,8 +44,8 @@ public:
 	HRESULT Init(const Vector3 &pos, const Vector2 &size);
 	HRESULT Init(const Vector3 &pos, const Vector3 &rot, const Vector2 &size);
 	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	void Update(const ManagerContext::RenderContext &context) override;
+	void Draw(const ManagerContext::RenderContext &context) override;
 	void SetPosition(const Vector3 &position);
 	const Vector3 &GetPosition(void) const { return m_pos; }
 	void SetOffset(const Vector3 &offset);

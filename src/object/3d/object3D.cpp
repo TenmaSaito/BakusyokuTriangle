@@ -10,6 +10,7 @@
 //**********************************************************************************
 #include "object/3d/object3D.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "render/texture.h"
 #include "math/matrix.h"
@@ -55,7 +56,7 @@ HRESULT CObject3D::Init(const Vector3 &pos,
 	const Vector2 &size,
 	const bool bXYPlane)
 {
-	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();			// レンダラーへのポインタ
+	CRenderer *pRenderer = CServiceLocator::GetRenderer();			// レンダラーへのポインタ
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();			// デバイスへのポインタ
 	HRESULT hr;						// テクスチャ読み込みの判定
 	VERTEX_3D *pVtx = nullptr;		// 頂点情報へのポインタ
@@ -158,19 +159,17 @@ void CObject3D::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CObject3D::Update(void)
+void CObject3D::Update(const ManagerContext::RenderContext &context)
 {
 }
 
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CObject3D::Draw(void)
+void CObject3D::Draw(const ManagerContext::RenderContext &context)
 {
-	CManager *pManager = CManager::GetInstance();			// マネージャへのポインタ
-	CRenderer *pRenderer = pManager->GetRenderer();			// レンダラーへのポインタ
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
-	CTexture *pTexture = CTexture::GetInstance();		// テクスチャへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイスへのポインタ
+	CTexture *pTexture = context.pTexture;		// テクスチャへのポインタ
 
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);

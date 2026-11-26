@@ -10,6 +10,7 @@
 #include "scene/transition/mouthTransition.h"
 #include "object/2d/polygon2D.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/texture.h"
 #include <cmath>
 #include <new>
@@ -61,11 +62,11 @@ HRESULT CMouthTransition::Init(void)
 
     // ã‰å
     m_pUpper->SetColor(COLOR_ONE);
-    m_pUpper->BindTexture(CTexture::GetInstance()->Register(TASK_PATH));
+    m_pUpper->BindTexture(CServiceLocator::GetTexture()->Register(TASK_PATH));
 
     // ‰º‰å (‰å‚Ìd‚È‚è‚ð—}‚¦‚é‚½‚ßAUVÀ•W‚ð‚¸‚ç‚·)
     m_pLower->SetColor(COLOR_ONE);
-    m_pLower->BindTexture(CTexture::GetInstance()->Register(TASK_PATH));
+    m_pLower->BindTexture(CServiceLocator::GetTexture()->Register(TASK_PATH));
     m_pLower->SetUV({ Vector2(LOWER_UV_OFFSET, 0.0f), Vector2(1.0f + LOWER_UV_OFFSET, 0.0f), Vector2(LOWER_UV_OFFSET, 1.0f), Vector2(1.0f + LOWER_UV_OFFSET, 1.0f) });
     SetState(STATE::STAY);
     return S_OK;

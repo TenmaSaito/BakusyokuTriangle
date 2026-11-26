@@ -10,6 +10,7 @@
 //**********************************************************************************
 #include "render/camera.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "input/input.h"
 #include "math/vec3math.h"
@@ -116,7 +117,7 @@ void CCamera::Update(void)
 //==================================================================================
 void CCamera::SetCamera(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();	// デバイスへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = CServiceLocator::GetDevice();	// デバイスへのポインタ
 	RECT rect = { 0,0,SCREEN_WIDTH,SCREEN_HEIGHT };		// 画面サイズ
 
 	// プロジェクションマトリックスの初期化
@@ -216,8 +217,7 @@ void CCamera::SetPixelFog(Color col, float fStart, float fEnd)
 //==================================================================================
 Vector3 CCamera::GetRayToScreen(const Vector3 &screenPos)
 {
-	CManager *pManager = CManager::GetInstance();			// マネージャへのポインタ
-	CRenderer *pRenderer = pManager->GetRenderer();			// レンダラーへのポインタ
+	CRenderer *pRenderer = CServiceLocator::GetRenderer();			// レンダラーへのポインタ
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
 	D3DVIEWPORT9 vp;		// ビューポート
 	Matrix mtxVp, mtxView, mtxProj;				// ビューポート行列, ビュー行列, プロジェクション行列
@@ -313,7 +313,7 @@ CCamera *CCamera::Begin(const TYPE type)
 	// nullの場合スキップ
 	if (m_apCamera[nIdx] == nullptr) return nullptr;
 
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();	// デバイスへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = CServiceLocator::GetDevice();	// デバイスへのポインタ
 
 	// ビューポートを取得
 	pDevice->GetViewport(&m_vpDef);
@@ -343,7 +343,7 @@ void CCamera::End(void)
 	
 	// nullの場合スキップ
 	if (m_apCamera[EnumUtil::ToIndex(m_currentType)] == nullptr) return;
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();	// デバイスへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = CServiceLocator::GetDevice();	// デバイスへのポインタ
 
 	// ビューポートを元に戻す
 	pDevice->SetViewport(&m_vpDef);

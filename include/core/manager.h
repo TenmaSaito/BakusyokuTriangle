@@ -13,6 +13,8 @@
 //**********************************************************************************
 #include "core/main.h"
 #include "scene/scene.h"
+#include "core/managerContext.h"
+#include "scene/sceneManager.h"
 #define ENABLE_INPUT_SYSTEM
 #ifdef ENABLE_INPUT_SYSTEM
 #include "input/inputSystem.h"
@@ -43,29 +45,6 @@ class CCamera;
 class CTexture;
 class CXFile;
 
-namespace ManagerContext
-{
-	// 各オブジェクトの初期化、描画時に必要な各インスタンスへのポインタ
-	struct RenderContext
-	{
-		LPDIRECT3DDEVICE9 pDevice = nullptr;		// デバイス
-		CCamera *pFocus = nullptr;					// フォーカス中のカメラ
-		CLight *pLight = nullptr;					// ライト
-		CTexture *pTexture = nullptr;				// テクスチャ管理
-		CXFile *pXFile = nullptr;					// XFile管理
-	};
-
-	// 各シーンに渡される、必要な各インスタンスへのポインタ
-	struct SceneContext
-	{
-		RenderContext *pRenderContext = nullptr;	// 描画に必要なコンテキスト
-		CInputSystem *pInputSystem = nullptr;		// インプットシステム
-		CSound *pSound = nullptr;					// サウンド
-		CSceneTransition *pTransition = nullptr;	// 遷移演出
-		const int TRANSITION_FRAME = 0;				// 遷移にかかる時間
-	};
-}
-
 //**********************************************************************************
 // *** マネージャクラス ***
 //**********************************************************************************
@@ -82,24 +61,8 @@ public:
 	int GetFPS(void) { return m_nCountFPS; }
 	void SetEnablePause(const bool bEnable);
 	bool GetEnablePause(void);
-	CRenderer *GetRenderer(void) const { return m_pRenderer.get(); }
-#ifndef ENABLE_INPUT_SYSTEM
-	CInputKeyboard *GetInputKeyboard(void) const { return m_pInputKeyboard.get(); }
-	CInputMouse *GetInputMouse(void) const { return m_pInputMouse.get(); }
-	CJoypad *GetJoypad(void) const { return m_pJoypad.get(); }
-#else
-	CInputKeyboard *GetInputKeyboard(void) const { return CInputSystem::GetInstance()->GetKeyboard(); }
-	CInputMouse *GetInputMouse(void) const { return CInputSystem::GetInstance()->GetMouse(); }
-	CJoypad *GetJoypad(void) const { return CInputSystem::GetInstance()->GetJoypad(); }
-#endif
-	CDebugProc *GetDebugProc(void) const { return m_pDebugProc.get(); }
-	CSound *GetSound(void) const { return m_pSound.get(); }
-	CLight *GetLight(void) const { return m_pLight.get(); }
-	CSceneTransition *GetTransition(void) const { return m_pTransition.get(); }
-	CPause *GetPause(void) const { return m_pPause.get(); }
-	HWND GetWindowHandle(void) const { return m_hWnd; }
 	HRESULT SetMode(const CScene::MODE modeNext);
-	CScene::MODE GetMode(void) const { return m_pScene->GetMode(); }
+	CScene::MODE GetMode(void) const { return m_pSceneManager->GetMode(); }
 	void SetTransition(const CScene::MODE modeNext);
 	bool IsTransition(void) const;
 	template<IsScene T> T *GetScene(void) const;
@@ -115,6 +78,18 @@ public:
 	static constexpr float RatioToFrame(const float fT) { return 1.0f / fT ; }
 
 private:
+	// 入力デバイスの取得 (外部からは CServiceLocator 経由で取得する)
+#ifndef ENABLE_INPUT_SYSTEM
+	CInputKeyboard *GetInputKeyboard(void) const { return m_pInputKeyboard.get(); }
+	CInputMouse *GetInputMouse(void) const { return m_pInputMouse.get(); }
+	CJoypad *GetJoypad(void) const { return m_pJoypad.get(); }
+#else
+	CInputKeyboard *GetInputKeyboard(void) const { return CInputSystem::GetInstance()->GetKeyboard(); }
+	CInputMouse *GetInputMouse(void) const { return CInputSystem::GetInstance()->GetMouse(); }
+	CJoypad *GetJoypad(void) const { return CInputSystem::GetInstance()->GetJoypad(); }
+#endif
+	ManagerContext::RenderContext CreateRenderContext(void) const;		// 描画コンテキストの作成
+
 	static constexpr int DEFAULT_APPLICATION_UPDATE_PER_SECOND = 60;		// 一秒間にUpdateする回数
 
 	CManager();
@@ -131,7 +106,7 @@ private:
 	std::unique_ptr<CDebugProc> m_pDebugProc;			// デバッグ表示オブジェクトへのポインタ
 	std::unique_ptr<CSound> m_pSound;					// サウンドオブジェクトへのポインタ
 	std::unique_ptr<CLight> m_pLight;					// ライトオブジェクトへのポインタ
-	std::unique_ptr<CScene> m_pScene;					// シーンへのポインタ
+	std::unique_ptr<CSceneManager> m_pSceneManager;		// シーンマネージャへのポインタ
 	std::unique_ptr<CSceneTransition> m_pTransition;	// 遷移演出へのポインタ
 	std::unique_ptr<CPause> m_pPause;					// ポーズへのポインタ
 	HWND m_hWnd = nullptr;		// ウィンドウハンドル
@@ -145,13 +120,7 @@ private:
 // --- キャスト後シーン取得処理 ---
 //==================================================================================
 template<IsScene T> T *CManager::GetScene(void) const
-{
-	if (m_pScene->GetMode() != T::GetOwnMode())
-	{ // 取得しようとしたモードと現在のモードが異なる場合
-		return nullptr;
-	}
-
-	// シーンのポインタをキャスト
-	return static_cast<T*>(m_pScene.get());
+{ // シーンマネージャに委譲
+	return m_pSceneManager->GetScene<T>();
 }
 #endif

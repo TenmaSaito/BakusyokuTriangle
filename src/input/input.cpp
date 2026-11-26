@@ -10,6 +10,7 @@
 //**********************************************************************************
 #include "input/input.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "math/vec3math.h"
 
 //**********************************************************************************
@@ -320,6 +321,11 @@ void CInputMouse::Update(void)
 	hr = m_pDevice->GetDeviceState(sizeof(DIMOUSESTATE2), &m_CurrentMouseState);
 	if (SUCCEEDED(hr))
 	{ // 取得成功
+		// 傾きを取得
+		m_aSlope[0] = m_CurrentMouseState.lX;
+		m_aSlope[1] = m_CurrentMouseState.lY;
+		m_aSlope[2] = m_CurrentMouseState.lZ;
+
 		for (int nCntMouse = 0; nCntMouse < EnumUtil::ToUnderlying(KEY::MAX); nCntMouse++)
 		{ // マウスの数分読み込み
 			// 現在の情報を取得
@@ -347,7 +353,6 @@ void CInputMouse::Update(void)
 //==================================================================================
 bool CInputMouse::GetPress(const KEY key)
 { // プレス状態を返す
-	if (!IsValid(key)) return false;		// 無効なキー
 	return (m_aMouseState[EnumUtil::ToIndex(key)] & INPUT_PRESS_BIT) ? true : false;
 }
 
@@ -356,7 +361,6 @@ bool CInputMouse::GetPress(const KEY key)
 //==================================================================================
 bool CInputMouse::GetTrigger(const KEY key)
 { // トリガー状態を返す
-	if (!IsValid(key)) return false;		// 無効なキー
 	return (m_aMouseStateTrigger[EnumUtil::ToIndex(key)] & INPUT_PRESS_BIT) ? true : false;
 }
 
@@ -365,8 +369,15 @@ bool CInputMouse::GetTrigger(const KEY key)
 //==================================================================================
 bool CInputMouse::GetRelease(const KEY key)
 { // リリース状態を返す
-	if (!IsValid(key)) return false;		// 無効なキー
 	return (m_aMouseStateRelease[EnumUtil::ToIndex(key)] & INPUT_PRESS_BIT) ? true : false;
+}
+
+//==================================================================================
+// --- マウスの傾き取得処理 ---
+//==================================================================================
+LONG CInputMouse::GetMove(const SLOPE slope)
+{
+	return m_aSlope[EnumUtil::ToIndex(slope)];
 }
 
 //==================================================================================
@@ -391,7 +402,7 @@ Vector3 CInputMouse::GetPositionInScreen(void)
 //==================================================================================
 Vector3 CInputMouse::GetPositionInClient(void)
 {
-	HWND hWnd = CManager::GetInstance()->GetWindowHandle();		// ウィンドウハンドルを取得
+	HWND hWnd = CServiceLocator::GetWindowHandle();		// ウィンドウハンドルを取得
 	RECT rectCurrent;	// スクリーンの大きさ
 	POINT position;		// マウスの座標
 	Vector3 posCursor;		// ウィンドウ上のマウス座標

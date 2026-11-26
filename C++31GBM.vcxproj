@@ -161,6 +161,7 @@
     <ClCompile Include="src\core\directX.cpp" />
     <ClCompile Include="src\core\main.cpp" />
     <ClCompile Include="src\core\manager.cpp" />
+    <ClCompile Include="src\core\serviceLocator.cpp" />
     <ClCompile Include="src\core\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -175,17 +176,18 @@
     <ClCompile Include="src\effect\itemBiteEffect.cpp" />
     <ClCompile Include="src\effect\modelParticle.cpp" />
     <ClCompile Include="src\effect\particle.cpp" />
+    <ClCompile Include="src\effect\particleBatch.cpp" />
     <ClCompile Include="src\effect\screenEffect.cpp" />
     <ClCompile Include="src\game\item\eatingDirector.cpp" />
     <ClCompile Include="src\game\item\eatingRule.cpp" />
     <ClCompile Include="src\game\item\item.cpp" />
-    <ClCompile Include="src\game\item\itemGenerator.cpp" />
     <ClCompile Include="src\game\item\itemSpawner.cpp" />
     <ClCompile Include="src\game\item\itemLoader.cpp" />
     <ClCompile Include="src\game\item\mealManager.cpp" />
     <ClCompile Include="src\game\player\player.cpp" />
     <ClCompile Include="src\game\player\playerCamera.cpp" />
     <ClCompile Include="src\game\player\speechBubble.cpp" />
+    <ClCompile Include="src\game\spring.cpp" />
     <ClCompile Include="src\game\stage\field.cpp" />
     <ClCompile Include="src\game\stage\foodBackground.cpp" />
     <ClCompile Include="src\game\stage\mapLoader.cpp" />
@@ -209,6 +211,7 @@
     <ClCompile Include="src\object\2d\number.cpp" />
     <ClCompile Include="src\object\2d\object2D.cpp" />
     <ClCompile Include="src\object\2d\polygon2D.cpp" />
+    <ClCompile Include="src\object\3d\meshRing.cpp" />
     <ClCompile Include="src\object\3d\number3D.cpp" />
     <ClCompile Include="src\object\3d\number3DBillboard.cpp" />
     <ClCompile Include="src\object\3d\object3D.cpp" />
@@ -231,6 +234,7 @@
     <ClCompile Include="src\scene\game.cpp" />
     <ClCompile Include="src\scene\ranking.cpp" />
     <ClCompile Include="src\scene\scene.cpp" />
+    <ClCompile Include="src\scene\sceneManager.cpp" />
     <ClCompile Include="src\scene\templateScene.cpp" />
     <ClCompile Include="src\scene\title.cpp" />
     <ClCompile Include="src\scene\transition\fadeTransition.cpp" />
@@ -252,6 +256,8 @@
     <ClInclude Include="include\core\directX.h" />
     <ClInclude Include="include\core\main.h" />
     <ClInclude Include="include\core\manager.h" />
+    <ClInclude Include="include\core\managerContext.h" />
+    <ClInclude Include="include\core\serviceLocator.h" />
     <ClInclude Include="include\core\pch.h" />
     <ClInclude Include="include\core\resourceable.h" />
     <ClInclude Include="include\core\resourceManager.h" />
@@ -263,17 +269,18 @@
     <ClInclude Include="include\effect\itemBiteEffect.h" />
     <ClInclude Include="include\effect\modelParticle.h" />
     <ClInclude Include="include\effect\particle.h" />
+    <ClInclude Include="include\effect\particleBatch.h" />
     <ClInclude Include="include\effect\screenEffect.h" />
     <ClInclude Include="include\game\item\eatingDirector.h" />
     <ClInclude Include="include\game\item\eatingRule.h" />
     <ClInclude Include="include\game\item\item.h" />
-    <ClInclude Include="include\game\item\itemGenerator.h" />
     <ClInclude Include="include\game\item\itemSpawner.h" />
     <ClInclude Include="include\game\item\itemLoader.h" />
     <ClInclude Include="include\game\item\mealManager.h" />
     <ClInclude Include="include\game\player\player.h" />
     <ClInclude Include="include\game\player\playerCamera.h" />
     <ClInclude Include="include\game\player\speechBubble.h" />
+    <ClInclude Include="include\game\spring.h" />
     <ClInclude Include="include\game\stage\field.h" />
     <ClInclude Include="include\game\stage\foodBackground.h" />
     <ClInclude Include="include\game\stage\mapLoader.h" />
@@ -288,7 +295,8 @@
     <ClInclude Include="include\input\inputProcessor.h" />
     <ClInclude Include="include\input\inputSystem.h" />
     <ClInclude Include="include\input\joypad.h" />
-    <ClInclude Include="include\math\constVector.h" />
+    <ClInclude Include="include\foundation\constMatrix.h" />
+    <ClInclude Include="include\foundation\constVector.h" />
     <ClInclude Include="include\math\color.h" />
     <ClInclude Include="include\math\matrix.h" />
     <ClInclude Include="include\math\rand.h" />
@@ -301,6 +309,7 @@
     <ClInclude Include="include\object\2d\number.h" />
     <ClInclude Include="include\object\2d\object2D.h" />
     <ClInclude Include="include\object\2d\polygon2D.h" />
+    <ClInclude Include="include\object\3d\meshRing.h" />
     <ClInclude Include="include\object\3d\number3D.h" />
     <ClInclude Include="include\object\3d\number3DBillboard.h" />
     <ClInclude Include="include\object\3d\object3D.h" />
@@ -326,6 +335,7 @@
     <ClInclude Include="include\scene\game.h" />
     <ClInclude Include="include\scene\ranking.h" />
     <ClInclude Include="include\scene\scene.h" />
+    <ClInclude Include="include\scene\sceneManager.h" />
     <ClInclude Include="include\scene\templateScene.h" />
     <ClInclude Include="include\scene\title.h" />
     <ClInclude Include="include\scene\transition\fadeTransition.h" />

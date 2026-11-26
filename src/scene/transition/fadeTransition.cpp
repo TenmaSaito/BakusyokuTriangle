@@ -9,6 +9,7 @@
 //**********************************************************************************
 #include "scene/transition/fadeTransition.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "sound/sound.h"
 #include "render/texture.h"
@@ -48,8 +49,7 @@ CFadeTransition::~CFadeTransition()
 //==================================================================================
 HRESULT CFadeTransition::Init(void)
 { // ポリゴン生成
-	CManager *pManager = CManager::GetInstance();	// マネージャー
-	LPDIRECT3DDEVICE9 pDevice = pManager->GetRenderer()->GetDevice();		// デバイス
+	LPDIRECT3DDEVICE9 pDevice = CServiceLocator::GetDevice();		// デバイス
 
 	// 頂点バッファ作成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * DEFAULT_VERTEX_NUM,
@@ -130,8 +130,7 @@ void CFadeTransition::Draw(void)
 { // ポリゴンの描画 (待機状態の場合、描画スキップ)
 	if (GetState() == STATE::STAY) return;
 
-	CManager *pManager = CManager::GetInstance();	// マネージャー
-	LPDIRECT3DDEVICE9 pDevice = pManager->GetRenderer()->GetDevice();		// デバイス
+	LPDIRECT3DDEVICE9 pDevice = CServiceLocator::GetDevice();		// デバイス
 	
 	// 頂点バッファをストリームに設定
 	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));

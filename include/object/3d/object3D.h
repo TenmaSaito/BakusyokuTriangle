@@ -33,8 +33,8 @@ public:
 		const Vector2 &size,
 		const bool bXYPlane);
 	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	void Update(const ManagerContext::RenderContext &context) override;
+	void Draw(const ManagerContext::RenderContext &context) override;
 	void BindTexture(const int nIdxTexture) { m_nIdxTexture = nIdxTexture; }
 	void SetPosition(const Vector3 &position);
 	const Vector3 *GetPosition(void) const { return &m_pos; }

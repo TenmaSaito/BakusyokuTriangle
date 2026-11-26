@@ -8,6 +8,7 @@
 // *** インクルードファイル ***
 //**********************************************************************************
 #include "ui/bitePause.h"
+#include "core/serviceLocator.h"
 #include "object/2d/polygon2D.h"
 #include "render/texture.h"
 
@@ -61,7 +62,7 @@ HRESULT CBitePause::Init(void)
 	if (FAILED(hr)) return hr;
 
 	// テクスチャ読み込み
-	const UINT uTexture = CTexture::GetInstance()->Register(JAW_TEXTURE);
+	const UINT uTexture = CServiceLocator::GetTexture()->Register(JAW_TEXTURE);
 	if (IResourceable::IsValid(uTexture) == false) return E_FAIL;		// 読み込み失敗
 
 	// 牙のポリゴンを生成 (大きさは UpdateJaw で選択中の項目に合わせる)

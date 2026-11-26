@@ -35,13 +35,13 @@ public:
 		const Vector3 &pos,
 		const float fRadius);
 	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	void Update(const ManagerContext::RenderContext &context) override;
+	void Draw(const ManagerContext::RenderContext &context) override;
 	void Notified(CObject *pObject, std::string_view message, const std::any &args) override;
 	void AddForce(const float fRotDest, const float fValueRot);
-	const Vector3 *GetPositionOld(void) const { return &m_posOld; }
+	void AddForceUp(const float fValue);
+	void AddForceUnreverse(const float fRotDest, const float fValueRot, const int nFrameUnclamp);
 	float GetRadius(void) const { return m_fRadius * m_fScaling; }
-	bool IsAutoRotating(void) const { return m_bAutoRotating; }
 	void Eat(void);
 
 	static CPlayer *Find(void);	// シーン上のインスタンスを検索
@@ -54,7 +54,6 @@ private:
 
 	CStage *m_pStage = nullptr;			// ステージへのポインタ
 	CShadowSt *m_pShadowSt = nullptr;	// ステンシルシャドウへのポインタ
-	Vector3 m_posOld = VECTOR3_NULL;	// 過去の位置
 	Vector3 m_move = VECTOR3_NULL;		// 移動量
 	Vector3 m_rotDest = VECTOR3_NULL;	// 目標角度
 	Vector3 m_scl = VECTOR3_ONE;		// スケーリング倍率
@@ -63,10 +62,9 @@ private:
 	Vector3 m_vecAxis = VECTOR3_NULL;	// 回転軸
 	float m_fValueRot = 0.0f;			// 回転角
 	float m_fAngle = 0.0f;				// 転がる角度
-	float m_fAngleAdd = 0.0f;			// 角度の増加値
 	float m_fRotSpeed = 0.0f;			// 回転速度
 	float m_fRadius = 0.0f;				// 半径
 	float m_fScaling = 0.0f;			// 拡大倍率
-	bool m_bAutoRotating = true;		// 自動回転中か
+	int m_nFrameUnclamp = 0;		// 回転速度が矯正されないフレーム数
 };
 #endif

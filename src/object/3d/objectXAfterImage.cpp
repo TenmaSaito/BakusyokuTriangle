@@ -10,6 +10,7 @@
 #include "object/3d/objectXAfterImage.h"
 #include "render/xfile.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "render/texture.h"
 #include "math/matrix.h"
@@ -62,7 +63,7 @@ HRESULT CObjectXAfterImage::Init(std::string_view pFilename,
 	m_fDecrease = m_fAlpha / m_nLife;
 
 	// XFILE読み込み
-	m_uIdxXInfo = CXFile::GetInstance()->Register(pFilename);
+	m_uIdxXInfo = CServiceLocator::GetXFile()->Register(pFilename);
 
 	return (IResourceable::IsValid(m_uIdxXInfo) == false) ? E_FAIL : S_OK;
 }
@@ -78,7 +79,7 @@ void CObjectXAfterImage::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CObjectXAfterImage::Update(void)
+void CObjectXAfterImage::Update(const ManagerContext::RenderContext &context)
 {
 	m_fAlpha -= m_fDecrease;
 	m_nLife--;
@@ -91,13 +92,11 @@ void CObjectXAfterImage::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CObjectXAfterImage::Draw(void)
+void CObjectXAfterImage::Draw(const ManagerContext::RenderContext &context)
 {
-	CManager *pManager = CManager::GetInstance();			// マネージャーへのポインタ
-	CRenderer *pRenderer = pManager->GetRenderer();			// レンダラーへのポインタ
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
-	CTexture *pTexture = CTexture::GetInstance();			// テクスチャへのポインタ
-	CXFile *pXFile = CXFile::GetInstance();					// XFILEへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイスへのポインタ
+	CTexture *pTexture = context.pTexture;			// テクスチャへのポインタ
+	CXFile *pXFile = context.pXFile;					// XFILEへのポインタ
 	D3DMATERIAL9 matDef;				// 現在のマテリアル保存用
 	CXInfo *pInfo = nullptr;			// XFILE情報へのポインタ
 	Matrix mtxWorld = m_mtxWorld;		// ワールドマトリックス

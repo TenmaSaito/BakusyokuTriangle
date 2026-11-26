@@ -13,6 +13,7 @@
 #include "object/2d/polygon2D.h"
 #include "math/vec3math.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "sound/sound.h"
 #include "input/input.h"
 #include "input/joypad.h"
@@ -82,7 +83,7 @@ CPause::~CPause()
 //==================================================================================
 HRESULT CPause::Init(void)
 {
-	CTexture *pTexture = CTexture::GetInstance();		// テクスチャ管理オブジェクトへのポインタ
+	CTexture *pTexture = CServiceLocator::GetTexture();		// テクスチャ管理オブジェクトへのポインタ
 
 	for (int nCntPoly = 0; nCntPoly < EnumUtil::ToUnderlying(TYPE::MAX); nCntPoly++)
 	{ // 各テクスチャを読み込み
@@ -169,11 +170,10 @@ void CPause::Draw(void)
 //==================================================================================
 void CPause::UpdateInput(void)
 {
-	CManager *pManager = CManager::GetInstance();					// マネージャへのポインタ
-	CInputKeyboard *pKeyboard = pManager->GetInputKeyboard();		// キーボードへのポインタ
-	CInputMouse *pMouse = pManager->GetInputMouse();				// マウスへのポインタ
-	CJoypad *pJoypad = pManager->GetJoypad();						// ジョイパッドへのポインタ
-	CSound *pSound = pManager->GetSound();				// サウンドへのポインタ
+	CInputKeyboard *pKeyboard = CServiceLocator::GetInputKeyboard();		// キーボードへのポインタ
+	CInputMouse *pMouse = CServiceLocator::GetInputMouse();				// マウスへのポインタ
+	CJoypad *pJoypad = CServiceLocator::GetJoypad();						// ジョイパッドへのポインタ
+	CSound *pSound = CServiceLocator::GetSound();				// サウンドへのポインタ
 	Vector3 mousePos = pMouse->GetPositionInClient();	// マウス座標
 
 	// タイプが範囲になった場合、アサーション
@@ -231,12 +231,12 @@ void CPause::ExecuteType(const TYPE type)
 
 	case TYPE::RESTART:		// リスタート (現在のシーン読み込み直し)
 		pManager->SetTransition(pManager->GetMode());
-		pManager->GetSound()->Play(CSound::LABEL::SE_BITE);
+		CServiceLocator::GetSound()->Play(CSound::LABEL::SE_BITE);
 		break;
 
 	case TYPE::EXIT:			// タイトルへ戻る
 		pManager->SetTransition(CScene::MODE::TITLE);
-		pManager->GetSound()->Play(CSound::LABEL::SE_BITE);
+		CServiceLocator::GetSound()->Play(CSound::LABEL::SE_BITE);
 		break;
 
 	default:

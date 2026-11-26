@@ -54,7 +54,7 @@ void CSpeechBubble::Uninit(void)
 //==================================================================================
 // --- çXêVèàóù ---
 //==================================================================================
-void CSpeechBubble::Update(void)
+void CSpeechBubble::Update(const ManagerContext::RenderContext &context)
 {
 
 }
@@ -62,7 +62,7 @@ void CSpeechBubble::Update(void)
 //==================================================================================
 // --- ï`âÊèàóù ---
 //==================================================================================
-void CSpeechBubble::Draw(void)
+void CSpeechBubble::Draw(const ManagerContext::RenderContext &context)
 { // ï`âÊ
-	CObjectBillboard3D::Draw();
+	CObjectBillboard3D::Draw(context);
 }

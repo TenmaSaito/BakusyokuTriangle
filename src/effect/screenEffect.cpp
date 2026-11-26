@@ -76,7 +76,7 @@ void CScreenEffect::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CScreenEffect::Update(void)
+void CScreenEffect::Update(const ManagerContext::RenderContext &context)
 {
 	float fAlpha = GetColor().a;		// 現在のα値
 	if (fAlpha > 0.0f)
@@ -89,9 +89,9 @@ void CScreenEffect::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CScreenEffect::Draw(void)
+void CScreenEffect::Draw(const ManagerContext::RenderContext &context)
 { // 親クラスの描画処理
-	CObject2D::Draw();
+	CObject2D::Draw(context);
 }
 
 //==================================================================================

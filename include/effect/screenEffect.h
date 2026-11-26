@@ -27,8 +27,8 @@ public:
 	HRESULT Init(const Color &color,
 		const float fFlashFrame);
 	void Uninit(void) override;
-	void Update(void) override;
-	void Draw(void) override;
+	void Update(const ManagerContext::RenderContext &context) override;
+	void Draw(const ManagerContext::RenderContext &context) override;
 	void Flash(const float fAlpha = DEFAULT_FLASH_ALPHA);
 
 	static CScreenEffect *Find(void);	// シーン上のインスタンスを検索

@@ -10,6 +10,7 @@
 //**********************************************************************************
 #include "render/renderer.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "debug/debugproc.h"
 #include "object/base/object.h"
 #include "render/camera.h"
@@ -308,19 +309,18 @@ void CRenderer::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CRenderer::Update(void)
+void CRenderer::Update(const ManagerContext::RenderContext &context)
 { // 全てのオブジェクトを更新
-	CObject::UpdateAll();
+	CObject::UpdateAll(context);
 }
 
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CRenderer::Draw(void)
+void CRenderer::Draw(const ManagerContext::RenderContext &context)
 {
-	CManager *pManager = CManager::GetInstance();		// マネージャへのポインタ
-	CDebugProc *pDebugProc = pManager->GetDebugProc();	// デバッグ表示へのポインタ
-	CSceneTransition *pTransition = pManager->GetTransition();		// 遷移演出
+	CDebugProc *pDebugProc = CServiceLocator::GetDebugProc();	// デバッグ表示へのポインタ
+	CSceneTransition *pTransition = CServiceLocator::GetTransition();		// 遷移演出
 
 	// 画面クリア(バックバッファとZバッファとステンシルバッファのクリア)
 	m_pD3DDevice->Clear(0, NULL,
@@ -344,7 +344,7 @@ void CRenderer::Draw(void)
 			CLEAR_COLOR, 1.0f, 0);
 
 		// 全てのオブジェクトを描画
-		CObject::DrawAll();
+		CObject::DrawAll(context);
 
 		// カメラの設置終了
 		CCamera::End();
@@ -362,7 +362,7 @@ void CRenderer::Draw(void)
 		DrawScreen();
 
 		// ポーズ画面の描画
-		pManager->GetPause()->Draw();
+		CServiceLocator::GetPause()->Draw();
 
 		// 遷移演出の描画
 		pTransition->Draw();

@@ -81,7 +81,7 @@ void CCameraShot::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CCameraShot::Update(void)
+void CCameraShot::Update(const ManagerContext::RenderContext &context)
 {
 	if (m_nCountFrame >= m_nTransFrameOutbound + m_nWaitFrame)
 	{ // フレームカウントが往路 + 待機フレーム分経過した場合、復路遷移開始 + 終了

@@ -38,7 +38,7 @@ public:
 		const int nTransFrameInbound,
 		const int nWaitFrame);
 	void Uninit(void);
-	void Update(void);
+	void Update(const ManagerContext::RenderContext &context) override;
 
 private:
 	static constexpr int CAMERA_SHOT_PRIORITY = FIRST_PRIORITY;		// ‘JˆÚŠÇ—‚Ì—Dæ‡ˆÊ

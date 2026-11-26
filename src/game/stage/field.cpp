@@ -70,14 +70,14 @@ void CField::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CField::Update(void)
+void CField::Update(const ManagerContext::RenderContext &context)
 { 
 }
 
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CField::Draw(void)
+void CField::Draw(const ManagerContext::RenderContext &context)
 { // 親クラスの描画処理
-	CObject3D::Draw();
+	CObject3D::Draw(context);
 }

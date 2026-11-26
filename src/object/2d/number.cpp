@@ -10,6 +10,7 @@
 //**********************************************************************************
 #include "object/2d/number.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "render/texture.h"
 #include <string_view>
@@ -74,7 +75,7 @@ HRESULT CNumber::Init(const Vector3 &pos,
 {
 	HRESULT hr;					// テクスチャ読み込みの判定
 	VERTEX_2D *pVtx = nullptr;		// 頂点情報へのポインタ
-	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();			// レンダラーへのポインタ
+	CRenderer *pRenderer = CServiceLocator::GetRenderer();			// レンダラーへのポインタ
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
 
 	// 各引数を保存
@@ -164,18 +165,17 @@ void CNumber::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CNumber::Draw(void)
+void CNumber::Draw(const ManagerContext::RenderContext &context)
 { // 描画しない場合はスキップ
 	if (m_bDisp == false) return;
 
-	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();			// レンダラーへのポインタ
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
+	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイスへのポインタ
 
 	// 頂点バッファをストリームに設定
 	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
 
 	// テクスチャ設定
-	pDevice->SetTexture(0, CTexture::GetInstance()->GetAddress(m_nIdxTexture));
+	pDevice->SetTexture(0, context.pTexture->GetAddress(m_nIdxTexture));
 
 	// 頂点フォーマット設定
 	pDevice->SetFVF(FVF_VERTEX_2D);

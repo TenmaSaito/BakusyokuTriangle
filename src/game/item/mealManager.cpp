@@ -17,6 +17,7 @@
 #include "game/stage/stage.h"
 #include "render/camera.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "sound/sound.h"
 #include "ui/score.h"
 #include "effect/screenEffect.h"
@@ -103,7 +104,7 @@ void CMealManager::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CMealManager::Update(void)
+void CMealManager::Update(const ManagerContext::RenderContext &context)
 { // 生成要求が無い場合スキップ
 	if (m_bSpawnRequest == false) return;
 
@@ -166,7 +167,7 @@ void CMealManager::SetupDirector(void)
 		CCamera::GetCamera(CCamera::TYPE::FREE));
 	m_pEatingDirector->BindScore(CObject::FindAnyObjectByType<CScore>());
 	m_pEatingDirector->BindScreenEffect(CObject::FindAnyObjectByType<CScreenEffect>());
-	m_pEatingDirector->BindSound(CManager::GetInstance()->GetSound());
+	m_pEatingDirector->BindSound(CServiceLocator::GetSound());
 }
 
 //==================================================================================

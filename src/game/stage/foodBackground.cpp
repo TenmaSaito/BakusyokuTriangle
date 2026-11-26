@@ -10,6 +10,7 @@
 #include "game/stage/foodBackground.h"
 #include "render/camera.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "render/texture.h"
 #include "render/xfile.h"
@@ -86,7 +87,7 @@ HRESULT CFoodBackground::Init(void)
 
 	if (m_bReady || m_bEnded) return E_FAIL;		// 初期化済み
 
-	CXFile *pXFile = CXFile::GetInstance();		// モデル管理
+	CXFile *pXFile = CServiceLocator::GetXFile();		// モデル管理
 
 	for (int nCntModel = 0; nCntModel < FOOD_BACKGROUND_MODEL_COUNT; nCntModel++)
 	{ // 食べ物モデルを登録
@@ -111,7 +112,7 @@ HRESULT CFoodBackground::Init(void)
 	}
 
 	m_bReady = true;
-	Update();		// 最初の描画に備えて配置を計算
+	UpdateLayout();		// 最初の描画に備えて配置を計算
 
 	return S_OK;
 }
@@ -132,7 +133,15 @@ void CFoodBackground::Uninit(void)
 //==================================================================================
 // --- 更新処理 ---
 //==================================================================================
-void CFoodBackground::Update(void)
+void CFoodBackground::Update(const ManagerContext::RenderContext &context)
+{
+	UpdateLayout();
+}
+
+//==================================================================================
+// --- 配置の更新処理 ---
+//==================================================================================
+void CFoodBackground::UpdateLayout(void)
 {
 	if (!m_bReady || m_bEnded) return;
 
@@ -166,7 +175,7 @@ void CFoodBackground::Update(void)
 	m_fAngle += ROTATION_SPEED;
 	if (m_fAngle >= DOUBLE_PI) m_fAngle -= DOUBLE_PI;
 
-	CXFile *pXFile = CXFile::GetInstance();		// モデル管理
+	CXFile *pXFile = CServiceLocator::GetXFile();		// モデル管理
 
 	for (int nCntDecoration = 0; nCntDecoration < FOOD_BACKGROUND_COUNT; nCntDecoration++)
 	{ // 各装飾のワールドマトリックスを計算
@@ -212,13 +221,13 @@ void CFoodBackground::Update(void)
 //==================================================================================
 // --- 描画処理 ---
 //==================================================================================
-void CFoodBackground::Draw(void)
+void CFoodBackground::Draw(const ManagerContext::RenderContext &context)
 {
 	if (!m_bReady || !m_bPoseValid || m_bEnded) return;
 
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();		// デバイス
-	CXFile *pXFile = CXFile::GetInstance();			// モデル管理
-	CTexture *pTexture = CTexture::GetInstance();	// テクスチャ管理
+	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイス
+	CXFile *pXFile = context.pXFile;			// モデル管理
+	CTexture *pTexture = context.pTexture;	// テクスチャ管理
 	D3DMATERIAL9 matDef;		// 現在のマテリアル保存用
 
 	// 現在のマテリアルを取得

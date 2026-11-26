@@ -49,8 +49,8 @@ public:
 		const int nScore,
 		const int nIdxTexture);
 	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	void Update(const ManagerContext::RenderContext &context) override;
+	void Draw(const ManagerContext::RenderContext &context) override;
 	void SetUpdate(const bool bUpdate);
 	bool GetUpdate(void) const;
 	void SetTimer(const int nScore);

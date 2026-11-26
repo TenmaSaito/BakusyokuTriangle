@@ -32,8 +32,8 @@ public:
 		const float fScalingVal,
 		const int nLife);
 	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	void Update(const ManagerContext::RenderContext &context) override;
+	void Draw(const ManagerContext::RenderContext &context) override;
 
 private:
 	Vector2 m_defSize = VECTOR2_NULL;		// äÓèÄÉTÉCÉY
