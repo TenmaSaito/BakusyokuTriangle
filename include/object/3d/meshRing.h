@@ -12,11 +12,12 @@
 //**********************************************************************************
 #include "object/base/object.h"
 #include "core/resourceable.h"
+#include "object/base/parentable.h"
 
 //**********************************************************************************
 // *** メッシュリングクラス ***
 //**********************************************************************************
-class CMeshRing : public CObject
+class CMeshRing : public CObject, public IParentable
 {
 public:
 	CMeshRing(const int nPriority = MESH_RING_PRIORITY);
@@ -26,20 +27,19 @@ public:
 		const Vector3 &rot,
 		const float fRadiusInner,
 		const float fRingWidth,
-		const int nNumBlockRing,
-		const ManagerContext::RenderContext &context);
+		const int nNumBlockRing);
 
-	HRESULT Init(const Vector3 &pos, 
+	HRESULT Init(const Vector3 &pos,
 		const Vector3 &rot,
 		const float fRadiusInner,
 		const float fRingWidth,
-		const int nNumBlockRing,
-		const ManagerContext::RenderContext &context);
+		const int nNumBlockRing);
 	void Uninit(void) override;
 	void Update(const ManagerContext::RenderContext &context) override;
 	void Draw(const ManagerContext::RenderContext &context) override;
 	void BindTexture(const int nIdxTexture) { m_nIdxTexture = nIdxTexture; }
 	void SetParent(const Matrix *pMtxParent = nullptr) { m_pMtxParent = pMtxParent; }
+	const Matrix *GetParent(void) const { return m_pMtxParent; }
 
 protected:
 	void SetPosition(const Vector3 &pos) { m_pos = pos; }

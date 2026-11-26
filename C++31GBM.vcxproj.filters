@@ -25,6 +25,9 @@
     <Filter Include="include\game\stage">
       <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000008}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\foundation">
+      <UniqueIdentifier>{7c1f0000-0000-4000-8000-00000000002b}</UniqueIdentifier>
+    </Filter>
     <Filter Include="include\input">
       <UniqueIdentifier>{7c1f0000-0000-4000-8000-000000000009}</UniqueIdentifier>
     </Filter>
@@ -141,6 +144,9 @@
     <ClCompile Include="src\core\manager.cpp">
       <Filter>src\core</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\serviceLocator.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
     <ClCompile Include="src\core\pch.cpp">
       <Filter>src\core</Filter>
     </ClCompile>
@@ -166,9 +172,6 @@
       <Filter>src\effect</Filter>
     </ClCompile>
     <ClCompile Include="src\game\item\item.cpp">
-      <Filter>src\game\item</Filter>
-    </ClCompile>
-    <ClCompile Include="src\game\item\itemGenerator.cpp">
       <Filter>src\game\item</Filter>
     </ClCompile>
     <ClCompile Include="src\game\player\player.cpp">
@@ -303,6 +306,9 @@
     <ClCompile Include="src\scene\scene.cpp">
       <Filter>src\scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\scene\sceneManager.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
     <ClCompile Include="src\scene\templateScene.cpp">
       <Filter>src\scene</Filter>
     </ClCompile>
@@ -381,6 +387,12 @@
     <ClCompile Include="src\object\3d\meshRing.cpp">
       <Filter>src\object\3d</Filter>
     </ClCompile>
+    <ClCompile Include="src\game\spring.cpp">
+      <Filter>src\game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\effect\particleBatch.cpp">
+      <Filter>src\object\3d</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\core\Coroutine.h">
@@ -396,6 +408,12 @@
       <Filter>include\core</Filter>
     </ClInclude>
     <ClInclude Include="include\core\manager.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\core\managerContext.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\core\serviceLocator.h">
       <Filter>include\core</Filter>
     </ClInclude>
     <ClInclude Include="include\core\pch.h">
@@ -426,9 +444,6 @@
       <Filter>include\effect</Filter>
     </ClInclude>
     <ClInclude Include="include\game\item\item.h">
-      <Filter>include\game\item</Filter>
-    </ClInclude>
-    <ClInclude Include="include\game\item\itemGenerator.h">
       <Filter>include\game\item</Filter>
     </ClInclude>
     <ClInclude Include="include\game\player\player.h">
@@ -479,8 +494,11 @@
     <ClInclude Include="include\input\joypad.h">
       <Filter>include\input</Filter>
     </ClInclude>
-    <ClInclude Include="include\math\constVector.h">
-      <Filter>include\math</Filter>
+    <ClInclude Include="include\foundation\constMatrix.h">
+      <Filter>include\foundation</Filter>
+    </ClInclude>
+    <ClInclude Include="include\foundation\constVector.h">
+      <Filter>include\foundation</Filter>
     </ClInclude>
     <ClInclude Include="include\math\color.h">
       <Filter>include\math</Filter>
@@ -584,6 +602,9 @@
     <ClInclude Include="include\scene\scene.h">
       <Filter>include\scene</Filter>
     </ClInclude>
+    <ClInclude Include="include\scene\sceneManager.h">
+      <Filter>include\scene</Filter>
+    </ClInclude>
     <ClInclude Include="include\scene\templateScene.h">
       <Filter>include\scene</Filter>
     </ClInclude>
@@ -667,6 +688,12 @@
     </ClInclude>
     <ClInclude Include="include\object\3d\meshRing.h">
       <Filter>include\object\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\spring.h">
+      <Filter>include\game</Filter>
+    </ClInclude>
+    <ClInclude Include="include\effect\particleBatch.h">
+      <Filter>include\effect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

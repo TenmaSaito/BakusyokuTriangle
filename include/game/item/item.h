@@ -14,14 +14,26 @@
 #include "util/enumUtil.h"
 
 //**********************************************************************************
+// *** マクロ定義 ***
+//**********************************************************************************
+#define ENABLE_ORDER
+//#undef ENABLE_ORDER
+
+#define ENABLE_ALL
+#undef ENABLE_ALL
+
+#define ENABLE_LOOP
+#undef ENABLE_LOOP
+
+//**********************************************************************************
 // *** 前方宣言 ***
 //**********************************************************************************
 class CPlayer;
 class CParticle;
 class CNumber3D;
-class CObjectBillboard3D;
 class CScore;
 class CShadowSt;
+class CMeshRing;
 
 //**********************************************************************************
 // *** アイテムクラス ***
@@ -29,6 +41,7 @@ class CShadowSt;
 class CItem : public CObjectX
 {
 public:
+#if defined(ENABLE_LOOP) || defined(ENABLE_ALL)
 	// アイテム(食べ物)の種類
 	enum class TYPE
 	{
@@ -38,12 +51,24 @@ public:
 		SOUP,		// 汁物
 		MAX
 	};
-
-	// 有効値かどうかの判定
-	static constexpr bool IsValid(const TYPE value) noexcept
+#elif defined(ENABLE_ORDER)
+	// アイテム(食べ物)の種類
+	enum class TYPE
 	{
-		return EnumUtil::InRange(value, TYPE::RICE, TYPE::MAX);
-	}
+		NONE = 0,	// 指定なし
+		T_0,
+		T_1,
+		T_2,
+		T_3,
+		T_4,
+		T_5,
+		T_6,
+		T_7,
+		T_8,
+		T_9,
+		MAX
+	};
+#endif
 
 	CItem(const int nPriority = ITEM_PRIORITY);
 	~CItem();
@@ -68,11 +93,10 @@ public:
 private:
 	static constexpr int ITEM_PRIORITY = DEFAULT_OBJ_PRIORITY;		// アイテムの優先順位
 
-	CObjectBillboard3D *m_pIcon = nullptr;		// 表示アイコン
 	CShadowSt *m_pShadowSt = nullptr;	// ステンシルシャドウへのポインタ
 	CPlayer *m_pPlayer = nullptr;		// プレイヤーへのポインタ
 	CParticle *m_pParticle = nullptr;	// パーティクルへのポインタ
-	CScore *m_pScore = nullptr;			// スコア表示へのポインタ
+	CMeshRing *m_pRing = nullptr;		// メッシュリング
 	Vector3 m_move = VECTOR3_NULL;	// 加速度
 	float m_fRadius = 0.0f;			// モデルの獲得半径
 	float m_fRotate = 0.0f;			// 回転角度

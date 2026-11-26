@@ -9,6 +9,7 @@
 //**********************************************************************************
 #include "object/3d/meshRing.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "render/texture.h"
 #include "math/matrix.h"
@@ -29,10 +30,9 @@ CMeshRing *CMeshRing::Create(const Vector3 &pos,
 	const Vector3 &rot,
 	const float fRadiusInner,
 	const float fRingWidth,
-	const int nNumBlockRing,
-	const ManagerContext::RenderContext &context)
+	const int nNumBlockRing)
 {
-	return Util::Create<CMeshRing>(pos, rot, fRadiusInner, fRingWidth, nNumBlockRing, context);
+	return Util::Create<CMeshRing>(pos, rot, fRadiusInner, fRingWidth, nNumBlockRing);
 }
 
 //==================================================================================
@@ -40,7 +40,7 @@ CMeshRing *CMeshRing::Create(const Vector3 &pos,
 //==================================================================================
 CMeshRing::CMeshRing(const int nPriority) : CObject(nPriority)
 { // タイプ指定
-	
+	SetType(TYPE::MESH_RING);
 }
 
 //==================================================================================
@@ -57,10 +57,9 @@ HRESULT CMeshRing::Init(const Vector3 &pos,
 	const Vector3 &rot,
 	const float fRadiusInner,
 	const float fRingWidth,
-	const int nNumBlockRing,
-	const ManagerContext::RenderContext &context)
+	const int nNumBlockRing)
 {
-	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイス
+	LPDIRECT3DDEVICE9 pDevice = CServiceLocator::GetDevice();		// デバイス
 	HRESULT hr = S_OK;		// 結果
 
 	// 引数を保存
@@ -214,8 +213,8 @@ HRESULT CMeshRing::CreateVertex(const LPDIRECT3DDEVICE9 pDevice)
 
 			// 頂点情報を設定
 			pVtx[nIdxVtx].pos = posVtx;
-			pVtx[nIdxVtx].nor = ConstVector3::Up;
-			pVtx[nIdxVtx].col = COLOR_ONE;
+			pVtx[nIdxVtx].nor = VECTOR3_UP;
+			pVtx[nIdxVtx].col = Color(COLOR_ONE);
 			pVtx[nIdxVtx].tex.x = (1.0f / static_cast<float>(m_nNumBlockRing)) * nCntH;
 			pVtx[nIdxVtx].tex.y = static_cast<float>(nCntV);
 		}

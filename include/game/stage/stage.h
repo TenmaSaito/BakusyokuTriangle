@@ -37,7 +37,9 @@ public:
 	void Update(const ManagerContext::RenderContext &context) override;
 	void Draw(const ManagerContext::RenderContext &context) override;
 	void Notified(CObject *pObject, std::string_view message, const std::any &args) override;
+	void SetInvalidFrame(const int nFrame) { m_nFrameInvalid = nFrame; }
 	bool IsLeanInput(void) const { return m_bLeanInput; }
+
 
 	static CStage *Find(void);	// シーン上のインスタンスを検索
 
@@ -47,6 +49,7 @@ private:
 	bool LeanInput(Vector3 *pRot);
 
 	CPlayer *m_pPlayer = nullptr;		// プレイヤーへのポインタ
+	int m_nFrameInvalid = 0;			// 入力が無効になるフレーム数
 	bool m_bLeanInput = false;			// プレイヤーがステージを傾けているか
 };
 #endif

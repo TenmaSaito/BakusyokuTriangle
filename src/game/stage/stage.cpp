@@ -9,6 +9,7 @@
 //**********************************************************************************
 #include "game/stage/stage.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/texture.h"
 #include "input/input.h"
 #include "input/joypad.h"
@@ -99,6 +100,12 @@ void CStage::Uninit(void)
 //==================================================================================
 void CStage::Update(const ManagerContext::RenderContext &context)
 {
+	if (m_nFrameInvalid != 0)
+	{ // 無効フレーム数が0より大きければフレーム数を減らす
+		m_nFrameInvalid--;
+		if (m_nFrameInvalid > 0) return;
+	}
+
 	Vector3 rot = *GetRotation();		// 現在の角度
 	bool bPush = false;			// 入力されたか
 
@@ -151,9 +158,8 @@ void CStage::Notified(CObject *pObject, std::string_view message, const std::any
 //==================================================================================
 bool CStage::LeanInput(Vector3 *pRot)
 {
-	CManager *pManager = CManager::GetInstance();					// マネージャー
-	CInputKeyboard *pKeyboard = pManager->GetInputKeyboard();		// キーボード
-	CJoypad *pJoypad = pManager->GetJoypad();						// ジョイパッド
+	CInputKeyboard *pKeyboard = CServiceLocator::GetInputKeyboard();		// キーボード
+	CJoypad *pJoypad = CServiceLocator::GetJoypad();						// ジョイパッド
 	CInputSystem *pSystem = CInputSystem::GetInstance();
 	auto pVertical = pSystem->FindAction("Legacy", "Vertical");
 	auto pHorizontal = pSystem->FindAction("Legacy", "Horizontal");

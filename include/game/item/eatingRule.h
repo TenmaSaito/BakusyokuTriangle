@@ -41,11 +41,11 @@ public:
 
 private:
 	std::array<int, CItem::GetTypeMax()> m_aItemScore = {};		// 各アイテムのスコア
-	CItem::TYPE m_nextType = CItem::TYPE::RICE;		// 次に取るべき食事の種類
+	CItem::TYPE m_nextType = CItem::TYPE::T_0;		// 次に取るべき食事の種類
 	int m_nScore = 0;			// 現在のスコア
 	int m_nCurrentScore = 0;	// 直近に獲得したスコア
 	int m_nCombo = 0;		// 現在のコンボ数
-	int m_nMaxItem = 1;		// 現在のフェーズで出現するアイテムの数
+	int m_nMaxItem = 10;	// 現在のフェーズで出現するアイテムの数
 	int m_nNumEatItem = 0;	// 取得したアイテムの総数
 };
 #endif

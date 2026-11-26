@@ -10,6 +10,7 @@
 #include "game/stage/foodBackground.h"
 #include "render/camera.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "render/texture.h"
 #include "render/xfile.h"
@@ -86,7 +87,7 @@ HRESULT CFoodBackground::Init(void)
 
 	if (m_bReady || m_bEnded) return E_FAIL;		// 初期化済み
 
-	CXFile *pXFile = CXFile::GetInstance();		// モデル管理
+	CXFile *pXFile = CServiceLocator::GetXFile();		// モデル管理
 
 	for (int nCntModel = 0; nCntModel < FOOD_BACKGROUND_MODEL_COUNT; nCntModel++)
 	{ // 食べ物モデルを登録
@@ -174,7 +175,7 @@ void CFoodBackground::UpdateLayout(void)
 	m_fAngle += ROTATION_SPEED;
 	if (m_fAngle >= DOUBLE_PI) m_fAngle -= DOUBLE_PI;
 
-	CXFile *pXFile = CXFile::GetInstance();		// モデル管理
+	CXFile *pXFile = CServiceLocator::GetXFile();		// モデル管理
 
 	for (int nCntDecoration = 0; nCntDecoration < FOOD_BACKGROUND_COUNT; nCntDecoration++)
 	{ // 各装飾のワールドマトリックスを計算
