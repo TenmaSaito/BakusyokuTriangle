@@ -7,6 +7,7 @@ No external Python dependencies. Requires a Clang compiler and a compilation
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 import fnmatch
 import json
 import os
@@ -402,7 +403,11 @@ def main():
     p.add_argument('--no-fail',action='store_true')
     p.add_argument('--allow-partial',action='store_true',help='Do not fail if some translation units cannot be parsed')
     p.add_argument('--max-units',type=int,default=250)
+    p.add_argument('--jobs',type=int,default=os.cpu_count() or 1,
+                   help='Number of Clang processes to run in parallel (default: CPU count)')
     args=p.parse_args()
+    if args.jobs<1:
+        p.error('--jobs must be at least 1')
     root=Path.cwd().resolve()
     policy=json.loads(Path(args.policy).read_text(encoding='utf-8'))
     ignore=policy.get('enforcement',{}).get('ignore_paths',[])
@@ -465,21 +470,50 @@ def main():
     header_stems={Path(h).stem for h in changed_headers}
     relevant.sort(key=lambda item: (item[2].relative_to(root).as_posix() not in selected, item[2].stem not in header_stems))
     unseen_headers=set(changed_headers)
-    for cmd,cwd,src in relevant:
-        if src.relative_to(root).as_posix() not in selected and not unseen_headers:
-            continue
-        visited+=1
+
+    # Runs in a worker thread. parse_ast keeps only local state, so it is safe here.
+    # Clang runs outside the GIL; the JSON parsing is serialized by it but overlaps
+    # with the other Clang processes.
+    def analyze(cmd,cwd,src):
         try:
             proc=subprocess.run(cmd,cwd=cwd,capture_output=True,text=True,encoding='utf-8',errors='replace',timeout=120)
             if proc.returncode!=0:
-                failures.append({'file':str(src),'message':proc.stderr[-2000:] or f'exit {proc.returncode}'})
-                continue
+                return None,None,{'file':str(src),'message':proc.stderr[-2000:] or f'exit {proc.returncode}'}
             ast=json.loads(proc.stdout)
+            del proc
             seen=set()
-            issues += parse_ast(ast,src,root,selected,ignore,policy,seen)
-            unseen_headers-=seen
+            found=parse_ast(ast,src,root,selected,ignore,policy,seen)
+            return found,seen,None
         except (OSError,subprocess.TimeoutExpired,ValueError,json.JSONDecodeError) as exc:
-            failures.append({'file':str(src),'message':str(exc)})
+            return None,None,{'file':str(src),'message':str(exc)}
+
+    # Units are submitted lazily in sorted order so that the header early stop
+    # still works: a unit that is only needed to reach a changed header is skipped
+    # once every changed header has been seen by a finished unit.
+    pending=iter(relevant)
+    running=set()
+    with ThreadPoolExecutor(max_workers=args.jobs) as pool:
+        while True:
+            while len(running)<args.jobs:
+                item=next(pending,None)
+                if item is None:
+                    break
+                cmd,cwd,src=item
+                if src.relative_to(root).as_posix() not in selected and not unseen_headers:
+                    continue
+                visited+=1
+                running.add(pool.submit(analyze,cmd,cwd,src))
+            if not running:
+                break
+            done,running=wait(running,return_when=FIRST_COMPLETED)
+            for future in done:
+                found,seen,failure=future.result()
+                if failure:
+                    failures.append(failure)
+                else:
+                    issues += found
+                    unseen_headers-=seen
+    failures.sort(key=lambda x:x['file'])
     # Dedupe because headers appear in many translation units.
     unique={ (x['file'],x['line'],x['kind'],x['symbol']):x for x in issues }
     issues=sorted(unique.values(),key=lambda x:(x['file'],x['line'],x['kind']))
