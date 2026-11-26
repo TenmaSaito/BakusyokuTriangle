@@ -10,6 +10,7 @@
 //**********************************************************************************
 #include "object/3d/objectLine.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "debug/debugproc.h"
 #include "math/vec3math.h"
@@ -163,7 +164,7 @@ void CObjectLine::Draw(const ManagerContext::RenderContext &context)
 //==================================================================================
 HRESULT CObjectLine::CreateVertex(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();		// デバイスの取得
+	LPDIRECT3DDEVICE9 pDevice = CServiceLocator::GetDevice();		// デバイスの取得
 	VERTEX_3D *pVtx = nullptr;		// 頂点情報へのポインタ
 	HRESULT hr = S_OK;				// 結果
 

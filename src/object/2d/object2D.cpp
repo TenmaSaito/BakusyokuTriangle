@@ -10,6 +10,7 @@
 //**********************************************************************************
 #include "object/2d/object2D.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "input/input.h"
 #include "render/texture.h"
@@ -121,7 +122,7 @@ CObject2D *CObject2D::Create(const Info &info)
 	}
 
 	// テクスチャ割り当て
-	pObject2D->BindTexture(CTexture::GetInstance()->Register(info.texturePath));
+	pObject2D->BindTexture(CServiceLocator::GetTexture()->Register(info.texturePath));
 
 	return pObject2D;
 }
@@ -148,7 +149,7 @@ HRESULT CObject2D::Init(void)
 {
 	HRESULT hr;					// テクスチャ読み込みの判定
 	VERTEX_2D *pVtx = NULL;		// 頂点情報へのポインタ
-	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();			// レンダラーへのポインタ
+	CRenderer *pRenderer = CServiceLocator::GetRenderer();			// レンダラーへのポインタ
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
 
 	// 頂点バッファ作成
@@ -227,7 +228,7 @@ HRESULT CObject2D::Init(const Vector3 &pos)
 {
 	HRESULT hr;					// テクスチャ読み込みの判定
 	VERTEX_2D *pVtx = NULL;		// 頂点情報へのポインタ
-	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();			// レンダラーへのポインタ
+	CRenderer *pRenderer = CServiceLocator::GetRenderer();			// レンダラーへのポインタ
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
 
 	// 頂点バッファ作成
@@ -308,7 +309,7 @@ HRESULT CObject2D::Init(const Vector3 &pos, const Vector3 &rot)
 {
 	HRESULT hr;					// テクスチャ読み込みの判定
 	VERTEX_2D* pVtx = NULL;		// 頂点情報へのポインタ
-	CRenderer* pRenderer = CManager::GetInstance()->GetRenderer();			// レンダラーへのポインタ
+	CRenderer* pRenderer = CServiceLocator::GetRenderer();			// レンダラーへのポインタ
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
 
 	// 頂点バッファ作成
@@ -389,7 +390,7 @@ HRESULT CObject2D::Init(const Vector2 &size)
 {
 	HRESULT hr;					// テクスチャ読み込みの判定
 	VERTEX_2D *pVtx = NULL;		// 頂点情報へのポインタ
-	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();	// レンダラーへのポインタ
+	CRenderer *pRenderer = CServiceLocator::GetRenderer();	// レンダラーへのポインタ
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();				// デバイスへのポインタ
 
 	// 頂点バッファ作成
@@ -470,7 +471,7 @@ HRESULT CObject2D::Init(const Vector3 &pos, const Vector2 &size)
 {
 	HRESULT hr;					// テクスチャ読み込みの判定
 	VERTEX_2D *pVtx = NULL;		// 頂点情報へのポインタ
-	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();	// レンダラーへのポインタ
+	CRenderer *pRenderer = CServiceLocator::GetRenderer();	// レンダラーへのポインタ
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();				// デバイスへのポインタ
 
 	// 頂点バッファ作成
@@ -551,7 +552,7 @@ HRESULT CObject2D::Init(const Vector3 &pos, const Vector3 &rot, const Vector2 &s
 {
 	HRESULT hr;					// テクスチャ読み込みの判定
 	VERTEX_2D* pVtx = NULL;		// 頂点情報へのポインタ
-	CRenderer* pRenderer = CManager::GetInstance()->GetRenderer();	// レンダラーへのポインタ
+	CRenderer* pRenderer = CServiceLocator::GetRenderer();	// レンダラーへのポインタ
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();				// デバイスへのポインタ
 
 	// 頂点バッファ作成

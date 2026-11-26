@@ -11,6 +11,7 @@
 #include "object/2d/object2D.h"
 #include "object/3d/objectX.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "input/input.h"
 #include "input/joypad.h"
 #include "render/texture.h"
@@ -82,7 +83,7 @@ void CTitle::Update(const ManagerContext::SceneContext &sceneContext)
 		|| pJoypad->GetTrigger(CJoypad::KEY::START))
 		&& bIsTransition == false)
 	{ // 遷移中でなく、Enterを押されたら遷移
-		CManager::GetInstance()->GetSound()->Play(CSound::LABEL::SE_BITE);
+		CServiceLocator::GetSound()->Play(CSound::LABEL::SE_BITE);
 		sceneContext.pTransition->StartTransition(sceneContext.TRANSITION_FRAME, MODE::GAME);
 	}
 
@@ -116,12 +117,12 @@ void CTitle::Start(const ManagerContext::SceneContext &sceneContext)
 	info.pos = PRESS_ENTER_POS;
 	info.size = PRESS_ENTER_SIZE;
 
-	CObject2D::Create(info)->BindTexture(CTexture::GetInstance()->Register("data/TEXTURE/pressEnter.png"));
+	CObject2D::Create(info)->BindTexture(CServiceLocator::GetTexture()->Register("data/TEXTURE/pressEnter.png"));
 	CCamera::Create(CAMERA_POS_V, CAMERA_POS_R);
 
 	info.pos = LOGO_POS;
 	info.size = LOGO_SIZE;
-	CObject2D::Create(info)->BindTexture(CTexture::GetInstance()->Register(LOGO_PATH));
+	CObject2D::Create(info)->BindTexture(CServiceLocator::GetTexture()->Register(LOGO_PATH));
 
 	// バックの食べ物出現
 	CFoodBackground::Create();
@@ -130,5 +131,5 @@ void CTitle::Start(const ManagerContext::SceneContext &sceneContext)
 	m_pCharacter = CObjectX::Create("data/MODEL/quaterni_kun.x", CHARACTER_POS);
 
 	// BGM再生
-	CManager::GetInstance()->GetSound()->Play(CSound::LABEL::BGM_TITLE);
+	CServiceLocator::GetSound()->Play(CSound::LABEL::BGM_TITLE);
 }

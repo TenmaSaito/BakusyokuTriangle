@@ -9,6 +9,7 @@
 //**********************************************************************************
 #include "render/xfile.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "render/texture.h"
 #include "math/vec3math.h"
@@ -141,9 +142,8 @@ UINT CXFile::Load(std::string_view path)
 //==================================================================================
 HRESULT CXInfo::Init(std::string_view path)
 {
-	CManager *pManager = CManager::GetInstance();			// マネージャーへのポインタ
-	CRenderer *pRenderer = pManager->GetRenderer();			// レンダラーへのポインタ
-	CTexture *pTexture = CTexture::GetInstance();			// テクスチャへのポインタ
+	CRenderer *pRenderer = CServiceLocator::GetRenderer();			// レンダラーへのポインタ
+	CTexture *pTexture = CServiceLocator::GetTexture();			// テクスチャへのポインタ
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
 	D3DXMATERIAL *pMat = nullptr;	// マテリアルへのポインタ
 	HRESULT hr = S_OK;				// モデル読み込み結果

@@ -79,11 +79,16 @@ public:
 		MAX
 	};
 
-	// 有効値かどうかの判定
-	static constexpr bool IsValid(const KEY value) noexcept
+	//******************************************************************************
+	// *** マウスの傾きの種類 ***
+	//******************************************************************************
+	enum class SLOPE
 	{
-		return EnumUtil::InRange(value, KEY::LEFT, KEY::MAX);
-	}
+		LR = 0,		// 左右
+		FB,			// 前後
+		WHEEL,		// マウスホイール
+		MAX
+	};
 
 	CInputMouse();
 	~CInputMouse();
@@ -94,6 +99,7 @@ public:
 	bool GetPress(const KEY key);
 	bool GetTrigger(const KEY key);
 	bool GetRelease(const KEY key);
+	LONG GetMove(const SLOPE slope);
 	Vector3 GetPositionInScreen(void);
 	Vector3 GetPositionInClient(void);
 
@@ -103,5 +109,6 @@ private:
 	BYTE m_aMouseState[EnumUtil::ToIndex(KEY::MAX)] = {};			// マウスのプレス情報
 	BYTE m_aMouseStateTrigger[EnumUtil::ToIndex(KEY::MAX)] = {};	// マウスのトリガー情報
 	BYTE m_aMouseStateRelease[EnumUtil::ToIndex(KEY::MAX)] = {};	// マウスのリリース情報
+	LONG m_aSlope[EnumUtil::ToIndex(SLOPE::MAX)] = {};				// マウスの傾きの情報
 };
 #endif

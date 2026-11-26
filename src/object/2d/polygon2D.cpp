@@ -10,6 +10,7 @@
 //**********************************************************************************
 #include "object/2d/polygon2D.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "render/texture.h"
 #include "math/color.h"
@@ -52,7 +53,7 @@ HRESULT CPolygon2D::Init(const Vector3 &pos,
 	const Vector2 &size)
 {
 	VERTEX_2D *pVtx = NULL;		// 頂点情報へのポインタ
-	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();	// レンダラーへのポインタ
+	CRenderer *pRenderer = CServiceLocator::GetRenderer();	// レンダラーへのポインタ
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();				// デバイスへのポインタ
 
 	// 引数を保存
@@ -139,7 +140,7 @@ void CPolygon2D::Draw(void)
 { // 描画しない場合スキップ
 	if (m_bDisp == false) return;
 
-	CRenderer* pRenderer = CManager::GetInstance()->GetRenderer();			// レンダラーへのポインタ
+	CRenderer* pRenderer = CServiceLocator::GetRenderer();			// レンダラーへのポインタ
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
 	LPDIRECT3DTEXTURE9 pTexture = nullptr;					// 貼り付けるテクスチャへのポインタ
 
@@ -149,7 +150,7 @@ void CPolygon2D::Draw(void)
 	}
 	else
 	{ // テクスチャ管理オブジェクトから取得
-		pTexture = CTexture::GetInstance()->GetAddress(m_nIdxTexture);
+		pTexture = CServiceLocator::GetTexture()->GetAddress(m_nIdxTexture);
 	}
 
 	// 頂点バッファをストリームに設定

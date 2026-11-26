@@ -10,6 +10,7 @@
 #include "scene/ranking.h"
 #include "object/2d/object2D.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "sound/sound.h"
 #include "input/input.h"
 #include "input/joypad.h"
@@ -76,15 +77,15 @@ void CRanking::Uninit(void)
 void CRanking::Update(const ManagerContext::SceneContext &sceneContext)
 {
 	CManager *pManager = CManager::GetInstance();
-	CInputKeyboard *pKeyboard = pManager->GetInputKeyboard();
-	CJoypad *pJoypad = pManager->GetJoypad();
+	CInputKeyboard *pKeyboard = CServiceLocator::GetInputKeyboard();
+	CJoypad *pJoypad = CServiceLocator::GetJoypad();
 
 	if ((pKeyboard->GetTrigger(DIK_RETURN)
 		|| pJoypad->GetTrigger(CJoypad::KEY::A)
 		|| pJoypad->GetTrigger(CJoypad::KEY::START))
 		&& pManager->IsTransition() == false)
 	{ // 遷移中でなく、Enterが押されたら遷移
-		CManager::GetInstance()->GetSound()->Play(CSound::LABEL::SE_BITE);
+		CServiceLocator::GetSound()->Play(CSound::LABEL::SE_BITE);
 		pManager->SetTransition(MODE::TITLE);
 	}
 }
@@ -118,7 +119,7 @@ void CRanking::Start(const ManagerContext::SceneContext &sceneContext)
 	CreateRanking(sceneContext);
 
 	// BGM再生
-	CManager::GetInstance()->GetSound()->Play(CSound::LABEL::BGM_RESULT);
+	CServiceLocator::GetSound()->Play(CSound::LABEL::BGM_RESULT);
 }
 
 //==================================================================================
@@ -134,7 +135,7 @@ void CRanking::CreateRanking(const ManagerContext::SceneContext &sceneContext)
 		pRankingClient->Uninit();
 	}
 
-	int nIdxTexture = CTexture::GetInstance()->Register(NUMBER_TEXTURE);		// 数値のテクスチャインデックス
+	int nIdxTexture = CServiceLocator::GetTexture()->Register(NUMBER_TEXTURE);		// 数値のテクスチャインデックス
 	const float fRowWidth = RANK_SIZE.x + RANK_UNIT_SIZE.x + RANK_SPACE + SCORE_SIZE.x;	// 行全体の幅
 	const float fLeft = SCREEN_MIDDLE.x - fRowWidth * 0.5f;		// 行の左端
 

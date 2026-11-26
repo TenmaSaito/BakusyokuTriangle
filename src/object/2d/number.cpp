@@ -10,6 +10,7 @@
 //**********************************************************************************
 #include "object/2d/number.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "render/texture.h"
 #include <string_view>
@@ -74,7 +75,7 @@ HRESULT CNumber::Init(const Vector3 &pos,
 {
 	HRESULT hr;					// テクスチャ読み込みの判定
 	VERTEX_2D *pVtx = nullptr;		// 頂点情報へのポインタ
-	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();			// レンダラーへのポインタ
+	CRenderer *pRenderer = CServiceLocator::GetRenderer();			// レンダラーへのポインタ
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
 
 	// 各引数を保存

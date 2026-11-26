@@ -10,6 +10,7 @@
 //**********************************************************************************
 #include "object/3d/objectX.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "render/light.h"
 #include "render/texture.h"
@@ -62,6 +63,7 @@ HRESULT CObjectX::Init(std::string_view pFilename,
 	// 引数の値を保存
 	m_pos = pos;
 	m_rot = rot;
+	m_scale = VECTOR3_ONE;
 	
 	// 初期化結果を返す
 	return S_OK;
@@ -96,6 +98,8 @@ void CObjectX::Update(const ManagerContext::RenderContext &context)
 //==================================================================================
 void CObjectX::Draw(const ManagerContext::RenderContext &context)
 {
+	if (m_bDisp == false) return;
+
 	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイスへのポインタ
 	CTexture *pTexture = context.pTexture;			// テクスチャへのポインタ
 	D3DMATERIAL9 matDef;				// 現在のマテリアル保存用
@@ -105,7 +109,7 @@ void CObjectX::Draw(const ManagerContext::RenderContext &context)
 	D3DXMatrixIdentity(&m_mtxWorld);
 
 	// ワールドマトリックスの設定
-	Mtx::CalcWorld(&m_mtxWorld, m_pMtxParent, m_pos, m_rot);
+	Mtx::CalcWorld(&m_mtxWorld, m_pMtxParent, m_scale, m_pos, m_rot);
 	m_bMtxInitialize = true;		// マトリックスの計算フラグを立てる
 
 	//  ワールドマトリックスの設定
@@ -139,6 +143,8 @@ void CObjectX::Draw(const ManagerContext::RenderContext &context)
 //==================================================================================
 void CObjectX::Draw(const Matrix &mtx, const ManagerContext::RenderContext &context)
 {
+	if (m_bDisp == false) return;
+
 	LPDIRECT3DDEVICE9 pDevice = context.pDevice;		// デバイスへのポインタ
 	CTexture *pTexture = context.pTexture;			// テクスチャへのポインタ
 	D3DMATERIAL9 matDef;				// 現在のマテリアル保存用
@@ -275,9 +281,8 @@ bool CObjectX::IsHitByRay(const Vector3 &start, const Vector3 &vec, const float 
 //==================================================================================
 HRESULT	CObjectX::LoadXFile(std::string_view pFilename)
 {
-	CManager *pManager = CManager::GetInstance();			// マネージャーへのポインタ
-	CRenderer *pRenderer = pManager->GetRenderer();			// レンダラーへのポインタ
-	CTexture *pTexture = CTexture::GetInstance();			// テクスチャへのポインタ
+	CRenderer *pRenderer = CServiceLocator::GetRenderer();			// レンダラーへのポインタ
+	CTexture *pTexture = CServiceLocator::GetTexture();			// テクスチャへのポインタ
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();		// デバイスへのポインタ
 	D3DXMATERIAL *pMat = nullptr;	// マテリアルへのポインタ
 	HRESULT hr = S_OK;				// モデル読み込み結果

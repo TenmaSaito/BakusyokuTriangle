@@ -10,6 +10,7 @@
 #include "object/3d/objectXAfterImage.h"
 #include "render/xfile.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "render/texture.h"
 #include "math/matrix.h"
@@ -62,7 +63,7 @@ HRESULT CObjectXAfterImage::Init(std::string_view pFilename,
 	m_fDecrease = m_fAlpha / m_nLife;
 
 	// XFILE“Ç‚Ýž‚Ý
-	m_uIdxXInfo = CXFile::GetInstance()->Register(pFilename);
+	m_uIdxXInfo = CServiceLocator::GetXFile()->Register(pFilename);
 
 	return (IResourceable::IsValid(m_uIdxXInfo) == false) ? E_FAIL : S_OK;
 }

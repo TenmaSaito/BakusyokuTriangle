@@ -10,6 +10,7 @@
 //**********************************************************************************
 #include "object/3d/objectBillboard3D.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "render/texture.h"
 #include "math/matrix.h"
@@ -71,7 +72,7 @@ HRESULT CObjectBillboard3D::Init(const Vector3 &pos,
 	const Vector2 &size, 
 	const int nLife)
 {
-	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();			// レンダラーへのポインタ
+	CRenderer *pRenderer = CServiceLocator::GetRenderer();			// レンダラーへのポインタ
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();			// デバイスへのポインタ
 	HRESULT hr;					// テクスチャ読み込みの判定
 	VERTEX_3D *pVtx = NULL;		// 頂点情報へのポインタ

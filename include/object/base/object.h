@@ -25,6 +25,12 @@ namespace ManagerContext
 	struct RenderContext;
 }
 
+//******************************************************************************
+// *** オブジェクト継承をしている事を要求するコンセプト ***
+//******************************************************************************
+class CObject;
+template<class T> concept Object = std::is_base_of_v<CObject, T>;
+
 //**********************************************************************************
 // *** オブジェクトクラス ***
 //**********************************************************************************
@@ -38,13 +44,13 @@ public:
 		OBJ_2D,		// Object2D
 		OBJ_3D,		// Object3D
 		OBJ_BILLBOARD_3D,	// Object3D[Billboard]
-		OBJ_X,			// ObjectX
+		OBJ_X,				// ObjectX
 		OBJ_X_AFTERIMAGE,	// ObjectXの残像
 		OBJ_LINE,		// ObjectLine
 		FIELD,			// 床
 		WALL,			// 壁
-		PLAYER,		// プレイヤー
-		SHADOW,		// 影
+		PLAYER,			// プレイヤー
+		SHADOW,			// 影
 		ITEM,			// アイテム
 		STAGE,			// ステージ
 		TIMER,			// タイマー
@@ -57,6 +63,7 @@ public:
 		SPEECH_BUBBLE,	// 吹き出し
 		CAMERA_TRANS,	// カメラの遷移管理
 		CAMERA_SHOT,	// カメラの往復遷移管理
+		MESH_RING,		// メッシュリング
 		MAX
 	};
 
@@ -99,6 +106,7 @@ public:
 	static std::vector<CObject*> FindObjectsByType(const int nPriority, const TYPE type);
 	template<class T> static std::vector<T*> FindObjectsByType(void);
 	template<class T> static std::vector<T*> FindObjectsByType(const int nPriority);
+	template<Object T> static void SafeUninit(T *&rpObject);
 	static void SetEnablePriority(const int nPriority, const bool bEnable) { m_vEnablePriority[nPriority] = bEnable; }
 	static bool GetEnablePriority(const int nPriority) { return m_vEnablePriority[nPriority]; }
 
@@ -225,5 +233,16 @@ template<class T> std::vector<T*> CObject::FindObjectsByType(const int nPriority
 
 	// 検索結果を返す
 	return vpObject;
+}
+
+//==================================================================================
+// --- オブジェクトのnull参照防止終了処理 ---
+//==================================================================================
+template<Object T> static void CObject::SafeUninit(T *&rpObject)
+{ // nullの場合スキップ
+	if (rpObject == nullptr) return;
+
+	rpObject->Uninit();
+	rpObject = nullptr;
 }
 #endif

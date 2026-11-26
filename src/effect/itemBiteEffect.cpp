@@ -8,6 +8,7 @@
 // *** インクルードファイル ***
 //**********************************************************************************
 #include "effect/itemBiteEffect.h"
+#include "core/serviceLocator.h"
 #include "object/3d/objectBillboard3D.h"
 #include "render/camera.h"
 #include "render/texture.h"
@@ -60,7 +61,7 @@ CItemBiteEffect::~CItemBiteEffect()
 //==================================================================================
 HRESULT CItemBiteEffect::Init(const Vector3 &pos, const float fWidth, const int nTime, const Matrix *pMtxParent)
 {
-	CTexture *pTexture = CTexture::GetInstance();	// テクスチャ管理
+	CTexture *pTexture = CServiceLocator::GetTexture();	// テクスチャ管理
 
 	// テクスチャ読み込み
 	const UINT uTask = pTexture->Register("data/TEXTURE/fang_top.png");

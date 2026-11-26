@@ -9,6 +9,7 @@
 //**********************************************************************************
 #include "effect/modelParticle.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 #include "render/texture.h"
 #include "game/stage/stage.h"
@@ -60,7 +61,7 @@ CModelParticle::~CModelParticle()
 //==================================================================================
 HRESULT CModelParticle::Init(const Setting &setting)
 {
-	CXFile *pXFile = CXFile::GetInstance();		// モデル管理
+	CXFile *pXFile = CServiceLocator::GetXFile();		// モデル管理
 	CRand *pRand = CRand::GetInstance();		// 乱数生成インスタンス
 
 	m_setting = setting;		// 設定を保存

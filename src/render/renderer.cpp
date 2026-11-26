@@ -10,6 +10,7 @@
 //**********************************************************************************
 #include "render/renderer.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "debug/debugproc.h"
 #include "object/base/object.h"
 #include "render/camera.h"
@@ -318,9 +319,8 @@ void CRenderer::Update(const ManagerContext::RenderContext &context)
 //==================================================================================
 void CRenderer::Draw(const ManagerContext::RenderContext &context)
 {
-	CManager *pManager = CManager::GetInstance();		// マネージャへのポインタ
-	CDebugProc *pDebugProc = pManager->GetDebugProc();	// デバッグ表示へのポインタ
-	CSceneTransition *pTransition = pManager->GetTransition();		// 遷移演出
+	CDebugProc *pDebugProc = CServiceLocator::GetDebugProc();	// デバッグ表示へのポインタ
+	CSceneTransition *pTransition = CServiceLocator::GetTransition();		// 遷移演出
 
 	// 画面クリア(バックバッファとZバッファとステンシルバッファのクリア)
 	m_pD3DDevice->Clear(0, NULL,
@@ -362,7 +362,7 @@ void CRenderer::Draw(const ManagerContext::RenderContext &context)
 		DrawScreen();
 
 		// ポーズ画面の描画
-		pManager->GetPause()->Draw();
+		CServiceLocator::GetPause()->Draw();
 
 		// 遷移演出の描画
 		pTransition->Draw();

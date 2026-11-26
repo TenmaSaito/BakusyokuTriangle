@@ -10,6 +10,7 @@
 //**********************************************************************************
 #include "render/texture.h"
 #include "core/manager.h"
+#include "core/serviceLocator.h"
 #include "render/renderer.h"
 
 //**********************************************************************************
@@ -138,7 +139,7 @@ LPDIRECT3DTEXTURE9 CTexture::GetAddress(const UINT uIdx)
 //==================================================================================
 UINT CTexture::Load(std::string_view path)
 {
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();	// テクスチャの読み込み
+	LPDIRECT3DDEVICE9 pDevice = CServiceLocator::GetDevice();	// テクスチャの読み込み
 	UINT uIdxTex = m_vTexBuff.size();		// テクスチャのインデックス
 	HRESULT hr = S_OK;			// 処理結果
 	Buffer texbuf = {};			// テクスチャのバッファ

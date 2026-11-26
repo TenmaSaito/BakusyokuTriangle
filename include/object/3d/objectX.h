@@ -36,10 +36,12 @@ public:
 	void DrawShadow(const Matrix &mtxShadow, const ManagerContext::RenderContext &context);
 	void SetPosition(const Vector3 &position) { m_pos = position; }
 	const Vector3 *GetPosition(void) const { return &m_pos; }
+	const Vector3 *GetWorldPosition(Vector3 *pOut) { return D3DXVec3TransformCoord(pOut, VECTOR3_NULL.AsD3DX(), GetMatrix()); }
 	void SetRotation(const Vector3 &rotation) { m_rot = rotation; }
 	const Vector3 *GetRotation(void) const { return &m_rot; }
 	void SetScale(const Vector3 &scale) { m_scale = scale; }
 	const Vector3 *GetScale(void) const { return &m_scale; }
+	void SetDisp(const bool bDisp) { m_bDisp = bDisp; }
 	const Matrix *GetMatrix(void);
 	const Vector3 *GetVtxMin(void) const { return &m_vtxMin; }
 	const Vector3 *GetVtxMax(void) const { return &m_vtxMax; }
@@ -72,5 +74,6 @@ private:
 	Vector3 m_scale = VECTOR3_NULL;			// スケーリング倍率
 	std::string m_sFilename;				// ファイル名
 	bool m_bMtxInitialize = false;			// マトリックスの計算フラグ
+	bool m_bDisp = true;			// 描画フラグ
 };
 #endif
