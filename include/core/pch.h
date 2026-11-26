@@ -24,6 +24,7 @@
 #include <string>							// 文字列
 #include <string_view>						// 文字列参照
 #include <span>								// 配列参照
+#include <cmath>								// 数学関数 (std::lerp など)
 #include "d3dx9.h"							// 描画処理に必要
 #define DIRECTINPUT_VERSION		(0x0800)	// dinputの警告対処マクロ
 #include "dinput.h"							// 入力処理に必要(先に上のマクロを定義する)
@@ -52,7 +53,8 @@ using Vector4 = D3DXVECTOR4;
 using Color = D3DXCOLOR;
 using Quaternion = D3DXQUATERNION;
 using Matrix = D3DXMATRIX;
-#include "math/constVector.h"		// constexpr対応のベクトル・色
+#include "foundation/constVector.h"	// constexpr対応のベクトル・色 (foundation)
+#include "foundation/constMatrix.h"	// constexpr対応の行列・クォータニオン (foundation)
 
 //**********************************************************************************
 // *** 定数宣言 ***
@@ -67,10 +69,15 @@ constexpr int DEFAULT_VERTEX_NUM = 4;		// 板ポリのデフォルトの頂点数
 constexpr int FVF_VERTEX_2D = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;					// 2D頂点フォーマット
 constexpr int FVF_VERTEX_3D = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1;	// 3D頂点フォーマット
 constexpr int FVF_VERTEX_3D_MULTI = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1 | D3DFVF_TEX2;	// マルチテクスチャ3D頂点フォーマット
-inline constexpr ConstVector2 VECTOR2_NULL = ConstVector2(0.0f, 0.0f);			// Vector2の0クリア
+inline constexpr ConstVector2 VECTOR2_NULL = ConstVector2(0.0f, 0.0f);				// Vector2の0クリア
 inline constexpr ConstVector2 VECTOR2_ONE = ConstVector2(1.0f, 1.0f);				// Vector2の1クリア
 inline constexpr ConstVector3 VECTOR3_NULL = ConstVector3(0.0f, 0.0f, 0.0f);		// Vector3の0クリア
-inline constexpr ConstVector3 VECTOR3_ONE = ConstVector3(1.0f, 1.0f, 1.0f);		// Vector3の1クリア
+inline constexpr ConstVector3 VECTOR3_ONE = ConstVector3(1.0f, 1.0f, 1.0f);			// Vector3の1クリア
+inline constexpr ConstVector3 VECTOR3_UP = ConstVector3(0.0f, 1.0f, 0.0f);			// Vector3の上方向
+inline constexpr ConstVector3 VECTOR3_RIGHT = ConstVector3(1.0f, 0.0f, 0.0f);		// Vector3の右方向
+inline constexpr ConstVector3 VECTOR3_FORWARD = ConstVector3(0.0f, 0.0f, 1.0f);		// Vector3の正面方向
+inline constexpr ConstQuaternion QUAT_IDENTITY = ConstQuaternion(0.0f, 0.0f, 0.0f, 1.0f);	// Quaternionの単位クォータニオン
+inline constexpr ConstMatrix MTX_IDENTITY = ConstMatrix();						// Matrixの単位行列
 inline constexpr ConstColor COLOR_NULL = ConstColor(0.0f, 0.0f, 0.0f, 0.0f);		// Colorの0クリア
 inline constexpr ConstColor COLOR_ONE = ConstColor(1.0f, 1.0f, 1.0f, 1.0f);		// Colorの1クリア
 inline constexpr ConstVector2 SCREEN_SIZE = ConstVector2(SCREEN_WIDTH, SCREEN_HEIGHT);			// ウィンドウのサイズ

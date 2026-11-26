@@ -89,6 +89,7 @@ namespace Vec3
 	Vector3 Fill(const float fValue);
 	Vector3 ToRadian(const Vector3 &degree, const bool bFixed = false);
 	Vector3 ToDegree(const Vector3 &radian, const bool bFixed = false);
+	Vector3 VectorToRotation(const Vector3 &vec);
 	Vector2 ToVector2(const Vector3 &vec, const Axis less = Axis::Z);
 	void AssignAxis(Vector3 &vec, const Axis axis, const float fValue);
 	float GetAxis(Vector3 &vec, const Axis axis);

@@ -51,6 +51,12 @@ namespace Mtx
 		const Matrix *pParent,
 		const Vector3 &scale,
 		const Vector3 &position,
+		const Vector3 &rotation);
+
+	Matrix *CalcWorld(Matrix *pMtx,
+		const Matrix *pParent,
+		const Vector3 &scale,
+		const Vector3 &position,
 		const Quaternion &quaternion);
 
 	Matrix *CreateShadow(const Matrix *pMtxWorld,
