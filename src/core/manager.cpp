@@ -21,6 +21,7 @@
 #include "render/light.h"
 #include "core/resourceManager.h"
 #include "render/texture.h"
+#include "render/shader.h"
 #include "render/xfile.h"
 #include "scene/transition/sceneTransition.h"
 #include "ui/bitePause.h"
@@ -246,6 +247,7 @@ HRESULT CManager::Init(const HINSTANCE hInstance, const HWND hWnd, const BOOL bW
 
 	// リソース管理をサービスロケーターに登録
 	CServiceLocator::Provide(CTexture::GetInstance());
+	CServiceLocator::Provide(CShader::GetInstance());
 	CServiceLocator::Provide(CXFile::GetInstance());
 
 	// リソースの読み込み
@@ -350,16 +352,12 @@ void CManager::Update(void)
 	// デバッグ表示の更新処理
 	m_pDebugProc->Update();
 	
-#ifdef _DEBUG
 	// デバッグ情報
-	m_pDebugProc->Print("======== デバッグ情報 ========\n");
-	m_pDebugProc->Print("FPS : ({})\n", m_nCountFPS);
+	m_pDebugProc->ForcePrint("======== デバッグ情報 ========\n");
+	m_pDebugProc->ForcePrint("FPS : ({})\n", m_nCountFPS);
+#ifdef _DEBUG
 	m_pDebugProc->Print("リロード : ({}) [BackSpace]\n\n", m_nCountReload);
 #endif
-	// 操作説明
-	m_pDebugProc->ForcePrint("======== 操作 ========\n");
-	m_pDebugProc->ForcePrint("WASD : 台を傾ける\n");
-	m_pDebugProc->ForcePrint("BACK : リトライ\n");
 
 	// ライトの更新処理
 	m_pLight->Update();
