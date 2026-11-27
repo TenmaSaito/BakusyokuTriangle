@@ -177,6 +177,7 @@
     <ClCompile Include="src\effect\modelParticle.cpp" />
     <ClCompile Include="src\effect\particle.cpp" />
     <ClCompile Include="src\effect\particleBatch.cpp" />
+    <ClCompile Include="src\effect\particleInstancing.cpp" />
     <ClCompile Include="src\effect\screenEffect.cpp" />
     <ClCompile Include="src\game\item\eatingDirector.cpp" />
     <ClCompile Include="src\game\item\eatingRule.cpp" />
@@ -229,6 +230,7 @@
     <ClCompile Include="src\render\light.cpp" />
     <ClCompile Include="src\render\model.cpp" />
     <ClCompile Include="src\render\renderer.cpp" />
+    <ClCompile Include="src\render\shader.cpp" />
     <ClCompile Include="src\render\texture.cpp" />
     <ClCompile Include="src\render\xfile.cpp" />
     <ClCompile Include="src\scene\game.cpp" />
@@ -270,6 +272,7 @@
     <ClInclude Include="include\effect\modelParticle.h" />
     <ClInclude Include="include\effect\particle.h" />
     <ClInclude Include="include\effect\particleBatch.h" />
+    <ClInclude Include="include\effect\particleInstancing.h" />
     <ClInclude Include="include\effect\screenEffect.h" />
     <ClInclude Include="include\game\item\eatingDirector.h" />
     <ClInclude Include="include\game\item\eatingRule.h" />
@@ -329,6 +332,7 @@
     <ClInclude Include="include\render\light.h" />
     <ClInclude Include="include\render\model.h" />
     <ClInclude Include="include\render\renderer.h" />
+    <ClInclude Include="include\render\shader.h" />
     <ClInclude Include="include\render\texture.h" />
     <ClInclude Include="include\render\vtxManager.h" />
     <ClInclude Include="include\render\xfile.h" />
@@ -351,6 +355,20 @@
     <ClInclude Include="include\util\filestream.h" />
     <ClInclude Include="include\util\stringUtil.h" />
     <ClInclude Include="include\util\util.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shader\instancing.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Effect</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Effect</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">3.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </EntryPointName>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">3.0</ShaderModel>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
