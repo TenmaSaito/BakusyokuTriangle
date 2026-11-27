@@ -13,6 +13,7 @@
 #include "render/renderer.h"
 #include "render/camera.h"
 #include "render/texture.h"
+#include "render/shader.h"
 #include "render/xfile.h"
 #include "object/base/object.h"
 #include "input/inputSystem.h"
@@ -102,7 +103,9 @@ ManagerContext::RenderContext CSceneManager::CreateRenderContext(void) const
 	renderContext.pFocus = CCamera::GetCamera(CCamera::GetFocus());
 	renderContext.pLight = m_pLight;
 	renderContext.pTexture = CServiceLocator::GetTexture();
+	renderContext.pShader = CServiceLocator::GetShader();
 	renderContext.pXFile = CServiceLocator::GetXFile();
+	renderContext.pDebugProc = CServiceLocator::GetDebugProc();
 
 	return renderContext;
 }
