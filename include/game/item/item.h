@@ -17,13 +17,15 @@
 // *** マクロ定義 ***
 //**********************************************************************************
 #define ENABLE_ORDER
-//#undef ENABLE_ORDER
+#undef ENABLE_ORDER
 
 #define ENABLE_ALL
 #undef ENABLE_ALL
 
 #define ENABLE_LOOP
+#if defined(ENABLE_ORDER) || defined(ENABLE_ALL)
 #undef ENABLE_LOOP
+#endif
 
 //**********************************************************************************
 // *** 前方宣言 ***
