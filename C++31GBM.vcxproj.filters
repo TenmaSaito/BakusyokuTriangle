@@ -130,6 +130,9 @@
     <Filter Include="src\util">
       <UniqueIdentifier>{7c1f0000-0000-4000-8000-00000000002a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shader">
+      <UniqueIdentifier>{0e8356f5-4321-4634-9aa1-f59f053f1d1f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\Coroutine.cpp">
@@ -392,6 +395,12 @@
     </ClCompile>
     <ClCompile Include="src\effect\particleBatch.cpp">
       <Filter>src\object\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\effect\particleInstancing.cpp">
+      <Filter>src\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\shader.cpp">
+      <Filter>src\render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -695,5 +704,16 @@
     <ClInclude Include="include\effect\particleBatch.h">
       <Filter>include\effect</Filter>
     </ClInclude>
+    <ClInclude Include="include\effect\particleInstancing.h">
+      <Filter>include\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="include\render\shader.h">
+      <Filter>include\render</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shader\instancing.hlsl">
+      <Filter>shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

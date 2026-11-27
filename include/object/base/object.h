@@ -81,6 +81,8 @@ public:
 	virtual void Update(const ManagerContext::RenderContext &context) {}
 	virtual void Draw(const ManagerContext::RenderContext &context) {}
 	virtual void Notified(CObject *pObject, std::string_view message, const std::any &args = {}) {}
+	virtual void OnLostDevice(void) {}
+	virtual void OnResetDevice(void) {}
 
 	void AddRenderState(const std::pair<D3DRENDERSTATETYPE, DWORD> state, const bool bAfter);
 	void SetRenderState(const LPDIRECT3DDEVICE9 pDevice, const bool bAfter);
@@ -98,6 +100,8 @@ public:
 	static void UpdateAll(const ManagerContext::RenderContext &context);
 	static void DrawAll(const ManagerContext::RenderContext &context);
 	static void FlagCheckAll(void);
+	static void OnLostDeviceAll(void);
+	static void OnResetDeviceAll(void);
 	static CObject *FindAnyObjectByType(const TYPE type);
 	static CObject *FindAnyObjectByType(const int nPriority, const TYPE type);
 	template<class T> static T *FindAnyObjectByType(void);

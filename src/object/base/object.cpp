@@ -192,6 +192,46 @@ void CObject::FlagCheckAll(void)
 }
 
 //==================================================================================
+// --- 全オブジェクトのデバイスロスト時処理 ---
+//==================================================================================
+void CObject::OnLostDeviceAll(void)
+{
+	for (int nCntPriority = 0; nCntPriority < MAX_OBJPRIORITY; nCntPriority++)
+	{ // 優先順位分回す
+		CObject *pObject = m_apTop[nCntPriority];		// 先頭オブジェクトへのポインタ
+		while (pObject != nullptr)
+		{ // nullptrになるまで繰り返す
+			CObject *pObjectNext = pObject->m_pNext;	// 次のオブジェクトへのポインタ
+
+			// オブジェクトのデバイスロスト時処理
+			pObject->OnLostDevice();
+
+			pObject = pObjectNext;		// ポインタを次のオブジェクトへのポインタに変更
+		}
+	}
+}
+
+//==================================================================================
+// --- 全オブジェクトのデバイスリセット時処理 ---
+//==================================================================================
+void CObject::OnResetDeviceAll(void)
+{
+	for (int nCntPriority = 0; nCntPriority < MAX_OBJPRIORITY; nCntPriority++)
+	{ // 優先順位分回す
+		CObject *pObject = m_apTop[nCntPriority];		// 先頭オブジェクトへのポインタ
+		while (pObject != nullptr)
+		{ // nullptrになるまで繰り返す
+			CObject *pObjectNext = pObject->m_pNext;	// 次のオブジェクトへのポインタ
+
+			// オブジェクトのデバイスロスト時処理
+			pObject->OnResetDevice();
+
+			pObject = pObjectNext;		// ポインタを次のオブジェクトへのポインタに変更
+		}
+	}
+}
+
+//==================================================================================
 // --- オブジェクトの検索処理 (タイプ指定 : 最初に見つかったポインタ) ---
 //==================================================================================
 CObject *CObject::FindAnyObjectByType(const TYPE type)

@@ -19,9 +19,11 @@
 class CCamera;
 class CLight;
 class CTexture;
+class CShader;
 class CXFile;
 class CInputSystem;
 class CSound;
+class CDebugProc;
 class CSceneTransition;
 
 namespace ManagerContext
@@ -33,7 +35,9 @@ namespace ManagerContext
 		CCamera *pFocus = nullptr;					// フォーカス中のカメラ
 		CLight *pLight = nullptr;					// ライト
 		CTexture *pTexture = nullptr;				// テクスチャ管理
+		CShader *pShader = nullptr;					// シェーダー管理
 		CXFile *pXFile = nullptr;					// XFile管理
+		CDebugProc *pDebugProc = nullptr;			// デバッグ表示
 	};
 
 	// 各シーンに渡される、必要な各インスタンスへのポインタ

@@ -23,6 +23,7 @@
 //**********************************************************************************
 class CRenderer;
 class CTexture;
+class CShader;
 class CXFile;
 class CLight;
 class CSound;
@@ -45,6 +46,7 @@ public:
 	static void Provide(const HWND hWnd) { m_hWnd = hWnd; }
 	static void Provide(CRenderer *pRenderer) { m_pRenderer = pRenderer; }
 	static void Provide(CTexture *pTexture) { m_pTexture = pTexture; }
+	static void Provide(CShader *pShader) { m_pShader = pShader; }
 	static void Provide(CXFile *pXFile) { m_pXFile = pXFile; }
 	static void Provide(CLight *pLight) { m_pLight = pLight; }
 	static void Provide(CSound *pSound) { m_pSound = pSound; }
@@ -61,6 +63,7 @@ public:
 	static CRenderer *GetRenderer(void) { return Get(m_pRenderer); }
 	static LPDIRECT3DDEVICE9 GetDevice(void);
 	static CTexture *GetTexture(void) { return Get(m_pTexture); }
+	static CShader *GetShader(void) { return Get(m_pShader); }
 	static CXFile *GetXFile(void) { return Get(m_pXFile); }
 	static CLight *GetLight(void) { return Get(m_pLight); }
 	static CSound *GetSound(void) { return Get(m_pSound); }
@@ -81,6 +84,7 @@ private:
 	inline static HWND m_hWnd = nullptr;						// ウィンドウハンドル
 	inline static CRenderer *m_pRenderer = nullptr;				// レンダラー
 	inline static CTexture *m_pTexture = nullptr;				// テクスチャ管理
+	inline static CShader *m_pShader = nullptr;					// シェーダー管理
 	inline static CXFile *m_pXFile = nullptr;					// XFile管理
 	inline static CLight *m_pLight = nullptr;					// ライト
 	inline static CSound *m_pSound = nullptr;					// サウンド

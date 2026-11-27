@@ -10,6 +10,7 @@
 #include "core/resourceManager.h"
 #include "core/resourceable.h"
 #include "render/texture.h"
+#include "render/shader.h"
 #include "render/xfile.h"
 
 //==================================================================================
@@ -18,6 +19,7 @@
 CResourceManager::CResourceManager()
 { // 各リソース管理クラスを取得
 	m_vpResource.push_back(CTexture::GetInstance());
+	m_vpResource.push_back(CShader::GetInstance());
 	m_vpResource.push_back(CXFile::GetInstance());
 }
 
