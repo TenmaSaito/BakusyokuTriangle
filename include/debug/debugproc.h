@@ -64,7 +64,7 @@ template<class... Args> void CDebugProc::Print(std::_Fmt_string<Args...> format,
 //==================================================================================
 template<class... Args> void CDebugProc::ForcePrint(std::_Fmt_string<Args...> format, Args ...args)
 {
-#if 0
+#if 1
 	m_sProc += std::format(format, std::forward<Args>(args)...);
 #endif
 }
