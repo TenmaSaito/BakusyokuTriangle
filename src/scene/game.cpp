@@ -28,7 +28,10 @@
 #include "ui/timer.h"
 #include "game/stage/foodBackground.h"
 #include "game/spring.h"
+#include "effect/particleInstancing.h"
 #include "util/filestream.h"
+#include "math/vec3math.h"
+#include "debug/debugproc.h"
 
 //**********************************************************************************
 // *** 定数宣言 ***
@@ -91,6 +94,9 @@ void CGame::Update(const ManagerContext::SceneContext &sceneContext)
 	{
 		pManager->SetEnablePause(!pManager->GetEnablePause());
 	}
+
+	// エフェクトの総数表示
+	sceneContext.pRenderContext->pDebugProc->ForcePrint("Effect Num : {}\n", CObject::FindAnyObjectByType<CParticleInstancing>()->GetNumEffect());
 
 #ifdef _DEBUG
 	if (pKeyboard->GetTrigger(DIK_NUMPAD1))
@@ -167,8 +173,15 @@ void CGame::Start(const ManagerContext::SceneContext &sceneContext)
 
 	CServiceLocator::GetSound()->Play(CSound::LABEL::BGM_INGAME);
 
-	CSpring::Create(Vector3(100.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), 1.0f, 75.0f)->SetParent(CObject::FindAnyObjectByType<CStage>()->GetMatrix());
-	CSpring::Create(Vector3(100.0f, 1500.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), 1.5f, 100.0f)->SetParent(CObject::FindAnyObjectByType<CStage>()->GetMatrix());
-	CSpring::Create(Vector3(300.0f, 0.0f, 0.0f), Vector3(0.5f, 0.0f, 0.5f), 1.0f, 100.0f)->SetParent(CObject::FindAnyObjectByType<CStage>()->GetMatrix());
-	CSpring::Create(Vector3(400.0f, 0.0f, 0.0f), Vector3(0.5f, 0.0f, 0.5f), 1.0f, 100.0f)->SetParent(CObject::FindAnyObjectByType<CStage>()->GetMatrix());
+	auto pInst = CParticleInstancing::Create({}, 5000000);
+	pInst->BindTexture(sceneContext.pRenderContext->pTexture->Register("data/TEXTURE/effect000.jpg"));
+	for (int i = 0; i < 750000; i++)
+	{
+		pInst->Set(VECTOR3_NULL,
+			Vec3::Random() * 1.5f,
+			COLOR_ONE,
+			5.0f,
+			0.0f,
+			6000);
+	}
 }
